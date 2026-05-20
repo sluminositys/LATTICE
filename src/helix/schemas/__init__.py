@@ -11,6 +11,8 @@ from helix.schemas.common import (
     Provenance,
     WarningItem,
 )
+from helix.schemas.runtime_context import GraphContextSufficiencyReport, RuntimeGraphContext
+from helix.schemas.task import TaskFingerprint
 
 __all__ = [
     "Blocker",
@@ -21,5 +23,8 @@ __all__ = [
     "LifecycleState",
     "PermissionMode",
     "Provenance",
+    "GraphContextSufficiencyReport",
+    "RuntimeGraphContext",
+    "TaskFingerprint",
     "WarningItem",
 ]

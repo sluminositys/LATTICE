@@ -48,8 +48,11 @@ This log records completed work in chronological order. Every implementation ste
 - Added schema package skeleton.
 - Added strict base model, lifecycle states, graph tier labels, permission modes, provenance, blocker, and warning item contracts.
 - Added tests for strict schema behavior.
+- Committed common schema contracts: `8ae60d8 schemas: add common contract types`.
+- Added `TaskFingerprint`, `GraphContextSufficiencyReport`, and `RuntimeGraphContext` contracts.
+- Added tests for plan-only task fingerprint defaults and insufficient graph context reporting.
 
 ## Next
 
-- Commit common schema contracts.
-- Add task fingerprint and runtime graph context schemas.
+- Commit task and runtime graph context schemas.
+- Add AEP, ToolCall, verification, GraphPatch, and experience schemas.

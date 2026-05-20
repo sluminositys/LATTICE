@@ -65,9 +65,9 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 - [x] Add schema package skeleton.
 - [x] Implement shared base model conventions.
-- [ ] Add `TaskFingerprint`.
-- [ ] Add `GraphContextSufficiencyReport`.
-- [ ] Add `RuntimeGraphContext`.
+- [x] Add `TaskFingerprint`.
+- [x] Add `GraphContextSufficiencyReport`.
+- [x] Add `RuntimeGraphContext`.
 - [ ] Add `AgenticExecutionPlan` and plan step model.
 - [ ] Add `ToolCallSpec`.
 - [ ] Add `StructuredObservation`.
