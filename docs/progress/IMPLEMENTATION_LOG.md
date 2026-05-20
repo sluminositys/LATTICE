@@ -208,3 +208,11 @@ This log records completed work in chronological order. Every implementation ste
 - Added `ToolCallDispatcher`.
 - Dispatcher now validates steps, resolves active `ToolCallSpec`, selects registered backends, and fails closed with `StructuredObservation` when validation or backend availability fails.
 - Added dispatcher tests for validation failure, missing backend, and registered backend execution.
+- Committed ToolCall dispatcher boundary: `833b497 toolcall: add dispatcher boundary`.
+
+### Lifecycle state manager
+
+- Added `LifecycleStateManager`.
+- Added explicit capability promotion path: `candidate -> probationary -> active_warm -> active_hot`.
+- Added pollution path: candidate/probationary/active/cold states -> `quarantined -> retired -> tombstoned`.
+- Added invalid transition checks.

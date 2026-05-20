@@ -168,7 +168,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 ## Phase 12: Memory Health Compiler
 
 - [x] Implement compiler input/output contracts.
-- [ ] Implement lifecycle state manager.
+- [x] Implement lifecycle state manager.
 - [ ] Implement health policy config.
 - [ ] Implement candidate promotion gates.
 - [ ] Implement quarantine/retirement policy skeletons.
@@ -220,7 +220,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Add event logging into plan-only orchestration.
 - [x] Commit database integration requirements.
 - [x] Commit ToolCall validator.
-- [ ] Commit ToolCall dispatcher boundary.
+- [x] Commit ToolCall dispatcher boundary.
+- [ ] Commit lifecycle state manager.
 
 ## Latest Validation
 
