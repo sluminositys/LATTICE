@@ -20,10 +20,11 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Create independent project directory at `D:\workspace\HELIX`.
 - [x] Initialize git repository on `main`.
 - [x] Add remote `git@github.com:sluminositys/HELIX.git`.
-- [ ] Add progress ledger docs.
-- [ ] Add architecture decomposition docs.
-- [ ] Add architecture risks and gaps record.
-- [ ] Commit tracking docs.
+- [x] Add progress ledger docs.
+- [x] Add architecture decomposition docs.
+- [x] Add architecture risks and gaps record.
+- [x] Commit tracking docs.
+- [ ] Add repository hygiene files.
 
 ## Phase 1: Minimal Python Project
 
@@ -189,7 +190,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Active Next Steps
 
-- [ ] Finish Phase 0 docs and commit.
+- [x] Finish Phase 0 docs and commit.
+- [ ] Commit repository hygiene files.
 - [ ] Build Phase 1 minimal Python project and commit.
 - [ ] Build Phase 2 configuration layer and commit.
 - [ ] Build Phase 3 first schema group and commit.

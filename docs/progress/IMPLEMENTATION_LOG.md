@@ -17,9 +17,15 @@ This log records completed work in chronological order. Every implementation ste
 - Started implementation log.
 - Started architecture risk/gap record.
 - Started architecture decomposition record.
+- Committed tracking docs: `9e99220 docs: add HELIX implementation tracking`.
+
+### Repository hygiene
+
+- Added `.gitattributes` to keep tracked text files normalized to LF.
+- Added `.gitignore` for Python build/cache output and local runtime output.
 
 ## Next
 
-- Commit tracking docs.
+- Commit repository hygiene files.
 - Initialize minimal `uv` Python project.
 - Add externalized config layer.
