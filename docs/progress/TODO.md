@@ -146,7 +146,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Implement permission mode policies.
 - [x] Implement ToolCall registry.
 - [x] Implement ToolCall validator.
-- [ ] Implement dispatcher boundary.
+- [x] Implement dispatcher boundary.
 - [x] Add no-unregistered-tool tests.
 - [ ] Commit permissions and ToolCall base.
 
@@ -219,7 +219,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Start lifecycle state manager.
 - [ ] Add event logging into plan-only orchestration.
 - [x] Commit database integration requirements.
-- [ ] Commit ToolCall validator.
+- [x] Commit ToolCall validator.
+- [ ] Commit ToolCall dispatcher boundary.
 
 ## Latest Validation
 

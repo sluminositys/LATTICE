@@ -200,3 +200,11 @@ This log records completed work in chronological order. Every implementation ste
 - Added `ToolCallValidationReport`.
 - Added `ToolCallValidator` for active ToolCallSpec lookup and required input/parameter binding checks.
 - Added tests for unregistered ToolCallSpec, missing required bindings, and passing validation.
+- Committed ToolCall validator: `3ad0e9f toolcall: add step validator`.
+
+### ToolCall dispatcher
+
+- Added `RuntimeBackend` protocol.
+- Added `ToolCallDispatcher`.
+- Dispatcher now validates steps, resolves active `ToolCallSpec`, selects registered backends, and fails closed with `StructuredObservation` when validation or backend availability fails.
+- Added dispatcher tests for validation failure, missing backend, and registered backend execution.
