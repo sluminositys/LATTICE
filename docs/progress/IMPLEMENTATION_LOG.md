@@ -59,8 +59,19 @@ This log records completed work in chronological order. Every implementation ste
 - Added lifecycle transition and GraphPatch contracts with L0-only target restriction.
 - Added experience candidate contract.
 - Added schema validation tests for verification reports, GraphPatch tier restriction, lifecycle transitions, and experience candidates.
+- Committed remaining schema contracts: `b0f83a9 schemas: add verification graph patch and experience contracts`.
+
+### Validation hygiene
+
+- Added `src/helix/py.typed` for type-checkable package metadata.
+- Added `types-PyYAML` dev dependency.
+- Fixed ruff import ordering and long-line violations.
+- Verified:
+  - `uv run pytest`
+  - `uv run ruff check .`
+  - `uv run mypy`
 
 ## Next
 
-- Commit remaining core schema contracts.
-- Run lint, type check, and tests.
+- Commit validation hygiene fixes.
+- Start append-only runtime event log.

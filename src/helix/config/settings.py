@@ -7,7 +7,6 @@ from typing import Any, Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
-
 PermissionMode = Literal[
     "plan_only",
     "read_only",

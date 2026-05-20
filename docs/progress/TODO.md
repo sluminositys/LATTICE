@@ -77,7 +77,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Add `GraphPatch`.
 - [x] Add `ExperienceCandidate`.
 - [x] Add schema validation tests.
-- [ ] Commit remaining core schema contracts.
+- [x] Commit remaining core schema contracts.
 
 ## Phase 4: Append-Only Runtime Event Log
 
@@ -195,5 +195,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Finish Phase 0 docs and commit.
 - [x] Commit repository hygiene files.
 - [x] Build Phase 1 minimal Python project and commit.
-- [ ] Build Phase 2 configuration layer and commit.
-- [ ] Build Phase 3 first schema group and commit.
+- [x] Build Phase 2 configuration layer and commit.
+- [x] Build Phase 3 first schema group and commit.
+- [ ] Commit validation hygiene fixes.
+- [ ] Start Phase 4 append-only event log.

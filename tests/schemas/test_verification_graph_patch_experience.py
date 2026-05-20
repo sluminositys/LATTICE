@@ -12,7 +12,11 @@ from helix.schemas import (
 
 
 def test_workflow_report_can_block_plan() -> None:
-    report = WorkflowAuditReport(report_id="war-1", status="blocked", unresolved_items=["missing ToolCallSpec"])
+    report = WorkflowAuditReport(
+        report_id="war-1",
+        status="blocked",
+        unresolved_items=["missing ToolCallSpec"],
+    )
 
     assert report.status == "blocked"
     assert report.unresolved_items == ["missing ToolCallSpec"]

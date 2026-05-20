@@ -6,7 +6,6 @@ from pydantic import Field
 
 from helix.schemas.common import HelixBaseModel, LifecycleState, Provenance
 
-
 ObservationStatus = Literal["success", "failure", "partial", "cancelled"]
 
 

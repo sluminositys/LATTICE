@@ -6,7 +6,6 @@ from pydantic import Field
 
 from helix.schemas.common import HelixBaseModel, Provenance
 
-
 PlanStatus = Literal["planned", "verified", "executing", "completed", "failed", "blocked"]
 
 
