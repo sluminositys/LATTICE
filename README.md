@@ -1,0 +1,14 @@
+# HELIX
+
+HELIX is an independent Python agent system based on the v7 architecture in `E:\donwloads\HELIX_architecture_v7.md`.
+
+The implementation starts with a plan-only flow and expands toward controlled execution, graph patching, memory health compilation, and experience-driven capability evolution.
+
+## Development
+
+```powershell
+uv sync --dev
+uv run pytest
+```
+
+Operational logs, command transcripts, diagnostics, and generated artifacts should be stored under `D:\workspace\codex`, not in this repository.

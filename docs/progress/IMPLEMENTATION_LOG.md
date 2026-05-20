@@ -23,9 +23,18 @@ This log records completed work in chronological order. Every implementation ste
 
 - Added `.gitattributes` to keep tracked text files normalized to LF.
 - Added `.gitignore` for Python build/cache output and local runtime output.
+- Committed repository hygiene files: `b9ccdf2 chore: add repository hygiene files`.
+
+### Minimal Python project
+
+- Added `.python-version`.
+- Added `pyproject.toml` with `uv`, LangChain, LangGraph, Pydantic, pytest, ruff, and mypy dependencies.
+- Added package root `src/helix`.
+- Added placeholder package test.
+- Generated `uv.lock`.
 
 ## Next
 
-- Commit repository hygiene files.
-- Initialize minimal `uv` Python project.
+- Lock dependencies with `uv`.
+- Commit minimal Python project.
 - Add externalized config layer.

@@ -25,25 +25,27 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Add architecture risks and gaps record.
 - [x] Commit tracking docs.
 - [ ] Add repository hygiene files.
+- [x] Add repository hygiene files.
 
 ## Phase 1: Minimal Python Project
 
-- [ ] Create `pyproject.toml` with `uv` project metadata.
-- [ ] Set Python version policy.
+- [x] Create `pyproject.toml` with `uv` project metadata.
+- [x] Set Python version policy.
 - [ ] Add runtime dependencies:
-  - [ ] `pydantic`
-  - [ ] `pydantic-settings`
-  - [ ] `pyyaml`
-  - [ ] `langchain`
-  - [ ] `langgraph`
-  - [ ] `typing-extensions`
+  - [x] `pydantic`
+  - [x] `pydantic-settings`
+  - [x] `pyyaml`
+  - [x] `langchain`
+  - [x] `langgraph`
+  - [x] `typing-extensions`
 - [ ] Add dev dependencies:
-  - [ ] `pytest`
-  - [ ] `ruff`
-  - [ ] `mypy`
-- [ ] Create `src/helix/`.
-- [ ] Add package `__init__.py`.
-- [ ] Add placeholder test directory.
+  - [x] `pytest`
+  - [x] `ruff`
+  - [x] `mypy`
+- [x] Create `src/helix/`.
+- [x] Add package `__init__.py`.
+- [x] Add placeholder test directory.
+- [x] Generate `uv.lock`.
 - [ ] Commit minimal project metadata.
 
 ## Phase 2: Configuration Layer
@@ -191,7 +193,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 ## Active Next Steps
 
 - [x] Finish Phase 0 docs and commit.
-- [ ] Commit repository hygiene files.
+- [x] Commit repository hygiene files.
 - [ ] Build Phase 1 minimal Python project and commit.
 - [ ] Build Phase 2 configuration layer and commit.
 - [ ] Build Phase 3 first schema group and commit.
