@@ -164,8 +164,17 @@ This log records completed work in chronological order. Every implementation ste
 - Added structured JSON output for the current plan-only flow.
 - Added CLI test for blocked plan output.
 - Updated README development command examples.
+- Committed CLI plan entrypoint: `fc69fff app: add plan-only CLI entrypoint`.
+
+### Validation
+
+- `uv run pytest`: 35 passed.
+- `uv run ruff check .`: passed.
+- `uv run mypy`: passed.
+- `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-demo`: returned structured `plan_blocked` response with `NO_WORKFLOW_PATH` and `NO_TOOLCALL_SPEC`.
 
 ## Next
 
-- Commit CLI plan entrypoint.
-- Run full validation and produce status summary.
+- Add ToolCall validator and dispatcher boundary.
+- Add lifecycle state manager.
+- Add event logging into plan-only orchestration.

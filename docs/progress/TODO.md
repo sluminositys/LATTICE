@@ -189,7 +189,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Add CLI plan command.
 - [ ] Add API app skeleton only after core flow exists.
 - [x] Add structured output for blocked/verified plans.
-- [ ] Commit entrypoints.
+- [ ] Commit full app entrypoints.
 
 ## Active Next Steps
 
@@ -212,4 +212,14 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit ToolCall registry boundary.
 - [x] Commit GraphPatch builder/auditor boundary.
 - [x] Commit MemoryHealthCompiler skeleton.
-- [ ] Commit CLI plan entrypoint.
+- [x] Commit CLI plan entrypoint.
+- [ ] Start ToolCall validator and dispatcher boundary.
+- [ ] Start lifecycle state manager.
+- [ ] Add event logging into plan-only orchestration.
+
+## Latest Validation
+
+- [x] `uv run pytest`
+- [x] `uv run ruff check .`
+- [x] `uv run mypy`
+- [x] `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-demo`
