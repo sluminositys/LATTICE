@@ -156,8 +156,16 @@ This log records completed work in chronological order. Every implementation ste
 - Added `MemoryHealthCompileReport`.
 - Enforced L0 patch target checks before L1 materialization report.
 - Added tests for skipped compilation and L1 materialization reporting.
+- Committed MemoryHealthCompiler skeleton: `1a4a2ae graph-health: add memory health compiler skeleton`.
+
+### CLI entrypoint
+
+- Added `helix plan` command.
+- Added structured JSON output for the current plan-only flow.
+- Added CLI test for blocked plan output.
+- Updated README development command examples.
 
 ## Next
 
-- Commit MemoryHealthCompiler skeleton.
-- Add CLI plan entrypoint.
+- Commit CLI plan entrypoint.
+- Run full validation and produce status summary.

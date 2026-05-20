@@ -186,9 +186,9 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 14: Entrypoints
 
-- [ ] Add CLI plan command.
+- [x] Add CLI plan command.
 - [ ] Add API app skeleton only after core flow exists.
-- [ ] Add structured output for blocked/verified plans.
+- [x] Add structured output for blocked/verified plans.
 - [ ] Commit entrypoints.
 
 ## Active Next Steps
@@ -211,4 +211,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit PermissionGate boundary.
 - [x] Commit ToolCall registry boundary.
 - [x] Commit GraphPatch builder/auditor boundary.
-- [ ] Commit MemoryHealthCompiler skeleton.
+- [x] Commit MemoryHealthCompiler skeleton.
+- [ ] Commit CLI plan entrypoint.

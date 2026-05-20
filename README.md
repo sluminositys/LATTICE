@@ -9,6 +9,7 @@ The implementation starts with a plan-only flow and expands toward controlled ex
 ```powershell
 uv sync --dev
 uv run pytest
+uv run helix plan "Plan RNA-seq QC workflow"
 ```
 
 Operational logs, command transcripts, diagnostics, and generated artifacts should be stored under `D:\workspace\codex`, not in this repository.
