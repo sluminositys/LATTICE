@@ -54,8 +54,13 @@ This log records completed work in chronological order. Every implementation ste
 - Committed task and runtime graph context contracts: `d3aeb8e schemas: add task and runtime context contracts`.
 - Added `AgenticExecutionPlan`, `AgenticExecutionStep`, `ToolCallSpec`, and `StructuredObservation`.
 - Added tests covering plan-only AEP creation, ToolCallSpec provenance/lifecycle requirements, and structured observations.
+- Committed AEP and ToolCall schemas: `3df1e4c schemas: add AEP and toolcall contracts`.
+- Added workflow and claim audit report contracts.
+- Added lifecycle transition and GraphPatch contracts with L0-only target restriction.
+- Added experience candidate contract.
+- Added schema validation tests for verification reports, GraphPatch tier restriction, lifecycle transitions, and experience candidates.
 
 ## Next
 
-- Commit AEP and ToolCall schemas.
-- Add verification, GraphPatch, lifecycle transition, and experience schemas.
+- Commit remaining core schema contracts.
+- Run lint, type check, and tests.

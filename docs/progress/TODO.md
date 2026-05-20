@@ -71,13 +71,13 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Add `AgenticExecutionPlan` and plan step model.
 - [x] Add `ToolCallSpec`.
 - [x] Add `StructuredObservation`.
-- [ ] Add `WorkflowAuditReport`.
-- [ ] Add `ClaimAuditReport`.
-- [ ] Add `LifecycleTransition`.
-- [ ] Add `GraphPatch`.
-- [ ] Add `ExperienceCandidate`.
-- [ ] Add schema validation tests.
-- [ ] Commit schema contracts in small groups.
+- [x] Add `WorkflowAuditReport`.
+- [x] Add `ClaimAuditReport`.
+- [x] Add `LifecycleTransition`.
+- [x] Add `GraphPatch`.
+- [x] Add `ExperienceCandidate`.
+- [x] Add schema validation tests.
+- [ ] Commit remaining core schema contracts.
 
 ## Phase 4: Append-Only Runtime Event Log
 
