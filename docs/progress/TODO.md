@@ -145,7 +145,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Implement `PermissionGate`.
 - [x] Implement permission mode policies.
 - [x] Implement ToolCall registry.
-- [ ] Implement ToolCall validator.
+- [x] Implement ToolCall validator.
 - [ ] Implement dispatcher boundary.
 - [x] Add no-unregistered-tool tests.
 - [ ] Commit permissions and ToolCall base.
@@ -215,9 +215,11 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit MemoryHealthCompiler skeleton.
 - [x] Commit CLI plan entrypoint.
 - [ ] Start ToolCall validator and dispatcher boundary.
+- [x] Start ToolCall validator and dispatcher boundary.
 - [ ] Start lifecycle state manager.
 - [ ] Add event logging into plan-only orchestration.
-- [ ] Commit database integration requirements.
+- [x] Commit database integration requirements.
+- [ ] Commit ToolCall validator.
 
 ## Latest Validation
 

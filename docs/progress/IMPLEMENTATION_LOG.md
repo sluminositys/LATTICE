@@ -193,3 +193,10 @@ This log records completed work in chronological order. Every implementation ste
 - Documented minimum L0 patch/write and query primitives.
 - Documented L1 read/materialization boundary and forbidden direct GraphPatch-to-L1 writes.
 - Clarified that the first complete L0/L1 build can be handled by dedicated builder agents after database installation.
+- Committed database integration requirements: `b254050 docs: add database integration requirements`.
+
+### ToolCall validator
+
+- Added `ToolCallValidationReport`.
+- Added `ToolCallValidator` for active ToolCallSpec lookup and required input/parameter binding checks.
+- Added tests for unregistered ToolCallSpec, missing required bindings, and passing validation.
