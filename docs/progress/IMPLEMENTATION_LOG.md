@@ -103,8 +103,16 @@ This log records completed work in chronological order. Every implementation ste
 - Wired plan-only orchestration to use the core fingerprinter.
 - Added tests for conservative normalization and ambiguity reporting.
 - Recorded RISK-007 for conservative initial fingerprinting.
+- Committed task fingerprint module: `c8123fc core: add conservative task fingerprinter`.
+
+### Runtime projection
+
+- Added `RuntimeViewProjector`.
+- Delegated plan-only runtime context projection to the projection module.
+- Returned explicit insufficient context reports when no L1 healthy graph store is configured.
+- Added projection test for the no-L1-store path.
 
 ## Next
 
-- Commit task fingerprint module.
-- Start projection interfaces.
+- Commit runtime projection module.
+- Start planning and verification module boundaries.

@@ -7,9 +7,9 @@ from langgraph.graph import END, START, StateGraph
 from typing_extensions import NotRequired, TypedDict
 
 from helix.core import TaskFingerprinter
+from helix.projection import RuntimeViewProjector
 from helix.schemas import (
     Blocker,
-    GraphContextSufficiencyReport,
     RuntimeGraphContext,
     TaskFingerprint,
     WorkflowAuditReport,
@@ -72,20 +72,7 @@ def fingerprint_task(state: PlanOnlyState) -> PlanOnlyState:
 
 def project_runtime_context(state: PlanOnlyState) -> PlanOnlyState:
     fingerprint = state["task_fingerprint"]
-    report = GraphContextSufficiencyReport(
-        report_id=f"gcsr-{uuid4()}",
-        status="insufficient",
-        missing_workflow_info=["no healthy graph store is configured"],
-        missing_toolcall_info=["no active ToolCallSpec is registered"],
-        missing_evidence_info=["no evidence view has been projected"],
-        controlled_recall_required=False,
-    )
-    context = RuntimeGraphContext(
-        graph_context_id=f"rgc-{uuid4()}",
-        task_fingerprint_id=fingerprint.fingerprint_id,
-        source_graph_tier="L1",
-        sufficiency_report=report,
-    )
+    context = RuntimeViewProjector().project(fingerprint)
     return {**state, "status": "runtime_context_projected", "runtime_context": context}
 
 

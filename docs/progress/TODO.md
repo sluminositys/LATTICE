@@ -123,10 +123,10 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 8: Runtime Projection
 
-- [ ] Implement five-view projector interfaces.
+- [x] Implement five-view projector interfaces.
 - [ ] Implement sufficiency checker.
 - [ ] Implement controlled recall boundary without direct L1 promotion.
-- [ ] Add tests for insufficient context.
+- [x] Add tests for insufficient context.
 - [ ] Commit runtime projection module.
 
 ## Phase 9: Planning And Verification
@@ -203,4 +203,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit Phase 5 graph tier contracts.
 - [ ] Commit Phase 6 LangGraph plan-only skeleton.
 - [x] Commit Phase 6 LangGraph plan-only skeleton.
-- [ ] Commit Phase 7 task fingerprint module.
+- [x] Commit Phase 7 task fingerprint module.
+- [ ] Commit Phase 8 runtime projection module.
