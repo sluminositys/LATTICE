@@ -95,7 +95,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Define `RuntimeGraphContext` usage boundary for L2.
 - [x] Define graph tier policy checks.
 - [x] Add tests ensuring GraphPatch cannot target L1.
-- [ ] Commit graph tier contracts.
+- [x] Commit graph tier contracts.
 - [x] Document database adapter requirements for future L0/L1 backends.
 
 ## Phase 6: LangGraph Plan-Only Flow
@@ -112,7 +112,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
   - [x] produce response
 - [x] Add plan-only stopping behavior.
 - [x] Add tests for state transitions.
-- [ ] Commit orchestration skeleton.
+- [x] Commit orchestration skeleton.
 
 ## Phase 7: Task Fingerprinting
 
@@ -148,7 +148,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Implement ToolCall validator.
 - [x] Implement dispatcher boundary.
 - [x] Add no-unregistered-tool tests.
-- [ ] Commit permissions and ToolCall base.
+- [x] Commit permissions and ToolCall base.
 
 ## Phase 11: GraphPatch Write Path
 
@@ -163,7 +163,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
   - [ ] conflict detection placeholder
   - [x] lifecycle transition validity
   - [x] target tier restriction
-- [ ] Commit GraphPatch pipeline.
+- [x] Commit GraphPatch builder/validator/auditor pipeline.
 
 ## Phase 12: Memory Health Compiler
 
@@ -174,7 +174,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Implement quarantine/retirement policy skeletons.
 - [ ] Add tests that only compiler updates L1 materialization.
 - [x] Add tests that only compiler updates L1 materialization.
-- [ ] Commit graph health compiler skeleton.
+- [x] Commit graph health compiler skeleton.
 
 ## Phase 13: Experience And Capability Evolution
 
@@ -194,43 +194,20 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Active Next Steps
 
-- [x] Finish Phase 0 docs and commit.
-- [x] Commit repository hygiene files.
-- [x] Build Phase 1 minimal Python project and commit.
-- [x] Build Phase 2 configuration layer and commit.
-- [x] Build Phase 3 first schema group and commit.
-- [x] Commit validation hygiene fixes.
-- [x] Commit Phase 4 append-only event log.
-- [ ] Commit Phase 5 graph tier contracts.
-- [x] Commit Phase 5 graph tier contracts.
-- [ ] Commit Phase 6 LangGraph plan-only skeleton.
-- [x] Commit Phase 6 LangGraph plan-only skeleton.
-- [x] Commit Phase 7 task fingerprint module.
-- [x] Commit Phase 8 runtime projection module.
-- [x] Commit workflow path search boundary.
-- [x] Commit workflow verifier boundary.
-- [x] Commit PermissionGate boundary.
-- [x] Commit ToolCall registry boundary.
-- [x] Commit GraphPatch builder/auditor boundary.
-- [x] Commit MemoryHealthCompiler skeleton.
-- [x] Commit CLI plan entrypoint.
-- [ ] Start ToolCall validator and dispatcher boundary.
-- [x] Start ToolCall validator and dispatcher boundary.
-- [ ] Start lifecycle state manager.
-- [x] Add event logging into plan-only orchestration.
 - [x] Commit database integration requirements.
 - [x] Commit ToolCall validator.
 - [x] Commit ToolCall dispatcher boundary.
-- [ ] Commit lifecycle state manager.
 - [x] Commit lifecycle state manager.
-- [ ] Commit plan-only event logging.
 - [x] Commit plan-only event logging.
-- [ ] Commit GraphPatch validator.
+- [x] Commit GraphPatch validator.
+- [ ] Start controlled full graph recall boundary.
+- [ ] Start capability evolution candidate records.
+- [ ] Start failure-to-constraint extraction.
 
 ## Latest Validation
 
-- [x] `uv run pytest`
+- [x] `uv run pytest` (`51 passed`)
 - [x] `uv run ruff check .`
 - [x] `uv run mypy`
-- [x] `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-demo`
+- [x] `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-20260521 --event-log D:\workspace\codex\logs\2026-05-21\helix-plan-events-20260521.jsonl`
 - [x] Push `main` to `origin/main`

@@ -233,3 +233,11 @@ This log records completed work in chronological order. Every implementation ste
 - Added provenance source checks.
 - Added lifecycle transition validity checks via `LifecycleStateManager`.
 - Extended `GraphPatchAuditor` to include validator blockers and warnings.
+- Committed GraphPatch validator: `246d922 graph-patch: add patch validator`.
+
+### Validation
+
+- `uv run pytest`: 51 passed.
+- `uv run ruff check .`: passed.
+- `uv run mypy`: passed.
+- `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-20260521 --event-log D:\workspace\codex\logs\2026-05-21\helix-plan-events-20260521.jsonl`: wrote 7 append-only events.
