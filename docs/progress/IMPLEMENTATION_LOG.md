@@ -32,9 +32,18 @@ This log records completed work in chronological order. Every implementation ste
 - Added package root `src/helix`.
 - Added placeholder package test.
 - Generated `uv.lock`.
+- Committed minimal Python project: `23efdb6 chore: bootstrap uv python package`.
+
+### Configuration layer
+
+- Added external YAML configuration files under `config/`.
+- Added typed settings loader in `src/helix/config/settings.py`.
+- Added `HELIX_` environment overrides with `__` nested keys.
+- Added tests for default loading and environment overrides.
+- Renamed logging JSON flag to `json_logs` to avoid shadowing Pydantic model methods.
 
 ## Next
 
-- Lock dependencies with `uv`.
-- Commit minimal Python project.
-- Add externalized config layer.
+- Run config tests.
+- Commit externalized config layer.
+- Start core schema contracts.

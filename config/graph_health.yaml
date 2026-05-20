@@ -1,0 +1,14 @@
+graph_health:
+  compiler_mode: manual
+  lifecycle_policy: policy_driven
+  allow_direct_l1_write: false
+  lifecycle_states:
+    - candidate
+    - probationary
+    - active_hot
+    - active_warm
+    - cold_reference
+    - deprecated_reference
+    - quarantined
+    - retired
+    - tombstoned

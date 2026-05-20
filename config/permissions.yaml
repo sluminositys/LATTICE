@@ -1,0 +1,8 @@
+permissions:
+  default_mode: plan_only
+  fail_closed: true
+  require_graph_write_review: true
+  blocked_modes:
+    - admin_approved_execute
+    - graph_write_review
+    - headless_fail_closed

@@ -1,0 +1,40 @@
+app_name: HELIX
+environment: dev
+
+models:
+  chat_provider: not_configured
+  chat_model: not_configured
+  embedding_provider: not_configured
+  embedding_model: not_configured
+
+runtime_paths:
+  output_root: D:/workspace/codex
+  runs_subdir: runs
+  logs_subdir: logs
+  artifacts_subdir: artifacts
+  scratch_subdir: scratch
+
+graph:
+  l0_backend: protocol_only
+  l1_backend: protocol_only
+  l0_dsn: null
+  l1_dsn: null
+  controlled_recall_limit: 20
+
+tool_registry:
+  registry_path: config/tool_registry.yaml
+  allow_unregistered_tools: false
+
+permissions:
+  default_mode: plan_only
+  fail_closed: true
+  require_graph_write_review: true
+
+graph_health:
+  compiler_mode: manual
+  lifecycle_policy: policy_driven
+  allow_direct_l1_write: false
+
+logging:
+  level: INFO
+  json_logs: false

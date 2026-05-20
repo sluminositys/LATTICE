@@ -1,0 +1,4 @@
+tool_registry:
+  registry_path: config/tool_registry.yaml
+  allow_unregistered_tools: false
+  active_specs: []

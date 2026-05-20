@@ -46,19 +46,19 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Add package `__init__.py`.
 - [x] Add placeholder test directory.
 - [x] Generate `uv.lock`.
-- [ ] Commit minimal project metadata.
+- [x] Commit minimal project metadata.
 
 ## Phase 2: Configuration Layer
 
-- [ ] Create `config/base.yaml`.
-- [ ] Create `config/dev.yaml`.
-- [ ] Create `config/logging.yaml`.
-- [ ] Create `config/permissions.yaml`.
-- [ ] Create `config/graph_health.yaml`.
-- [ ] Create `config/tool_registry.yaml`.
-- [ ] Implement settings loader in `src/helix/config/`.
-- [ ] Support environment variable overrides.
-- [ ] Add tests for settings loading.
+- [x] Create `config/base.yaml`.
+- [x] Create `config/dev.yaml`.
+- [x] Create `config/logging.yaml`.
+- [x] Create `config/permissions.yaml`.
+- [x] Create `config/graph_health.yaml`.
+- [x] Create `config/tool_registry.yaml`.
+- [x] Implement settings loader in `src/helix/config/`.
+- [x] Support environment variable overrides.
+- [x] Add tests for settings loading.
 - [ ] Commit config layer.
 
 ## Phase 3: Core Object Contracts
@@ -194,6 +194,6 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 - [x] Finish Phase 0 docs and commit.
 - [x] Commit repository hygiene files.
-- [ ] Build Phase 1 minimal Python project and commit.
+- [x] Build Phase 1 minimal Python project and commit.
 - [ ] Build Phase 2 configuration layer and commit.
 - [ ] Build Phase 3 first schema group and commit.
