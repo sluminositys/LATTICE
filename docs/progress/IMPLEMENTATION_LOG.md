@@ -86,8 +86,16 @@ This log records completed work in chronological order. Every implementation ste
 - Added L1 `HealthyGraphStore` protocol without direct write API.
 - Added graph tier policy checks for L0 GraphPatch targets and MemoryHealthCompiler-only L1 updates.
 - Added tests for graph tier policies.
+- Committed graph tier interfaces: `16feff5 graph: add tier store contracts and policies`.
+
+### LangGraph plan-only orchestration
+
+- Added `PlanOnlyState`.
+- Added LangGraph nodes for request receipt, task fingerprinting, runtime context projection, workflow search, workflow verification, AEP compilation boundary, permission check, and response generation.
+- Kept flow intentionally blocked when no healthy graph store or active ToolCallSpec is configured.
+- Added state transition test for blocked plan-only flow.
 
 ## Next
 
-- Commit graph tier interfaces.
-- Start LangGraph plan-only orchestration skeleton.
+- Commit LangGraph plan-only orchestration skeleton.
+- Start task fingerprinting module and projection interfaces.

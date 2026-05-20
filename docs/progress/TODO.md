@@ -99,18 +99,18 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 6: LangGraph Plan-Only Flow
 
-- [ ] Define session state model.
+- [x] Define session state model.
 - [ ] Create LangGraph node skeletons:
-  - [ ] receive request
-  - [ ] fingerprint task
-  - [ ] project runtime context
-  - [ ] search workflow path
-  - [ ] verify workflow
-  - [ ] compile AEP
-  - [ ] permission check
-  - [ ] produce response
-- [ ] Add plan-only stopping behavior.
-- [ ] Add tests for state transitions.
+  - [x] receive request
+  - [x] fingerprint task
+  - [x] project runtime context
+  - [x] search workflow path
+  - [x] verify workflow
+  - [x] compile AEP
+  - [x] permission check
+  - [x] produce response
+- [x] Add plan-only stopping behavior.
+- [x] Add tests for state transitions.
 - [ ] Commit orchestration skeleton.
 
 ## Phase 7: Task Fingerprinting
@@ -200,3 +200,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit validation hygiene fixes.
 - [x] Commit Phase 4 append-only event log.
 - [ ] Commit Phase 5 graph tier contracts.
+- [x] Commit Phase 5 graph tier contracts.
+- [ ] Commit Phase 6 LangGraph plan-only skeleton.
