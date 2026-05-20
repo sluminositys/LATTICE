@@ -78,8 +78,16 @@ This log records completed work in chronological order. Every implementation ste
 - Required event provenance.
 - Added `FileAgentEventLog` JSONL backend that appends events without rewriting existing entries.
 - Added tests for append behavior and provenance requirement.
+- Committed append-only runtime event log: `061494b runtime: add append-only agent event log`.
+
+### Graph tier interfaces
+
+- Added L0 `FullGraphStore` protocol.
+- Added L1 `HealthyGraphStore` protocol without direct write API.
+- Added graph tier policy checks for L0 GraphPatch targets and MemoryHealthCompiler-only L1 updates.
+- Added tests for graph tier policies.
 
 ## Next
 
-- Commit append-only runtime event log.
-- Start graph tier interfaces.
+- Commit graph tier interfaces.
+- Start LangGraph plan-only orchestration skeleton.

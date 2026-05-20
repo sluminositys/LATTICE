@@ -90,11 +90,11 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 5: Graph Tier Interfaces
 
-- [ ] Define `FullGraphStore` protocol for L0.
-- [ ] Define `HealthyGraphStore` protocol for L1.
-- [ ] Define `RuntimeGraphContext` usage boundary for L2.
-- [ ] Define graph tier policy checks.
-- [ ] Add tests ensuring GraphPatch cannot target L1.
+- [x] Define `FullGraphStore` protocol for L0.
+- [x] Define `HealthyGraphStore` protocol for L1.
+- [x] Define `RuntimeGraphContext` usage boundary for L2.
+- [x] Define graph tier policy checks.
+- [x] Add tests ensuring GraphPatch cannot target L1.
 - [ ] Commit graph tier contracts.
 
 ## Phase 6: LangGraph Plan-Only Flow
@@ -198,4 +198,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Build Phase 2 configuration layer and commit.
 - [x] Build Phase 3 first schema group and commit.
 - [x] Commit validation hygiene fixes.
-- [ ] Commit Phase 4 append-only event log.
+- [x] Commit Phase 4 append-only event log.
+- [ ] Commit Phase 5 graph tier contracts.
