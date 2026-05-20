@@ -173,6 +173,11 @@ This log records completed work in chronological order. Every implementation ste
 - `uv run mypy`: passed.
 - `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-demo`: returned structured `plan_blocked` response with `NO_WORKFLOW_PATH` and `NO_TOOLCALL_SPEC`.
 
+### Remote sync
+
+- Pushed `main` to `origin/main`.
+- Configured local `main` to track `origin/main`.
+
 ## Next
 
 - Add ToolCall validator and dispatcher boundary.

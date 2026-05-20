@@ -223,3 +223,4 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] `uv run ruff check .`
 - [x] `uv run mypy`
 - [x] `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-demo`
+- [x] Push `main` to `origin/main`
