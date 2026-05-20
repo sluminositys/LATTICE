@@ -143,10 +143,10 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 - [x] Implement `PermissionGate`.
 - [x] Implement permission mode policies.
-- [ ] Implement ToolCall registry.
+- [x] Implement ToolCall registry.
 - [ ] Implement ToolCall validator.
 - [ ] Implement dispatcher boundary.
-- [ ] Add no-unregistered-tool tests.
+- [x] Add no-unregistered-tool tests.
 - [ ] Commit permissions and ToolCall base.
 
 ## Phase 11: GraphPatch Write Path
@@ -207,4 +207,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit Phase 8 runtime projection module.
 - [x] Commit workflow path search boundary.
 - [x] Commit workflow verifier boundary.
-- [ ] Commit PermissionGate boundary.
+- [x] Commit PermissionGate boundary.
+- [ ] Commit ToolCall registry boundary.

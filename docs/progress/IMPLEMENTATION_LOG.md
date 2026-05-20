@@ -134,8 +134,15 @@ This log records completed work in chronological order. Every implementation ste
 - Added `PermissionGate` with workflow-blocked and plan-only execution denial paths.
 - Wired plan-only orchestration to return structured permission decisions.
 - Added permission gate tests.
+- Committed PermissionGate boundary: `f1bbd00 permissions: add execution gate boundary`.
+
+### ToolCall registry
+
+- Added `ToolCallRegistry`.
+- Added active lifecycle enforcement for ToolCallSpec lookup.
+- Added tests rejecting unregistered and candidate ToolCallSpec records.
 
 ## Next
 
-- Commit PermissionGate boundary.
-- Start ToolCall registry boundary.
+- Commit ToolCall registry boundary.
+- Start GraphPatch builder and auditor boundaries.
