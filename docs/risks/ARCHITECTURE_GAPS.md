@@ -41,3 +41,9 @@ Current handling: keep execution disabled until ToolCallSpec, PermissionGate, ru
 The architecture warns that single failures and single user feedback should not become global rules. This needs hard tests.
 
 Current handling: add tests preventing one event from becoming a global blocker or lab preference without scope and approval.
+
+### RISK-007: Initial task fingerprinting is conservative and incomplete
+
+The first implementation creates a valid `TaskFingerprint` without inferring domain semantics. This avoids silent hallucinated classification, but it means the early plan-only flow will usually produce `unclassified` tasks until an LLM-backed or graph-backed fingerprinter is added.
+
+Current handling: keep the prompt externalized and record missing fields in `ambiguity_items`.

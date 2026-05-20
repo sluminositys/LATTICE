@@ -115,10 +115,10 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 7: Task Fingerprinting
 
-- [ ] Implement task fingerprinting interface.
-- [ ] Keep LLM prompt/template externalized.
-- [ ] Return ambiguity items instead of guessing silently.
-- [ ] Add tests for deterministic non-LLM normalization.
+- [x] Implement task fingerprinting interface.
+- [x] Keep LLM prompt/template externalized.
+- [x] Return ambiguity items instead of guessing silently.
+- [x] Add tests for deterministic non-LLM normalization.
 - [ ] Commit task fingerprint module.
 
 ## Phase 8: Runtime Projection
@@ -202,3 +202,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Commit Phase 5 graph tier contracts.
 - [x] Commit Phase 5 graph tier contracts.
 - [ ] Commit Phase 6 LangGraph plan-only skeleton.
+- [x] Commit Phase 6 LangGraph plan-only skeleton.
+- [ ] Commit Phase 7 task fingerprint module.

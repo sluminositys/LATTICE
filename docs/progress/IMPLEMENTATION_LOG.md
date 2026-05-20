@@ -94,8 +94,17 @@ This log records completed work in chronological order. Every implementation ste
 - Added LangGraph nodes for request receipt, task fingerprinting, runtime context projection, workflow search, workflow verification, AEP compilation boundary, permission check, and response generation.
 - Kept flow intentionally blocked when no healthy graph store or active ToolCallSpec is configured.
 - Added state transition test for blocked plan-only flow.
+- Committed LangGraph plan-only orchestration skeleton: `f9791e6 orchestration: add plan-only langgraph skeleton`.
+
+### Task fingerprinting
+
+- Added `TaskFingerprinter` core service.
+- Added external task fingerprint prompt template under `config/prompts/`.
+- Wired plan-only orchestration to use the core fingerprinter.
+- Added tests for conservative normalization and ambiguity reporting.
+- Recorded RISK-007 for conservative initial fingerprinting.
 
 ## Next
 
-- Commit LangGraph plan-only orchestration skeleton.
-- Start task fingerprinting module and projection interfaces.
+- Commit task fingerprint module.
+- Start projection interfaces.

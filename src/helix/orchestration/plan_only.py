@@ -6,6 +6,7 @@ from uuid import uuid4
 from langgraph.graph import END, START, StateGraph
 from typing_extensions import NotRequired, TypedDict
 
+from helix.core import TaskFingerprinter
 from helix.schemas import (
     Blocker,
     GraphContextSufficiencyReport,
@@ -65,15 +66,7 @@ def receive_request(state: PlanOnlyState) -> PlanOnlyState:
 
 
 def fingerprint_task(state: PlanOnlyState) -> PlanOnlyState:
-    request = state["request"].strip()
-    fingerprint = TaskFingerprint(
-        fingerprint_id=f"tf-{uuid4()}",
-        user_id="local",
-        task=request,
-        task_category="unclassified",
-        execution_intent="plan_only",
-        ambiguity_items=["task_category", "data_types", "input_formats", "output_goals"],
-    )
+    fingerprint = TaskFingerprinter().fingerprint(state["request"], user_id="local")
     return {**state, "status": "fingerprinted", "task_fingerprint": fingerprint}
 
 
