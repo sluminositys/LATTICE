@@ -166,12 +166,13 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 12: Memory Health Compiler
 
-- [ ] Implement compiler input/output contracts.
+- [x] Implement compiler input/output contracts.
 - [ ] Implement lifecycle state manager.
 - [ ] Implement health policy config.
 - [ ] Implement candidate promotion gates.
 - [ ] Implement quarantine/retirement policy skeletons.
 - [ ] Add tests that only compiler updates L1 materialization.
+- [x] Add tests that only compiler updates L1 materialization.
 - [ ] Commit graph health compiler skeleton.
 
 ## Phase 13: Experience And Capability Evolution
@@ -209,4 +210,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit workflow verifier boundary.
 - [x] Commit PermissionGate boundary.
 - [x] Commit ToolCall registry boundary.
-- [ ] Commit GraphPatch builder/auditor boundary.
+- [x] Commit GraphPatch builder/auditor boundary.
+- [ ] Commit MemoryHealthCompiler skeleton.

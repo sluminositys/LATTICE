@@ -148,8 +148,16 @@ This log records completed work in chronological order. Every implementation ste
 - Added `GraphPatchBuilder` that builds patch candidates from `AgentEvent` ids.
 - Added `GraphPatchAuditor` with target-tier and source-event checks.
 - Added tests for event-derived patch candidates and blocking patches without source events.
+- Committed GraphPatch builder/auditor boundary: `f90b97e graph-patch: add builder and auditor boundaries`.
+
+### MemoryHealthCompiler
+
+- Added `MemoryHealthCompiler` skeleton.
+- Added `MemoryHealthCompileReport`.
+- Enforced L0 patch target checks before L1 materialization report.
+- Added tests for skipped compilation and L1 materialization reporting.
 
 ## Next
 
-- Commit GraphPatch builder/auditor boundary.
-- Start MemoryHealthCompiler lifecycle skeleton.
+- Commit MemoryHealthCompiler skeleton.
+- Add CLI plan entrypoint.
