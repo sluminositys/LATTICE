@@ -41,9 +41,15 @@ This log records completed work in chronological order. Every implementation ste
 - Added `HELIX_` environment overrides with `__` nested keys.
 - Added tests for default loading and environment overrides.
 - Renamed logging JSON flag to `json_logs` to avoid shadowing Pydantic model methods.
+- Committed externalized config layer: `1b6ecfc config: add external settings loader`.
+
+### Core schema contracts
+
+- Added schema package skeleton.
+- Added strict base model, lifecycle states, graph tier labels, permission modes, provenance, blocker, and warning item contracts.
+- Added tests for strict schema behavior.
 
 ## Next
 
-- Run config tests.
-- Commit externalized config layer.
-- Start core schema contracts.
+- Commit common schema contracts.
+- Add task fingerprint and runtime graph context schemas.

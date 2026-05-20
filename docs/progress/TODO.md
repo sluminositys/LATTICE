@@ -63,8 +63,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 3: Core Object Contracts
 
-- [ ] Add schema package skeleton.
-- [ ] Implement shared base model conventions.
+- [x] Add schema package skeleton.
+- [x] Implement shared base model conventions.
 - [ ] Add `TaskFingerprint`.
 - [ ] Add `GraphContextSufficiencyReport`.
 - [ ] Add `RuntimeGraphContext`.
