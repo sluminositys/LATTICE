@@ -224,3 +224,12 @@ This log records completed work in chronological order. Every implementation ste
 - Plan-only runs can now append `UserRequestReceived`, `PlanModeEntered`, `TaskFingerprinted`, `RuntimeGraphContextProjected`, `WorkflowPathSelected`, `WorkflowVerified`, and `PermissionChecked`.
 - Added `helix plan --event-log <path>`.
 - Added orchestration and CLI tests for event logging.
+- Committed plan-only event logging: `d1b59f3 orchestration: append plan-only events`.
+
+### GraphPatch validator
+
+- Added `GraphPatchValidator`.
+- Added schema completeness checks for node and edge mutation ids.
+- Added provenance source checks.
+- Added lifecycle transition validity checks via `LifecycleStateManager`.
+- Extended `GraphPatchAuditor` to include validator blockers and warnings.

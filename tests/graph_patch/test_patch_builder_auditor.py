@@ -32,4 +32,29 @@ def test_graph_patch_auditor_blocks_patch_without_source_events() -> None:
     report = GraphPatchAuditor().audit(patch)
 
     assert report.status == "blocked"
-    assert report.blockers == ["GraphPatch must reference at least one source event."]
+    assert "GraphPatch must reference at least one source event." in report.blockers
+    assert (
+        "GraphPatch must contain at least one mutation or lifecycle transition."
+        in report.blockers
+    )
+
+
+def test_graph_patch_auditor_passes_valid_patch() -> None:
+    patch = GraphPatchBuilder().build_candidate(
+        source_events=[
+            AgentEvent(
+                event_id="event-1",
+                session_id="session-1",
+                event_type="GraphPatchProposed",
+                provenance=[Provenance(source_type="test")],
+            )
+        ],
+        source_module="test",
+        provenance=Provenance(source_type="test"),
+    )
+    patch.nodes_to_add.append({"node_id": "node-1"})
+
+    report = GraphPatchAuditor().audit(patch)
+
+    assert report.status == "pass"
+    assert report.blockers == []

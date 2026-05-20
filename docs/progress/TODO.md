@@ -153,15 +153,15 @@ This TODO is the working backlog for building HELIX as an independent Python age
 ## Phase 11: GraphPatch Write Path
 
 - [x] Implement patch builder from events.
-- [ ] Implement patch validator.
+- [x] Implement patch validator.
 - [x] Implement patch auditor.
 - [ ] Add audit checks:
-  - [ ] schema completeness
-  - [ ] provenance completeness
+  - [x] schema completeness
+  - [x] provenance completeness
   - [x] source event validity
   - [ ] duplicate detection placeholder
   - [ ] conflict detection placeholder
-  - [ ] lifecycle transition validity
+  - [x] lifecycle transition validity
   - [x] target tier restriction
 - [ ] Commit GraphPatch pipeline.
 
@@ -224,6 +224,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Commit lifecycle state manager.
 - [x] Commit lifecycle state manager.
 - [ ] Commit plan-only event logging.
+- [x] Commit plan-only event logging.
+- [ ] Commit GraphPatch validator.
 
 ## Latest Validation
 
