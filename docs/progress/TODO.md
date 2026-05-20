@@ -81,11 +81,11 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 4: Append-Only Runtime Event Log
 
-- [ ] Define `AgentEvent`.
-- [ ] Define event type enum from architecture section 18.
-- [ ] Add append-only file event log backend.
-- [ ] Add event provenance requirements.
-- [ ] Add tests preventing event overwrite.
+- [x] Define `AgentEvent`.
+- [x] Define event type enum from architecture section 18.
+- [x] Add append-only file event log backend.
+- [x] Add event provenance requirements.
+- [x] Add tests preventing event overwrite.
 - [ ] Commit runtime event log.
 
 ## Phase 5: Graph Tier Interfaces
@@ -197,5 +197,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Build Phase 1 minimal Python project and commit.
 - [x] Build Phase 2 configuration layer and commit.
 - [x] Build Phase 3 first schema group and commit.
-- [ ] Commit validation hygiene fixes.
-- [ ] Start Phase 4 append-only event log.
+- [x] Commit validation hygiene fixes.
+- [ ] Commit Phase 4 append-only event log.

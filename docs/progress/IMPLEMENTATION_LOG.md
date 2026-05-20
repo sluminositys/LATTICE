@@ -70,8 +70,16 @@ This log records completed work in chronological order. Every implementation ste
   - `uv run pytest`
   - `uv run ruff check .`
   - `uv run mypy`
+- Committed validation hygiene fixes: `6260740 chore: fix validation hygiene`.
+
+### Runtime event log
+
+- Added `AgentEvent` with event types from architecture section 18.
+- Required event provenance.
+- Added `FileAgentEventLog` JSONL backend that appends events without rewriting existing entries.
+- Added tests for append behavior and provenance requirement.
 
 ## Next
 
-- Commit validation hygiene fixes.
-- Start append-only runtime event log.
+- Commit append-only runtime event log.
+- Start graph tier interfaces.
