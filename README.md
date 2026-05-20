@@ -10,6 +10,7 @@ The implementation starts with a plan-only flow and expands toward controlled ex
 uv sync --dev
 uv run pytest
 uv run helix plan "Plan RNA-seq QC workflow"
+uv run helix plan "Plan RNA-seq QC workflow" --event-log D:/workspace/codex/logs/2026-05-21/helix-plan-events.jsonl
 ```
 
 Operational logs, command transcripts, diagnostics, and generated artifacts should be stored under `D:\workspace\codex`, not in this repository.

@@ -216,3 +216,11 @@ This log records completed work in chronological order. Every implementation ste
 - Added explicit capability promotion path: `candidate -> probationary -> active_warm -> active_hot`.
 - Added pollution path: candidate/probationary/active/cold states -> `quarantined -> retired -> tombstoned`.
 - Added invalid transition checks.
+- Committed lifecycle state manager: `42790df graph-health: add lifecycle state manager`.
+
+### Plan-only event logging
+
+- Added optional `AgentEventLog` integration to `run_plan_only`.
+- Plan-only runs can now append `UserRequestReceived`, `PlanModeEntered`, `TaskFingerprinted`, `RuntimeGraphContextProjected`, `WorkflowPathSelected`, `WorkflowVerified`, and `PermissionChecked`.
+- Added `helix plan --event-log <path>`.
+- Added orchestration and CLI tests for event logging.

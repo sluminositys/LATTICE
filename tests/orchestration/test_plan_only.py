@@ -1,4 +1,5 @@
 from helix.orchestration import run_plan_only
+from helix.runtime import FileAgentEventLog
 
 
 def test_plan_only_flow_blocks_without_graph_or_tool_specs() -> None:
@@ -11,3 +12,21 @@ def test_plan_only_flow_blocks_without_graph_or_tool_specs() -> None:
     assert state["permission_decision"].allowed is False
     assert state["permission_decision"].blocked_by == ["NO_WORKFLOW_PATH", "NO_TOOLCALL_SPEC"]
     assert state["response"] == "Plan blocked: NO_WORKFLOW_PATH; NO_TOOLCALL_SPEC"
+
+
+def test_plan_only_flow_appends_event_log(tmp_path) -> None:
+    event_log = FileAgentEventLog(tmp_path / "events.jsonl")
+
+    run_plan_only("Plan RNA-seq QC workflow", session_id="session-1", event_log=event_log)
+
+    events = event_log.read_all()
+    assert [event.event_type for event in events] == [
+        "UserRequestReceived",
+        "PlanModeEntered",
+        "TaskFingerprinted",
+        "RuntimeGraphContextProjected",
+        "WorkflowPathSelected",
+        "WorkflowVerified",
+        "PermissionChecked",
+    ]
+    assert {event.session_id for event in events} == {"session-1"}

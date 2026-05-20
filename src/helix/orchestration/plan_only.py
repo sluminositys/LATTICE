@@ -10,7 +10,9 @@ from helix.core import TaskFingerprinter
 from helix.permissions import PermissionDecision, PermissionGate
 from helix.planning import WorkflowPathSearch, WorkflowSearchResult
 from helix.projection import RuntimeViewProjector
+from helix.runtime import AgentEvent, AgentEventLog
 from helix.schemas import (
+    Provenance,
     RuntimeGraphContext,
     TaskFingerprint,
     WorkflowAuditReport,
@@ -53,14 +55,90 @@ def build_plan_only_graph() -> Any:
     return graph.compile()
 
 
-def run_plan_only(request: str, *, session_id: str | None = None) -> PlanOnlyState:
+def run_plan_only(
+    request: str,
+    *,
+    session_id: str | None = None,
+    event_log: AgentEventLog | None = None,
+) -> PlanOnlyState:
     compiled = build_plan_only_graph()
     initial_state: PlanOnlyState = {
         "request": request,
         "session_id": session_id or f"session-{uuid4()}",
     }
     result = compiled.invoke(initial_state)
-    return cast(PlanOnlyState, result)
+    final_state = cast(PlanOnlyState, result)
+    if event_log is not None:
+        append_plan_only_events(event_log, final_state)
+    return final_state
+
+
+def append_plan_only_events(event_log: AgentEventLog, state: PlanOnlyState) -> None:
+    provenance = [Provenance(source_type="plan_only_orchestrator")]
+    session_id = state["session_id"]
+    event_log.append(
+        AgentEvent(
+            event_id=f"event-{uuid4()}",
+            session_id=session_id,
+            event_type="UserRequestReceived",
+            payload={"request": state["request"]},
+            provenance=provenance,
+        )
+    )
+    event_log.append(
+        AgentEvent(
+            event_id=f"event-{uuid4()}",
+            session_id=session_id,
+            event_type="PlanModeEntered",
+            payload={"mode": "plan_only"},
+            provenance=provenance,
+        )
+    )
+    event_log.append(
+        AgentEvent(
+            event_id=f"event-{uuid4()}",
+            session_id=session_id,
+            event_type="TaskFingerprinted",
+            payload=state["task_fingerprint"].model_dump(mode="json"),
+            provenance=provenance,
+        )
+    )
+    event_log.append(
+        AgentEvent(
+            event_id=f"event-{uuid4()}",
+            session_id=session_id,
+            event_type="RuntimeGraphContextProjected",
+            payload=state["runtime_context"].model_dump(mode="json"),
+            provenance=provenance,
+        )
+    )
+    event_log.append(
+        AgentEvent(
+            event_id=f"event-{uuid4()}",
+            session_id=session_id,
+            event_type="WorkflowPathSelected",
+            payload=state["workflow_search_result"].model_dump(mode="json"),
+            provenance=provenance,
+        )
+    )
+    event_log.append(
+        AgentEvent(
+            event_id=f"event-{uuid4()}",
+            session_id=session_id,
+            event_type="WorkflowVerified",
+            payload=state["workflow_report"].model_dump(mode="json"),
+            provenance=provenance,
+        )
+    )
+    event_log.append(
+        AgentEvent(
+            event_id=f"event-{uuid4()}",
+            session_id=session_id,
+            event_type="PermissionChecked",
+            payload=state["permission_decision"].model_dump(mode="json"),
+            provenance=provenance,
+        )
+    )
 
 
 def receive_request(state: PlanOnlyState) -> PlanOnlyState:

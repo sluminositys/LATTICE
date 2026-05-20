@@ -7,6 +7,7 @@ from typing import Any
 from pydantic import BaseModel
 
 from helix.orchestration import run_plan_only
+from helix.runtime import FileAgentEventLog
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -16,10 +17,12 @@ def main(argv: list[str] | None = None) -> int:
     plan_parser = subparsers.add_parser("plan", help="Run the HELIX plan-only flow.")
     plan_parser.add_argument("request", help="User request to plan.")
     plan_parser.add_argument("--session-id", default=None)
+    plan_parser.add_argument("--event-log", default=None, help="Optional JSONL event log path.")
 
     args = parser.parse_args(argv)
     if args.command == "plan":
-        state = run_plan_only(args.request, session_id=args.session_id)
+        event_log = FileAgentEventLog(args.event_log) if args.event_log else None
+        state = run_plan_only(args.request, session_id=args.session_id, event_log=event_log)
         print(json.dumps(_to_jsonable(state), ensure_ascii=False, indent=2, sort_keys=True))
         return 0
 

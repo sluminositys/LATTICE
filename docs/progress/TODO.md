@@ -217,11 +217,13 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Start ToolCall validator and dispatcher boundary.
 - [x] Start ToolCall validator and dispatcher boundary.
 - [ ] Start lifecycle state manager.
-- [ ] Add event logging into plan-only orchestration.
+- [x] Add event logging into plan-only orchestration.
 - [x] Commit database integration requirements.
 - [x] Commit ToolCall validator.
 - [x] Commit ToolCall dispatcher boundary.
 - [ ] Commit lifecycle state manager.
+- [x] Commit lifecycle state manager.
+- [ ] Commit plan-only event logging.
 
 ## Latest Validation
 
