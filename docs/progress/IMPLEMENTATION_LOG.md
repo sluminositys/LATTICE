@@ -183,3 +183,13 @@ This log records completed work in chronological order. Every implementation ste
 - Add ToolCall validator and dispatcher boundary.
 - Add lifecycle state manager.
 - Add event logging into plan-only orchestration.
+
+## 2026-05-21
+
+### Database integration requirements
+
+- Added `docs/architecture/DATABASE_REQUIREMENTS.md`.
+- Clarified that L0 and L1 stay behind graph store protocols until a concrete database is installed.
+- Documented minimum L0 patch/write and query primitives.
+- Documented L1 read/materialization boundary and forbidden direct GraphPatch-to-L1 writes.
+- Clarified that the first complete L0/L1 build can be handled by dedicated builder agents after database installation.

@@ -12,6 +12,8 @@ The v7 architecture defines L0, L1, L2 behavior clearly, but does not choose a s
 
 Current handling: implement graph stores as protocols first. Defer backend choice until the core contracts are stable.
 
+Follow-up: `docs/architecture/DATABASE_REQUIREMENTS.md` defines the adapter requirements and minimum L0/L1 primitives so a future database can be installed without changing agent-layer code.
+
 ### RISK-002: Workflow path search can become too domain-specific too early
 
 The architecture requires bioinformatics-aware path search, but adding hard-coded biological workflow rules before schemas and provenance are stable would create brittle code.

@@ -96,6 +96,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Define graph tier policy checks.
 - [x] Add tests ensuring GraphPatch cannot target L1.
 - [ ] Commit graph tier contracts.
+- [x] Document database adapter requirements for future L0/L1 backends.
 
 ## Phase 6: LangGraph Plan-Only Flow
 
@@ -216,6 +217,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Start ToolCall validator and dispatcher boundary.
 - [ ] Start lifecycle state manager.
 - [ ] Add event logging into plan-only orchestration.
+- [ ] Commit database integration requirements.
 
 ## Latest Validation
 

@@ -7,6 +7,7 @@ Source architecture: `E:\donwloads\HELIX_architecture_v7.md`
 - All new knowledge enters L0 first.
 - L1 is generated only by `MemoryHealthCompiler`.
 - L2 is a per-request runtime context, not a storage layer.
+- L0/L1 database adapters stay behind graph store protocols until a concrete backend is installed.
 - No workflow execution happens without `TaskFingerprint`.
 - No path search happens without `RuntimeGraphContext`.
 - No ToolCall happens without verified AEP, `ToolCallSpec`, and `PermissionGate`.
