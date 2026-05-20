@@ -141,8 +141,15 @@ This log records completed work in chronological order. Every implementation ste
 - Added `ToolCallRegistry`.
 - Added active lifecycle enforcement for ToolCallSpec lookup.
 - Added tests rejecting unregistered and candidate ToolCallSpec records.
+- Committed ToolCall registry boundary: `f12bdff toolcall: add registry boundary`.
+
+### GraphPatch builder and auditor
+
+- Added `GraphPatchBuilder` that builds patch candidates from `AgentEvent` ids.
+- Added `GraphPatchAuditor` with target-tier and source-event checks.
+- Added tests for event-derived patch candidates and blocking patches without source events.
 
 ## Next
 
-- Commit ToolCall registry boundary.
-- Start GraphPatch builder and auditor boundaries.
+- Commit GraphPatch builder/auditor boundary.
+- Start MemoryHealthCompiler lifecycle skeleton.

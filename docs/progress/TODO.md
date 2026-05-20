@@ -151,17 +151,17 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 11: GraphPatch Write Path
 
-- [ ] Implement patch builder from events.
+- [x] Implement patch builder from events.
 - [ ] Implement patch validator.
-- [ ] Implement patch auditor.
+- [x] Implement patch auditor.
 - [ ] Add audit checks:
   - [ ] schema completeness
   - [ ] provenance completeness
-  - [ ] source event validity
+  - [x] source event validity
   - [ ] duplicate detection placeholder
   - [ ] conflict detection placeholder
   - [ ] lifecycle transition validity
-  - [ ] target tier restriction
+  - [x] target tier restriction
 - [ ] Commit GraphPatch pipeline.
 
 ## Phase 12: Memory Health Compiler
@@ -208,4 +208,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit workflow path search boundary.
 - [x] Commit workflow verifier boundary.
 - [x] Commit PermissionGate boundary.
-- [ ] Commit ToolCall registry boundary.
+- [x] Commit ToolCall registry boundary.
+- [ ] Commit GraphPatch builder/auditor boundary.
