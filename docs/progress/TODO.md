@@ -68,9 +68,9 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Add `TaskFingerprint`.
 - [x] Add `GraphContextSufficiencyReport`.
 - [x] Add `RuntimeGraphContext`.
-- [ ] Add `AgenticExecutionPlan` and plan step model.
-- [ ] Add `ToolCallSpec`.
-- [ ] Add `StructuredObservation`.
+- [x] Add `AgenticExecutionPlan` and plan step model.
+- [x] Add `ToolCallSpec`.
+- [x] Add `StructuredObservation`.
 - [ ] Add `WorkflowAuditReport`.
 - [ ] Add `ClaimAuditReport`.
 - [ ] Add `LifecycleTransition`.

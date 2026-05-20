@@ -51,8 +51,11 @@ This log records completed work in chronological order. Every implementation ste
 - Committed common schema contracts: `8ae60d8 schemas: add common contract types`.
 - Added `TaskFingerprint`, `GraphContextSufficiencyReport`, and `RuntimeGraphContext` contracts.
 - Added tests for plan-only task fingerprint defaults and insufficient graph context reporting.
+- Committed task and runtime graph context contracts: `d3aeb8e schemas: add task and runtime context contracts`.
+- Added `AgenticExecutionPlan`, `AgenticExecutionStep`, `ToolCallSpec`, and `StructuredObservation`.
+- Added tests covering plan-only AEP creation, ToolCallSpec provenance/lifecycle requirements, and structured observations.
 
 ## Next
 
-- Commit task and runtime graph context schemas.
-- Add AEP, ToolCall, verification, GraphPatch, and experience schemas.
+- Commit AEP and ToolCall schemas.
+- Add verification, GraphPatch, lifecycle transition, and experience schemas.
