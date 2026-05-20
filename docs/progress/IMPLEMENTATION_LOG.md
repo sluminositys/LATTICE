@@ -119,8 +119,15 @@ This log records completed work in chronological order. Every implementation ste
 - Added `WorkflowPathSearch` boundary.
 - Wired plan-only orchestration to use the planning module.
 - Added test for blocked workflow search on insufficient runtime context.
+- Committed workflow path search boundary: `b993b0e planning: add workflow path search boundary`.
+
+### Workflow verification
+
+- Added `WorkflowVerifier` boundary.
+- Wired plan-only orchestration to use the verification module.
+- Added tests for blocked and passing workflow verification reports.
 
 ## Next
 
-- Commit workflow path search boundary.
-- Start workflow verifier boundary.
+- Commit workflow verifier boundary.
+- Start PermissionGate boundary.

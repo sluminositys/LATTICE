@@ -10,11 +10,11 @@ from helix.core import TaskFingerprinter
 from helix.planning import WorkflowPathSearch, WorkflowSearchResult
 from helix.projection import RuntimeViewProjector
 from helix.schemas import (
-    Blocker,
     RuntimeGraphContext,
     TaskFingerprint,
     WorkflowAuditReport,
 )
+from helix.verification import WorkflowVerifier
 
 
 class PlanOnlyState(TypedDict):
@@ -84,21 +84,7 @@ def search_workflow_path(state: PlanOnlyState) -> PlanOnlyState:
 
 def verify_workflow(state: PlanOnlyState) -> PlanOnlyState:
     search_result = state["workflow_search_result"]
-    report = WorkflowAuditReport(
-        report_id=f"war-{uuid4()}",
-        status="blocked",
-        blockers=[
-            Blocker(
-                code="NO_WORKFLOW_PATH",
-                message="No verified workflow path is available in the runtime context.",
-            ),
-            Blocker(
-                code="NO_TOOLCALL_SPEC",
-                message="No active ToolCallSpec is registered for execution.",
-            ),
-        ],
-        unresolved_items=search_result.unresolved_requirements,
-    )
+    report = WorkflowVerifier().verify(search_result)
     return {**state, "status": "workflow_verified", "workflow_report": report}
 
 
