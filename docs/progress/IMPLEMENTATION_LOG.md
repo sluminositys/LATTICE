@@ -126,8 +126,16 @@ This log records completed work in chronological order. Every implementation ste
 - Added `WorkflowVerifier` boundary.
 - Wired plan-only orchestration to use the verification module.
 - Added tests for blocked and passing workflow verification reports.
+- Committed workflow verifier boundary: `db35a06 verification: add workflow verifier boundary`.
+
+### Permission gate
+
+- Added `PermissionDecision`.
+- Added `PermissionGate` with workflow-blocked and plan-only execution denial paths.
+- Wired plan-only orchestration to return structured permission decisions.
+- Added permission gate tests.
 
 ## Next
 
-- Commit workflow verifier boundary.
-- Start PermissionGate boundary.
+- Commit PermissionGate boundary.
+- Start ToolCall registry boundary.

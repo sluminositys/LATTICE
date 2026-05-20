@@ -141,8 +141,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 10: Permissions And ToolCall
 
-- [ ] Implement `PermissionGate`.
-- [ ] Implement permission mode policies.
+- [x] Implement `PermissionGate`.
+- [x] Implement permission mode policies.
 - [ ] Implement ToolCall registry.
 - [ ] Implement ToolCall validator.
 - [ ] Implement dispatcher boundary.
@@ -206,4 +206,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit Phase 7 task fingerprint module.
 - [x] Commit Phase 8 runtime projection module.
 - [x] Commit workflow path search boundary.
-- [ ] Commit workflow verifier boundary.
+- [x] Commit workflow verifier boundary.
+- [ ] Commit PermissionGate boundary.

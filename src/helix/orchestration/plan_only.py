@@ -7,6 +7,7 @@ from langgraph.graph import END, START, StateGraph
 from typing_extensions import NotRequired, TypedDict
 
 from helix.core import TaskFingerprinter
+from helix.permissions import PermissionDecision, PermissionGate
 from helix.planning import WorkflowPathSearch, WorkflowSearchResult
 from helix.projection import RuntimeViewProjector
 from helix.schemas import (
@@ -25,7 +26,7 @@ class PlanOnlyState(TypedDict):
     runtime_context: NotRequired[RuntimeGraphContext]
     workflow_search_result: NotRequired[WorkflowSearchResult]
     workflow_report: NotRequired[WorkflowAuditReport]
-    permission_decision: NotRequired[str]
+    permission_decision: NotRequired[PermissionDecision]
     response: NotRequired[str]
 
 
@@ -96,9 +97,8 @@ def compile_aep(state: PlanOnlyState) -> PlanOnlyState:
 
 
 def permission_check(state: PlanOnlyState) -> PlanOnlyState:
-    if state["status"] == "plan_blocked":
-        return {**state, "permission_decision": "not_applicable"}
-    return {**state, "permission_decision": "plan_only"}
+    decision = PermissionGate().check_execution(state["workflow_report"], mode="plan_only")
+    return {**state, "permission_decision": decision}
 
 
 def produce_response(state: PlanOnlyState) -> PlanOnlyState:
