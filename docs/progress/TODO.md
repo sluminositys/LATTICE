@@ -131,7 +131,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 9: Planning And Verification
 
-- [ ] Implement workflow path search contracts.
+- [x] Implement workflow path search contracts.
 - [ ] Implement deterministic ordering tuple.
 - [ ] Implement workflow verifier skeleton.
 - [ ] Implement parameter source checker skeleton.
@@ -204,4 +204,5 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Commit Phase 6 LangGraph plan-only skeleton.
 - [x] Commit Phase 6 LangGraph plan-only skeleton.
 - [x] Commit Phase 7 task fingerprint module.
-- [ ] Commit Phase 8 runtime projection module.
+- [x] Commit Phase 8 runtime projection module.
+- [ ] Commit workflow path search boundary.

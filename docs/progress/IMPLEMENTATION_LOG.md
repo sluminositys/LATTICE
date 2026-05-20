@@ -111,8 +111,16 @@ This log records completed work in chronological order. Every implementation ste
 - Delegated plan-only runtime context projection to the projection module.
 - Returned explicit insufficient context reports when no L1 healthy graph store is configured.
 - Added projection test for the no-L1-store path.
+- Committed runtime projection module: `0737794 projection: add runtime view projector boundary`.
+
+### Workflow path search
+
+- Added `WorkflowSearchResult` contract.
+- Added `WorkflowPathSearch` boundary.
+- Wired plan-only orchestration to use the planning module.
+- Added test for blocked workflow search on insufficient runtime context.
 
 ## Next
 
-- Commit runtime projection module.
-- Start planning and verification module boundaries.
+- Commit workflow path search boundary.
+- Start workflow verifier boundary.

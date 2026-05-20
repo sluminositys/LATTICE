@@ -7,6 +7,7 @@ from langgraph.graph import END, START, StateGraph
 from typing_extensions import NotRequired, TypedDict
 
 from helix.core import TaskFingerprinter
+from helix.planning import WorkflowPathSearch, WorkflowSearchResult
 from helix.projection import RuntimeViewProjector
 from helix.schemas import (
     Blocker,
@@ -22,7 +23,7 @@ class PlanOnlyState(TypedDict):
     status: NotRequired[str]
     task_fingerprint: NotRequired[TaskFingerprint]
     runtime_context: NotRequired[RuntimeGraphContext]
-    candidate_workflow_path_ids: NotRequired[list[str]]
+    workflow_search_result: NotRequired[WorkflowSearchResult]
     workflow_report: NotRequired[WorkflowAuditReport]
     permission_decision: NotRequired[str]
     response: NotRequired[str]
@@ -77,10 +78,12 @@ def project_runtime_context(state: PlanOnlyState) -> PlanOnlyState:
 
 
 def search_workflow_path(state: PlanOnlyState) -> PlanOnlyState:
-    return {**state, "status": "planning", "candidate_workflow_path_ids": []}
+    result = WorkflowPathSearch().search(state["task_fingerprint"], state["runtime_context"])
+    return {**state, "status": "planning", "workflow_search_result": result}
 
 
 def verify_workflow(state: PlanOnlyState) -> PlanOnlyState:
+    search_result = state["workflow_search_result"]
     report = WorkflowAuditReport(
         report_id=f"war-{uuid4()}",
         status="blocked",
@@ -94,7 +97,7 @@ def verify_workflow(state: PlanOnlyState) -> PlanOnlyState:
                 message="No active ToolCallSpec is registered for execution.",
             ),
         ],
-        unresolved_items=["configure L1 graph store", "register real ToolCallSpec"],
+        unresolved_items=search_result.unresolved_requirements,
     )
     return {**state, "status": "workflow_verified", "workflow_report": report}
 
