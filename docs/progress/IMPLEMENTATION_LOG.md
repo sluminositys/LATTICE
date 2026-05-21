@@ -274,6 +274,12 @@ This log records completed work in chronological order. Every implementation ste
 - `uv run pytest`: 72 passed.
 - `uv run ruff check .`: passed.
 - `uv run mypy`: passed.
+
+### Current implementation HTML overview
+
+- Added `docs/architecture/current_implementation_overview.html`.
+- The page is a Chinese static HTML overview with navigation, module summaries, and Mermaid diagrams.
+- Mermaid is loaded from CDN for browser rendering.
 - Committed database integration requirements: `b254050 docs: add database integration requirements`.
 
 ### ToolCall validator

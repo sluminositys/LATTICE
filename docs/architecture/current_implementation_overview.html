@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HELIX 当前代码实现总览</title>
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "base",
+        themeVariables: {
+          primaryColor: "#e7f0ff",
+          primaryTextColor: "#162033",
+          primaryBorderColor: "#6b8fd6",
+          lineColor: "#6b7280",
+          secondaryColor: "#f1f5f9",
+          tertiaryColor: "#eef7f3",
+          fontFamily: "Inter, Segoe UI, Microsoft YaHei, Arial, sans-serif"
+        }
+      });
+    </script>
+    <style>
+      :root {
+        --bg: #f7f8fb;
+        --panel: #ffffff;
+        --panel-2: #f1f5f9;
+        --ink: #182033;
+        --muted: #607086;
+        --line: #d9e1ec;
+        --accent: #2f6fed;
+        --accent-2: #0f9f6e;
+        --warn: #b7791f;
+        --danger: #c2410c;
+        --code: #101827;
+        --radius: 8px;
+        --shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--bg);
+        font-family:
+          Inter, "Segoe UI", "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+        line-height: 1.62;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow: auto;
+        padding: 24px 18px;
+        border-right: 1px solid var(--line);
+        background: #ffffff;
+      }
+
+      .brand {
+        display: grid;
+        gap: 6px;
+        margin-bottom: 24px;
+      }
+
+      .brand strong {
+        font-size: 22px;
+        letter-spacing: 0;
+      }
+
+      .brand span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .nav {
+        display: grid;
+        gap: 4px;
+      }
+
+      .nav a {
+        display: block;
+        padding: 8px 10px;
+        border-radius: 6px;
+        color: #334155;
+        font-size: 14px;
+      }
+
+      .nav a:hover {
+        background: var(--panel-2);
+        text-decoration: none;
+      }
+
+      main {
+        padding: 38px clamp(24px, 5vw, 72px) 80px;
+      }
+
+      .hero {
+        display: grid;
+        gap: 18px;
+        margin-bottom: 26px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(32px, 5vw, 54px);
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin: 46px 0 14px;
+        font-size: 26px;
+        line-height: 1.25;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin: 22px 0 8px;
+        font-size: 18px;
+        letter-spacing: 0;
+      }
+
+      p {
+        margin: 0 0 12px;
+      }
+
+      .lead {
+        max-width: 980px;
+        color: #3b4a60;
+        font-size: 18px;
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        padding: 5px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #fff;
+        color: #475569;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .card h3 {
+        margin-top: 0;
+      }
+
+      .card p:last-child,
+      .card ul:last-child {
+        margin-bottom: 0;
+      }
+
+      .status {
+        border-left: 4px solid var(--accent);
+      }
+
+      .status.good {
+        border-left-color: var(--accent-2);
+      }
+
+      .status.warn {
+        border-left-color: var(--warn);
+      }
+
+      .status.danger {
+        border-left-color: var(--danger);
+      }
+
+      .module-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .module {
+        min-height: 138px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+      }
+
+      .module strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 15px;
+      }
+
+      .module span {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .diagram {
+        margin: 14px 0 24px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        overflow-x: auto;
+        box-shadow: var(--shadow);
+      }
+
+      pre {
+        margin: 12px 0;
+        padding: 14px 16px;
+        overflow-x: auto;
+        border-radius: var(--radius);
+        background: var(--code);
+        color: #e5e7eb;
+        font-size: 13px;
+      }
+
+      code {
+        font-family:
+          "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+      }
+
+      ul {
+        padding-left: 20px;
+      }
+
+      li {
+        margin: 4px 0;
+      }
+
+      .check-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px 22px;
+        padding: 0;
+        list-style: none;
+      }
+
+      .check-list li::before {
+        content: "✓";
+        margin-right: 8px;
+        color: var(--accent-2);
+        font-weight: 700;
+      }
+
+      .missing li::before {
+        content: "·";
+        color: var(--danger);
+      }
+
+      .footer {
+        margin-top: 56px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @media (max-width: 1080px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: relative;
+          height: auto;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .nav {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .grid,
+        .grid.two,
+        .module-grid,
+        .check-list {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <strong>HELIX</strong>
+          <span>当前代码实现总览</span>
+        </div>
+        <nav class="nav">
+          <a href="#position">当前定位</a>
+          <a href="#agents">Agent 边界</a>
+          <a href="#modules">模块结构</a>
+          <a href="#plan-flow">Plan-Only 流程</a>
+          <a href="#graph-bootstrap">图构建 Bootstrap</a>
+          <a href="#toolcall">ToolCall 流程</a>
+          <a href="#recall">Controlled Recall</a>
+          <a href="#events">事件日志</a>
+          <a href="#implemented">已实现</a>
+          <a href="#missing">仍未实现</a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="hero" id="position">
+          <h1>HELIX 当前代码实现说明</h1>
+          <p class="lead">
+            当前仓库已经具备一个可运行的 plan-only agent 主流程，并预留了图构建、ToolCall、
+            GraphPatch、MemoryHealthCompiler、Controlled Recall、HookBus 和自进化等核心边界。
+          </p>
+          <div class="meta">
+            <span class="pill">项目：D:\workspace\HELIX</span>
+            <span class="pill">架构源：HELIX_architecture_v7.md</span>
+            <span class="pill">当前模式：plan_only</span>
+            <span class="pill">测试：72 passed</span>
+          </div>
+        </section>
+
+        <section id="agents">
+          <h2>现在有几个 Agent？</h2>
+          <div class="grid two">
+            <article class="card status good">
+              <h3>代码层面：一个 HELIX agent 系统</h3>
+              <p>
+                当前代码里没有新增架构外 agent。存在的是多个内部 workflow 和模块边界，
+                它们共同组成 HELIX agent 系统。
+              </p>
+            </article>
+            <article class="card status warn">
+              <h3>Workflow 不等于新 Agent</h3>
+              <p>
+                `graph-construction bootstrap workflow`、`capability evolution`、`memory evolution`
+                都是内部流程，不是额外的独立 agent。
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="modules">
+          <h2>顶层模块结构</h2>
+          <div class="module-grid">
+            <div class="module"><strong>app</strong><span>CLI 入口，当前提供 `helix plan`。</span></div>
+            <div class="module"><strong>config</strong><span>外置配置和 prompt 配置。</span></div>
+            <div class="module"><strong>schemas</strong><span>跨模块共享的 Pydantic 对象契约。</span></div>
+            <div class="module"><strong>core</strong><span>核心服务，目前包含保守 TaskFingerprinter。</span></div>
+            <div class="module"><strong>orchestration</strong><span>LangGraph plan-only 主编排。</span></div>
+            <div class="module"><strong>projection</strong><span>L2 RuntimeGraphContext 投影和受控 L0 召回。</span></div>
+            <div class="module"><strong>planning</strong><span>WorkflowPathSearch 和 ExitPlanGate。</span></div>
+            <div class="module"><strong>verification</strong><span>WorkflowVerifier 和 ClaimVerifier。</span></div>
+            <div class="module"><strong>permissions</strong><span>PermissionGate，控制执行边界。</span></div>
+            <div class="module"><strong>toolcall</strong><span>ToolCall 注册、校验、派发和后端协议。</span></div>
+            <div class="module"><strong>runtime</strong><span>AgentEventLog 和 SessionStateMachine。</span></div>
+            <div class="module"><strong>hooks</strong><span>HookBus 生命周期事件总线。</span></div>
+            <div class="module"><strong>graph</strong><span>L0/L1 存储协议和图层策略。</span></div>
+            <div class="module"><strong>graph_patch</strong><span>GraphPatch 构建、校验和审计。</span></div>
+            <div class="module"><strong>graph_health</strong><span>MemoryHealthCompiler 和生命周期管理。</span></div>
+            <div class="module"><strong>graph_construction</strong><span>既有图构建 workflow 的 bootstrap 模式。</span></div>
+            <div class="module"><strong>capability_evolution</strong><span>候选工具 / workflow 和 ToolCallSpec 构建边界。</span></div>
+            <div class="module"><strong>memory</strong><span>失败事件到候选 constraint 的经验沉淀。</span></div>
+          </div>
+        </section>
+
+        <section id="plan-flow">
+          <h2>当前 Plan-Only 内部流程</h2>
+          <div class="diagram">
+            <pre class="mermaid">
+flowchart TD
+    A["CLI: helix plan"] --> B["run_plan_only"]
+    B --> C["receive_request"]
+    C --> D["TaskFingerprinter"]
+    D --> E["RuntimeViewProjector"]
+    E --> F["RuntimeGraphContext"]
+    F --> G["WorkflowPathSearch"]
+    G --> H["WorkflowVerifier"]
+    H --> I["compile_aep boundary"]
+    I --> J["PermissionGate"]
+    J --> K["produce_response"]
+    K --> L["optional AgentEventLog append"]
+            </pre>
+          </div>
+          <div class="card status warn">
+            <h3>当前预期输出</h3>
+            <p>因为还没有 L1 healthy graph，也没有 active ToolCallSpec，所以当前会返回结构化 blocked plan。</p>
+            <pre><code>status: plan_blocked
+blockers:
+  - NO_WORKFLOW_PATH
+  - NO_TOOLCALL_SPEC</code></pre>
+          </div>
+        </section>
+
+        <section id="graph-bootstrap">
+          <h2>图构建 Bootstrap 流程</h2>
+          <p>
+            这不是新 agent，而是 HELIX 既有图构建 workflow 的 bootstrap 运行模式。
+            等真实数据库 adapter 接入后，第一次完整构建 L0/L1 会走这条受控路径。
+          </p>
+          <div class="diagram">
+            <pre class="mermaid">
+flowchart TD
+    A["GraphPatch candidate"] --> B["GraphPatchAuditor"]
+    B --> C{"audit pass?"}
+    C -- "no" --> D["blocked before L0 write"]
+    C -- "yes" --> E["FullGraphStore.apply_patch"]
+    E --> F["MemoryHealthCompiler"]
+    F --> G["L1 materialization report"]
+            </pre>
+          </div>
+        </section>
+
+        <section id="toolcall">
+          <h2>当前 ToolCall 流程</h2>
+          <div class="diagram">
+            <pre class="mermaid">
+flowchart TD
+    A["AgenticExecutionStep"] --> B["ToolCallValidator"]
+    B --> C{"valid?"}
+    C -- "no" --> D["StructuredObservation failure"]
+    C -- "yes" --> E["ToolCallRegistry.require_active"]
+    E --> F{"backend registered?"}
+    F -- "no" --> G["StructuredObservation failure"]
+    F -- "yes" --> H["RuntimeBackend.execute"]
+    H --> I["StructuredObservation"]
+            </pre>
+          </div>
+          <p>当前没有真实生物信息学 backend。未注册工具、candidate 工具、缺少绑定、缺少 backend 都会失败并返回结构化 observation。</p>
+        </section>
+
+        <section id="recall">
+          <h2>Controlled Full Graph Recall</h2>
+          <div class="diagram">
+            <pre class="mermaid">
+flowchart TD
+    A["GraphContext insufficient"] --> B["FullGraphRecallProvider"]
+    B --> C["ControlledFullGraphRecall"]
+    C --> D{"lifecycle_state"}
+    D -- "tombstoned" --> E["blocked"]
+    D -- "quarantined" --> F["review_only"]
+    D -- "deprecated_reference" --> G["review_only"]
+    D -- "missing provenance" --> H["weak candidate"]
+    D -- "allowed candidate" --> I["temporary runtime candidate"]
+            </pre>
+          </div>
+          <p>`FullGraphRecallProvider` 是未来 L0 数据库 adapter 的接口，目前还没有接真实数据库。</p>
+        </section>
+
+        <section id="events">
+          <h2>当前事件日志</h2>
+          <p>如果提供 `--event-log`，plan-only 运行会 append 以下事件：</p>
+          <pre><code>UserRequestReceived
+PlanModeEntered
+TaskFingerprinted
+RuntimeGraphContextProjected
+WorkflowPathSelected
+WorkflowVerified
+PermissionChecked</code></pre>
+          <p>日志格式是 append-only JSONL。</p>
+        </section>
+
+        <section id="implemented">
+          <h2>当前已经实现的能力</h2>
+          <ul class="check-list">
+            <li>加载外置配置</li>
+            <li>运行 LangGraph plan-only 主流程</li>
+            <li>输出结构化 blocked plan</li>
+            <li>写 append-only event log</li>
+            <li>校验 ToolCall 契约</li>
+            <li>拒绝不安全或未注册工具执行</li>
+            <li>审计 GraphPatch 写入</li>
+            <li>表达图构建 bootstrap 流程</li>
+            <li>表达 controlled full graph recall</li>
+            <li>表达生命周期状态流转</li>
+            <li>从失败事件提取 candidate constraint</li>
+            <li>防止假的 active tool 或假的 global hard rule</li>
+          </ul>
+        </section>
+
+        <section id="missing">
+          <h2>仍未实现的部分</h2>
+          <ul class="check-list missing">
+            <li>ParameterSourceChecker</li>
+            <li>deterministic workflow ranking tuple</li>
+            <li>ResultSanityChecker</li>
+            <li>EvidenceChecker</li>
+            <li>PreferenceConsolidator</li>
+            <li>ExperienceReplay</li>
+            <li>FailurePatternMiner</li>
+            <li>WorkflowPatternMiner</li>
+            <li>QualityExperienceUpdater</li>
+            <li>CapabilityGapDetector</li>
+            <li>WorkflowCandidateBuilder</li>
+            <li>CapabilityPromotion</li>
+            <li>具体图数据库 adapter</li>
+            <li>具体 runtime backend adapter</li>
+            <li>API service endpoints</li>
+            <li>真实生物信息学 ToolCallSpec、workflow、evidence、resource 数据</li>
+            <li>真实 L0/L1 图数据</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>实用总结</h2>
+          <div class="grid two">
+            <article class="card status good">
+              <h3>当前 HELIX 可以做什么</h3>
+              <p>
+                它可以跑通受控 plan-only 主链路，拒绝编造工具和 workflow，并把运行过程记录成结构化事件。
+              </p>
+            </article>
+            <article class="card status danger">
+              <h3>当前 HELIX 还不能做什么</h3>
+              <p>
+                它还不能执行真实生信工具、查询真实图数据库、构建真实 L1 healthy graph，或基于真实证据输出领域 workflow。
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <p class="footer">
+          该页面是静态 HTML 文档。Mermaid 图通过 CDN 渲染；离线环境下仍可阅读正文和代码结构。
+        </p>
+      </main>
+    </div>
+  </body>
+</html>
