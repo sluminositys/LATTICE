@@ -1,29 +1,29 @@
-# HELIX Current Implementation Overview
+# HELIX 当前代码实现说明
 
-This document describes the current code structure and runtime logic in `D:\workspace\HELIX`.
+本文档说明 `D:\workspace\HELIX` 当前代码结构、内部流程、模块职责，以及现在已经实现和仍未实现的部分。
 
-Source architecture: `E:\donwloads\HELIX_architecture_v7.md`
+参考架构文档：`E:\donwloads\HELIX_architecture_v7.md`
 
-## Current Position
+## 当前定位
 
-HELIX is currently implemented as a Python package with a plan-only runnable agent flow plus explicit boundaries for graph construction, ToolCall execution, graph patching, memory health compilation, controlled recall, hooks, and self-evolution.
+当前 HELIX 已经是一个 Python 包，具备一个可运行的 `plan-only` agent 主流程，并且已经预留了图构建、ToolCall 执行、GraphPatch 写入、MemoryHealthCompiler、Controlled Full Graph Recall、HookBus、自进化等核心边界。
 
-The code intentionally does not contain real bioinformatics tools, fake L0 graph data, fake L1 healthy graph data, or fake database adapters. Those must enter later through real `ToolCallSpec`, audited `GraphPatch`, L0 storage, and `MemoryHealthCompiler`.
+代码里刻意没有加入真实生物信息学工具、假 L0 图数据、假 L1 healthy graph 数据或假数据库 adapter。它们后续必须通过真实 `ToolCallSpec`、经过审计的 `GraphPatch`、L0 存储和 `MemoryHealthCompiler` 进入系统。
 
-## Are There Multiple Agents?
+## 现在有几个 Agent？
 
-At the current code level, there is one HELIX agent system.
+当前代码层面只有一个 HELIX agent 系统。
 
-The code contains multiple workflows and modules, not multiple independent agents:
+代码里有多个 workflow 和模块，但不是多个独立 agent：
 
-- `plan-only orchestration`: the current runnable agent flow.
-- `graph-construction bootstrap workflow`: bootstrap mode for HELIX's existing graph-construction path.
-- `capability evolution`: controlled candidate-tool/candidate-workflow path.
-- `memory evolution`: failure-to-constraint extraction path.
+- `plan-only orchestration`：当前可运行的 agent 主流程。
+- `graph-construction bootstrap workflow`：HELIX 既有图构建路径的 bootstrap 模式。
+- `capability evolution`：受控的新工具 / 新 workflow 候选能力扩展路径。
+- `memory evolution`：从失败事件提取 constraint 的经验演化路径。
 
-These are internal workflows or module boundaries. They are not extra architectural agents.
+这些都是 HELIX 内部 workflow 或模块边界，不是额外新增的架构外 agent。
 
-## Top-Level Module Map
+## 顶层模块结构
 
 ```text
 src/helix/
@@ -47,19 +47,19 @@ src/helix/
   verification/
 ```
 
-## Module Responsibilities
+## 模块职责
 
 ### `app`
 
-CLI entrypoints.
+应用入口。
 
-Current command:
+当前已有 CLI：
 
 ```powershell
 uv run helix plan "Plan RNA-seq QC workflow"
 ```
 
-Optional event log:
+可选事件日志：
 
 ```powershell
 uv run helix plan "Plan RNA-seq QC workflow" --event-log D:\workspace\codex\logs\2026-05-21\events.jsonl
@@ -67,9 +67,9 @@ uv run helix plan "Plan RNA-seq QC workflow" --event-log D:\workspace\codex\logs
 
 ### `config`
 
-External configuration loading.
+外置配置加载。
 
-Current config files live under:
+当前配置文件：
 
 ```text
 config/
@@ -82,11 +82,13 @@ config/
   prompts/task_fingerprint.md
 ```
 
+重要参数后续应继续放在 `config/`，不要硬编码到业务代码里。
+
 ### `schemas`
 
-Shared Pydantic contracts. This is the central object contract layer.
+共享对象契约层。系统中跨模块传递的核心对象都在这里定义。
 
-Important schemas:
+当前重要 schema：
 
 - `TaskFingerprint`
 - `RuntimeGraphContext`
@@ -104,31 +106,31 @@ Important schemas:
 
 ### `core`
 
-Core services.
+核心服务层。
 
-Currently contains:
+当前包含：
 
 - `TaskFingerprinter`
 
-The current fingerprinter is conservative. It creates a valid `TaskFingerprint` and records unknown domain fields in `ambiguity_items` instead of guessing.
+当前的 fingerprinter 是保守实现：它生成合法的 `TaskFingerprint`，但不会硬猜生信任务分类。未知字段会进入 `ambiguity_items`。
 
 ### `orchestration`
 
-LangGraph-based runtime orchestration.
+LangGraph 编排层。
 
-Current runnable flow:
+当前主流程：
 
 - `run_plan_only`
 - `build_plan_only_graph`
 - `PlanOnlyState`
 
-This is currently the main agent path.
+这是当前唯一可运行的 agent 主链路。
 
 ### `projection`
 
-Runtime graph context projection and controlled L0 recall.
+运行时图上下文投影和受控 L0 召回。
 
-Current components:
+当前组件：
 
 - `RuntimeViewProjector`
 - `GraphContextSufficiencyChecker`
@@ -136,128 +138,131 @@ Current components:
 - `FullGraphRecallProvider`
 - `FullGraphRecallCandidate`
 
-No real L0/L1 database is connected yet. Without L1, projection returns an insufficient-context report.
+目前还没有真实 L0/L1 数据库，所以 projector 会返回 `insufficient` 的 runtime context，而不是编造上下文。
 
 ### `planning`
 
-Planning boundaries.
+规划边界层。
 
-Current components:
+当前组件：
 
 - `WorkflowPathSearch`
 - `WorkflowSearchResult`
 - `ExitPlanGate`
 
-Current path search does not hallucinate domain workflows. If context is insufficient, it returns unresolved requirements.
+当前 workflow search 不会生成假的生信 workflow。上下文不足时，它会返回 unresolved requirements。
 
 ### `verification`
 
-Verification boundaries.
+校验层。
 
-Current components:
+当前组件：
 
 - `WorkflowVerifier`
 - `ClaimVerifier`
 
-`ClaimVerifier` returns `not_applicable` when there are no claims and `unsupported` for claims without evidence.
+`ClaimVerifier` 当前行为：
+
+- 没有 claim 时返回 `not_applicable`
+- 有 claim 但没有证据时返回 `unsupported`
 
 ### `permissions`
 
-Execution permission checks.
+权限和执行边界。
 
-Current component:
+当前组件：
 
 - `PermissionGate`
 
-Current behavior:
+当前行为：
 
-- blocked workflow reports deny execution,
-- `plan_only` mode denies tool execution,
-- no unsafe fallback execution.
+- workflow 被阻断时不允许执行
+- `plan_only` 模式不允许工具执行
+- 没有不安全 fallback
 
 ### `toolcall`
 
-ToolCall execution boundary.
+ToolCall 执行边界。
 
-Current components:
+当前组件：
 
 - `ToolCallRegistry`
 - `ToolCallValidator`
 - `ToolCallDispatcher`
 - `RuntimeBackend` protocol
 
-Current behavior:
+当前行为：
 
-- unregistered tools fail,
-- candidate ToolCallSpec records are not active,
-- missing required bindings fail,
-- missing runtime backend fails closed with `StructuredObservation`.
+- 未注册工具会失败
+- candidate 状态的 `ToolCallSpec` 不能作为 active 工具执行
+- 缺少必需输入或参数绑定会失败
+- 没有 runtime backend 时 fail closed，并返回结构化 `StructuredObservation`
 
 ### `runtime`
 
-Runtime facts and session control.
+运行时事实源和状态控制。
 
-Current components:
+当前组件：
 
 - `AgentEventLog`
 - `FileAgentEventLog`
 - `AgentEvent`
 - `SessionStateMachine`
 
-Event logs are append-only JSONL.
+事件日志是 append-only JSONL。
 
 ### `hooks`
 
-Lifecycle hook bus.
+生命周期 hook 总线。
 
-Current components:
+当前组件：
 
 - `HookBus`
 - `HookEvent`
 - `HookOutput`
 
-Hooks can emit warnings, audit records, and GraphPatch candidate references. Hooks cannot directly write L1.
+Hook 可以产出 warning、audit record、GraphPatch candidate 引用。Hook 不能直接写 L1。
 
 ### `graph`
 
-Graph store boundaries and graph-tier policy.
+图谱存储边界和图层策略。
 
-Current components:
+当前组件：
 
 - `FullGraphStore`
 - `HealthyGraphStore`
 - `GraphTierPolicy`
 
-There is no concrete graph database adapter yet. That is intentional.
+当前还没有具体图数据库 adapter，这是有意保留的。
 
 ### `graph_patch`
 
-Graph write control.
+图谱写入控制。
 
-Current components:
+当前组件：
 
 - `GraphPatchBuilder`
 - `GraphPatchValidator`
 - `GraphPatchAuditor`
 
-Current checks include:
+当前检查包括：
 
-- GraphPatch targets L0 only,
-- source event ids are required,
-- node and edge mutations need ids,
-- lifecycle transitions must be valid,
-- high-risk patches warn if not approved.
+- GraphPatch 只能指向 L0
+- 必须有关联 source event
+- node / edge mutation 必须有 id
+- lifecycle transition 必须合法
+- high-risk patch 未批准时给 warning
 
 ### `graph_health`
 
-Memory health compilation and lifecycle policy.
+图谱健康化编译和生命周期策略。
 
-Current components:
+当前组件：
 
 - `MemoryHealthCompiler`
 - `LifecycleStateManager`
 
-Lifecycle transitions include:
+当前生命周期路径：
 
 ```text
 candidate -> probationary -> active_warm -> active_hot
@@ -266,13 +271,15 @@ candidate/probationary/active/cold_reference -> quarantined -> retired -> tombst
 
 ### `graph_construction`
 
-Bootstrap mode for HELIX's existing graph-construction workflow.
+HELIX 既有图构建 workflow 的 bootstrap 模式。
 
-Current component:
+当前组件：
 
 - `GraphConstructionBootstrapWorkflow`
 
-This is not a new agent. It composes:
+注意：这不是新 agent。
+
+它串联的是：
 
 ```text
 GraphPatch
@@ -281,34 +288,34 @@ GraphPatch
   -> MemoryHealthCompiler.compile(...)
 ```
 
-It exists so the first L0/L1 build can use the same audited path once a real database adapter is installed.
+它的作用是：等真实数据库 adapter 接入后，第一次完整构建 L0/L1 时可以走同一套受控写入路径。
 
 ### `capability_evolution`
 
-Controlled new capability path.
+受控能力扩展路径。
 
-Current components:
+当前组件：
 
 - `CandidateTool`
 - `CandidateWorkflow`
 - `ToolCallSpecBuilder`
 
-Candidate tools/workflows cannot be created directly as active capabilities.
+候选工具 / workflow 不能直接创建成 active 状态。
 
 ### `memory`
 
-Experience and memory consolidation boundaries.
+经验层和记忆沉淀边界。
 
-Current component:
+当前组件：
 
 - `FailureToConstraintExtractor`
 
-Current behavior:
+当前行为：
 
-- failed ToolCall events can become candidate warning constraints,
-- a single failure cannot become a global blocker constraint.
+- 失败的 ToolCall event 可以变成 candidate warning constraint
+- 单次失败不能直接变成 global blocker constraint
 
-## Current Plan-Only Internal Flow
+## 当前 Plan-Only 内部流程
 
 ```mermaid
 flowchart TD
@@ -325,7 +332,7 @@ flowchart TD
     K --> L["optional AgentEventLog append"]
 ```
 
-Because no L1 healthy graph and no active ToolCallSpec exist yet, the expected current result is:
+因为现在没有 L1 healthy graph，也没有 active `ToolCallSpec`，所以当前预期输出是：
 
 ```text
 status: plan_blocked
@@ -334,9 +341,9 @@ blockers:
   - NO_TOOLCALL_SPEC
 ```
 
-That is correct behavior. The agent is refusing to invent workflows or tools.
+这是正确行为。系统拒绝编造 workflow 或工具。
 
-## Current Graph Construction Bootstrap Flow
+## 当前图构建 Bootstrap 流程
 
 ```mermaid
 flowchart TD
@@ -348,9 +355,9 @@ flowchart TD
     F --> G["L1 materialization report"]
 ```
 
-This is the code representation of the first full graph build path. It waits for a real `FullGraphStore` implementation.
+这就是第一次完整图构建路径的代码表达。它等待真实 `FullGraphStore` 实现。
 
-## Current ToolCall Flow
+## 当前 ToolCall 流程
 
 ```mermaid
 flowchart TD
@@ -364,9 +371,9 @@ flowchart TD
     H --> I["StructuredObservation"]
 ```
 
-No real bioinformatics backend exists yet.
+当前没有真实生物信息学 backend。
 
-## Current Controlled Recall Flow
+## 当前 Controlled Recall 流程
 
 ```mermaid
 flowchart TD
@@ -380,11 +387,11 @@ flowchart TD
     D -- "allowed candidate" --> I["temporary runtime candidate"]
 ```
 
-The provider is a protocol for future L0 database adapters.
+`FullGraphRecallProvider` 是未来 L0 数据库 adapter 的接口。
 
-## Current Event Logging
+## 当前事件日志
 
-When `--event-log` is provided, plan-only runs append:
+如果提供 `--event-log`，plan-only 运行会 append：
 
 ```text
 UserRequestReceived
@@ -396,11 +403,11 @@ WorkflowVerified
 PermissionChecked
 ```
 
-The log is append-only JSONL.
+日志格式是 append-only JSONL。
 
-## Current Tests
+## 当前测试
 
-Current validation command:
+验证命令：
 
 ```powershell
 uv run pytest
@@ -408,7 +415,7 @@ uv run ruff check .
 uv run mypy
 ```
 
-Latest known result:
+最近结果：
 
 ```text
 72 passed
@@ -416,9 +423,9 @@ ruff passed
 mypy passed
 ```
 
-## What Is Still Missing
+## 仍未实现的部分
 
-The following architecture pieces are not fully implemented yet:
+以下架构内容还没有完整实现：
 
 - `ParameterSourceChecker`
 - deterministic workflow ranking tuple
@@ -432,34 +439,34 @@ The following architecture pieces are not fully implemented yet:
 - `CapabilityGapDetector`
 - `WorkflowCandidateBuilder`
 - `CapabilityPromotion`
-- concrete graph database adapters
-- concrete runtime backend adapters
+- 具体图数据库 adapter
+- 具体 runtime backend adapter
 - API service endpoints
-- real bioinformatics tool specs and workflows
-- real L0/L1 graph data
+- 真实生物信息学 ToolCallSpec、workflow、evidence、resource 数据
+- 真实 L0/L1 图数据
 
-## Practical Summary
+## 实用总结
 
-Current HELIX can:
+当前 HELIX 已经可以：
 
-- load config,
-- run a LangGraph plan-only flow,
-- produce structured blocked plans,
-- write append-only event logs,
-- validate ToolCall contracts,
-- reject unsafe or unregistered execution,
-- audit GraphPatch writes,
-- model graph construction bootstrap,
-- model controlled full graph recall,
-- model lifecycle transitions,
-- extract candidate constraints from failures,
-- prevent fake active tools or fake global hard rules.
+- 加载配置
+- 运行 LangGraph plan-only 主流程
+- 输出结构化 blocked plan
+- 写 append-only event log
+- 校验 ToolCall 契约
+- 拒绝不安全或未注册工具执行
+- 审计 GraphPatch 写入
+- 表达图构建 bootstrap 流程
+- 表达 controlled full graph recall
+- 表达生命周期状态流转
+- 从失败事件提取 candidate constraint
+- 防止假的 active tool 或假的 global hard rule
 
-Current HELIX cannot yet:
+当前 HELIX 还不能：
 
-- execute real bioinformatics tools,
-- query a real graph database,
-- build a real L1 healthy graph,
-- produce a domain-specific workflow from real evidence.
+- 执行真实生物信息学工具
+- 查询真实图数据库
+- 构建真实 L1 healthy graph
+- 基于真实证据输出领域 workflow
 
-Those missing parts require the real database, real graph content, and real ToolCallSpec installation.
+这些缺失部分需要真实数据库、真实图内容和真实 `ToolCallSpec` 安装后继续接入。
