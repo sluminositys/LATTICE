@@ -1,6 +1,6 @@
 # HELIX Architecture Gaps And Risks
 
-Source architecture: `E:\donwloads\HELIX_architecture_v7.md`
+Design source: user-provided HELIX architecture planning document.
 
 This file records possible model, architecture, or engineering risks discovered while implementing HELIX. Items here are not blockers by default; they are decisions or constraints that need to be tracked explicitly.
 
@@ -8,7 +8,7 @@ This file records possible model, architecture, or engineering risks discovered 
 
 ### RISK-001: Graph backend is not specified
 
-The v7 architecture defines L0, L1, L2 behavior clearly, but does not choose a storage backend. This affects transactionality, provenance queries, controlled recall, and materialized L1 compilation.
+The source architecture defines L0, L1, L2 behavior clearly, but does not choose a storage backend. This affects transactionality, provenance queries, controlled recall, and materialized L1 compilation.
 
 Current handling: implement graph stores as protocols first. Defer backend choice until the core contracts are stable.
 

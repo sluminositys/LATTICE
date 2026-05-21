@@ -2,7 +2,7 @@
 
 本文档说明 `D:\workspace\HELIX` 当前代码结构、内部流程、模块职责，以及现在已经实现和仍未实现的部分。
 
-参考架构文档：`E:\donwloads\HELIX_architecture_v7.md`
+设计依据：用户提供的 HELIX 架构规划文档。
 
 ## 当前定位
 
@@ -53,17 +53,9 @@ src/helix/
 
 应用入口。
 
-当前已有 CLI：
+当前已有 CLI 命令入口：`helix plan`。
 
-```powershell
-uv run helix plan "Plan RNA-seq QC workflow"
-```
-
-可选事件日志：
-
-```powershell
-uv run helix plan "Plan RNA-seq QC workflow" --event-log D:\workspace\codex\logs\2026-05-21\events.jsonl
-```
+具体任务文本应来自真实用户请求；本文档不固化示例实验或示例工作流。可选事件日志通过 `--event-log` 写入指定 JSONL 文件。
 
 ### `config`
 

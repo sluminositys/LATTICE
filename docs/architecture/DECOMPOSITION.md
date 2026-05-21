@@ -1,6 +1,6 @@
 # HELIX Architecture Decomposition
 
-Source architecture: `E:\donwloads\HELIX_architecture_v7.md`
+Design source: user-provided HELIX architecture planning document.
 
 ## Core Invariants
 

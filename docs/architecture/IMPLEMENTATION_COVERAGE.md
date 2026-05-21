@@ -1,6 +1,6 @@
 # HELIX Implementation Coverage
 
-Source architecture: `E:\donwloads\HELIX_architecture_v7.md`
+Design source: user-provided HELIX architecture planning document.
 
 This file tracks which architecture concepts are represented in code and which remain intentionally deferred until real database and ToolCall installation.
 

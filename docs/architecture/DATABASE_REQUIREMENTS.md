@@ -1,6 +1,6 @@
 # HELIX Database Integration Requirements
 
-Source architecture: `E:\donwloads\HELIX_architecture_v7.md`
+Design source: user-provided HELIX architecture planning document.
 
 This document defines the database integration contract for HELIX. It intentionally does not choose or require a concrete graph database yet. The first full run can populate L0 and L1 through HELIX's existing graph-construction and health-compilation workflow after the database is installed.
 
