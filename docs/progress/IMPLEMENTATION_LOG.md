@@ -233,6 +233,15 @@ This log records completed work in chronological order. Every implementation ste
 - Added `SessionStatus` values from architecture section 26.
 - Added transition validation for plan-blocked and execution-success paths.
 - Added tests rejecting skipped required states.
+- Committed session state machine: `2875039 runtime: add session state machine`.
+
+### Capability evolution candidates
+
+- Added `CandidateTool`.
+- Added `CandidateWorkflow`.
+- Added `ToolCallSpecBuilder`.
+- Enforced that new candidate tools/workflows cannot start as active lifecycle states.
+- Added tests proving candidate ToolCallSpec records are not active in `ToolCallRegistry`.
 - Committed database integration requirements: `b254050 docs: add database integration requirements`.
 
 ### ToolCall validator

@@ -182,8 +182,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 - [ ] Implement failure-to-constraint candidate extraction.
 - [ ] Implement preference consolidation boundaries.
-- [ ] Implement capability gap candidate records.
-- [ ] Implement candidate ToolCallSpec builder boundaries.
+- [x] Implement capability gap candidate records.
+- [x] Implement candidate ToolCallSpec builder boundaries.
 - [ ] Add tests preventing single failure from becoming global hard rule.
 - [ ] Commit evolution modules.
 
@@ -209,6 +209,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit graph-construction bootstrap workflow.
 - [x] Commit HookBus runtime control skeleton.
 - [ ] Commit session state machine.
+- [x] Commit session state machine.
+- [ ] Commit capability evolution candidate boundaries.
 
 ## Latest Validation
 
