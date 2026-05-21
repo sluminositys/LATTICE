@@ -336,3 +336,14 @@ This log records completed work in chronological order. Every implementation ste
 - Replaced domain-specific test strings with abstract task/tool/input names so tests validate control flow only.
 - Confirmed no remaining repository references to the removed demo task strings, demo file names, or local architecture document path.
 - Validation after cleanup: `uv run pytest` passed with 72 tests; `uv run ruff check .` passed; `uv run mypy` passed.
+
+### Demo graph profile and packaged graph interface
+
+- Added `GraphProfile` schema for `demo` and `production` graph profiles.
+- Added packaged demo profile helper for demoL0/demoL1 assets.
+- Added policy checks that block GraphPatch writes, builder workflows, and evolution workflows for demo profiles.
+- Added `PackagedDemoGraphManifest` and `PackagedGraphTierAsset` schemas for externally built demo graph assets.
+- Added JSONL packaged demo graph loader for `nodes.jsonl` and `edges.jsonl` assets.
+- Added read-only packaged L0 store and packaged L1 store that projects standard `RuntimeGraphContext`.
+- Added `healthy_graph_store` injection to plan-only orchestration so demo mode can use packaged demoL1 without changing the main flow.
+- Validation after interface work: `uv run pytest` passed with 83 tests; `uv run ruff check .` passed; `uv run mypy` passed.

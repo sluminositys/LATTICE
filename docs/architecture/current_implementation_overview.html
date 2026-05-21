@@ -355,13 +355,13 @@
           <h1>HELIX 当前代码实现说明</h1>
           <p class="lead">
             当前仓库已经具备一个可运行的 plan-only agent 主流程，并预留了图构建、ToolCall、
-            GraphPatch、MemoryHealthCompiler、Controlled Recall、HookBus 和自进化等核心边界。
+            GraphPatch、MemoryHealthCompiler、Controlled Recall、HookBus、自进化和 demo/production graph profile 等核心边界。
           </p>
           <div class="meta">
             <span class="pill">项目：D:\workspace\HELIX</span>
             <span class="pill">设计源：HELIX 架构规划</span>
             <span class="pill">当前模式：plan_only</span>
-            <span class="pill">测试：72 passed</span>
+            <span class="pill">测试：83 passed</span>
           </div>
         </section>
 
@@ -400,7 +400,7 @@
             <div class="module"><strong>toolcall</strong><span>ToolCall 注册、校验、派发和后端协议。</span></div>
             <div class="module"><strong>runtime</strong><span>AgentEventLog 和 SessionStateMachine。</span></div>
             <div class="module"><strong>hooks</strong><span>HookBus 生命周期事件总线。</span></div>
-            <div class="module"><strong>graph</strong><span>L0/L1 存储协议和图层策略。</span></div>
+            <div class="module"><strong>graph</strong><span>L0/L1 存储协议、图层策略、graph profile 和 packaged demo graph loader。</span></div>
             <div class="module"><strong>graph_patch</strong><span>GraphPatch 构建、校验和审计。</span></div>
             <div class="module"><strong>graph_health</strong><span>MemoryHealthCompiler 和生命周期管理。</span></div>
             <div class="module"><strong>graph_construction</strong><span>既有图构建 workflow 的 bootstrap 模式。</span></div>

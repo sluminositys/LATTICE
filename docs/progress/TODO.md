@@ -231,3 +231,14 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Remove concrete demo domain/tool/input strings from tests.
 - [x] Remove hardcoded local architecture document path from repository docs and tests.
 - [ ] Keep future docs and tests free of mock experiments, fake interfaces, and sample datasets unless explicitly requested.
+
+## Demo Graph Profile
+
+- [x] Add graph profile schema for demo and production modes.
+- [x] Enforce packaged/read-only demo profile policy.
+- [x] Block builder, evolution, and GraphPatch writes in demo profiles.
+- [x] Add packaged demo graph manifest schema.
+- [x] Add packaged demoL0/demoL1 JSONL loader boundary.
+- [x] Allow plan-only orchestration to receive a loaded healthy graph store.
+- [ ] Add CLI/config selection for active graph profile.
+- [ ] Add packaged demo graph asset validation command once real demoL0/demoL1 assets exist.
