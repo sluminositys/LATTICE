@@ -215,6 +215,16 @@ This log records completed work in chronological order. Every implementation ste
 - Added `FullGraphRecallCandidate` and `ControlledFullGraphRecallResult`.
 - Enforced recall safety rules for tombstoned, quarantined, deprecated, and low-provenance candidates.
 - Added tests for blocked tombstoned content, review-only quarantined content, and weak low-provenance candidates.
+- Committed ControlledFullGraphRecall boundary: `2f63aa4 projection: add controlled full graph recall`.
+
+### HookBus
+
+- Added `HookBus`.
+- Added `HookEvent`, `HookOutput`, and `HookRegistration`.
+- Expanded `AgentEventType` with hook lifecycle events from architecture section 17.
+- Enforced no direct L1 writes from hooks.
+- Added optional append-only `AgentEventLog` capture for hook outputs.
+- Added tests for warning hooks, direct L1 write blocking, and event log append behavior.
 - Committed database integration requirements: `b254050 docs: add database integration requirements`.
 
 ### ToolCall validator

@@ -204,8 +204,9 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Start controlled full graph recall boundary.
 - [ ] Start capability evolution candidate records.
 - [ ] Start failure-to-constraint extraction.
-- [ ] Commit ControlledFullGraphRecall boundary.
+- [x] Commit ControlledFullGraphRecall boundary.
 - [x] Commit graph-construction bootstrap workflow.
+- [ ] Commit HookBus runtime control skeleton.
 
 ## Latest Validation
 
