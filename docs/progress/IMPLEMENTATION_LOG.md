@@ -347,3 +347,15 @@ This log records completed work in chronological order. Every implementation ste
 - Added read-only packaged L0 store and packaged L1 store that projects standard `RuntimeGraphContext`.
 - Added `healthy_graph_store` injection to plan-only orchestration so demo mode can use packaged demoL1 without changing the main flow.
 - Validation after interface work: `uv run pytest` passed with 83 tests; `uv run ruff check .` passed; `uv run mypy` passed.
+
+### Six-layer Bio-EvoKG schema
+
+- Added `BioEvoKGNode`, `BioEvoKGEdge`, `BioEvoKGGraphRecords`, and `OperationalProfile`.
+- Encoded the six documented graph layers: Task, Evidence, Workflow, Resource, Implementation, and Experience.
+- Encoded documented node types for each layer and documented edge relation types.
+- Added validators that reject node types declared under the wrong layer.
+- Required provenance and lifecycle state for graph nodes and edges.
+- Added L1 validation switches for required `OperationalProfile` and healthy lifecycle states.
+- Updated packaged demoL0/demoL1 loader to validate JSONL assets through the same six-layer schema before they enter stores.
+- Updated GraphPatch validation so added nodes and edges must pass `BioEvoKGNode` / `BioEvoKGEdge` schema validation.
+- Validation after schema work: `uv run pytest` passed with 89 tests; `uv run ruff check .` passed; `uv run mypy` passed.

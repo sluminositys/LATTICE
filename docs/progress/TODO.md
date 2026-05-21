@@ -240,5 +240,12 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Add packaged demo graph manifest schema.
 - [x] Add packaged demoL0/demoL1 JSONL loader boundary.
 - [x] Allow plan-only orchestration to receive a loaded healthy graph store.
+- [x] Add shared six-layer L0/L1 heterogeneous graph node schema.
+- [x] Add shared six-layer L0/L1 heterogeneous graph edge schema.
+- [x] Enforce node layer/type compatibility.
+- [x] Enforce node/edge provenance and lifecycle state.
+- [x] Enforce L1 OperationalProfile and healthy state validation for packaged demoL1.
+- [x] Validate packaged demoL0/demoL1 assets through the shared graph schema before loading.
+- [x] Validate GraphPatch node/edge additions through the shared graph schema.
 - [ ] Add CLI/config selection for active graph profile.
 - [ ] Add packaged demo graph asset validation command once real demoL0/demoL1 assets exist.

@@ -6,6 +6,17 @@ HELIX 支持两类图运行 profile：正式模式和 demo 模式。正式模式
 
 当前仓库不内置示例实验、mock data、虚假工具接口或预设领域工作流。正式图与后续 demo 图资产都必须保留 provenance、审计信息、生命周期状态和 schema 版本。
 
+L0 和 L1 共享同一套六层异构图 schema：
+
+- Task
+- Evidence
+- Workflow
+- Resource
+- Implementation
+- Experience / Feedback / Failure / Preference
+
+demoL0 和 demoL1 不是另一套简化结构。demoL0/demoL1 资产导入时必须通过同一套 `BioEvoKGNode`、`BioEvoKGEdge` 和 L1 `OperationalProfile` 校验。
+
 ## 当前能力
 
 - 基于 LangGraph 的 plan-only 主编排流程
@@ -14,6 +25,7 @@ HELIX 支持两类图运行 profile：正式模式和 demo 模式。正式模式
 - ToolCallSpec 注册、校验、派发和 runtime backend 协议
 - GraphPatch、图存储、MemoryHealthCompiler 和 controlled recall 的接口边界
 - demo/production graph profile schema 与只读 demo policy
+- L0/L1 六层异构图节点、边和 OperationalProfile schema
 - HookBus、事件日志、session 状态机和候选能力演化模块
 - 基于 `uv` 的 Python 环境管理
 
