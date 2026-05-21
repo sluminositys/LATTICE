@@ -6,6 +6,7 @@ from uuid import uuid4
 from langgraph.graph import END, START, StateGraph
 from typing_extensions import NotRequired, TypedDict
 
+from helix.capability_evolution import CapabilityGapDetector, EvolutionAgent, EvolutionRequest
 from helix.core import TaskFingerprinter
 from helix.graph import HealthyGraphStore
 from helix.permissions import PermissionDecision, PermissionGate
@@ -13,6 +14,8 @@ from helix.planning import WorkflowPathSearch, WorkflowSearchResult
 from helix.projection import RuntimeViewProjector
 from helix.runtime import AgentEvent, AgentEventLog
 from helix.schemas import (
+    CapabilityGap,
+    GraphPatch,
     Provenance,
     RuntimeGraphContext,
     TaskFingerprint,
@@ -28,6 +31,9 @@ class PlanOnlyState(TypedDict):
     task_fingerprint: NotRequired[TaskFingerprint]
     runtime_context: NotRequired[RuntimeGraphContext]
     workflow_search_result: NotRequired[WorkflowSearchResult]
+    capability_gaps: NotRequired[list[CapabilityGap]]
+    evolution_request: NotRequired[EvolutionRequest]
+    proposed_evolution_patch: NotRequired[GraphPatch | None]
     workflow_report: NotRequired[WorkflowAuditReport]
     permission_decision: NotRequired[PermissionDecision]
     response: NotRequired[str]
@@ -45,6 +51,8 @@ def build_plan_only_graph(
         lambda state: project_runtime_context(state, healthy_graph_store=healthy_graph_store),
     )
     graph.add_node("search_workflow_path", search_workflow_path)
+    graph.add_node("detect_capability_gaps", detect_capability_gaps)
+    graph.add_node("request_evolution", request_evolution)
     graph.add_node("verify_workflow", verify_workflow)
     graph.add_node("compile_aep", compile_aep)
     graph.add_node("permission_check", permission_check)
@@ -54,7 +62,9 @@ def build_plan_only_graph(
     graph.add_edge("receive_request", "fingerprint_task")
     graph.add_edge("fingerprint_task", "project_runtime_context")
     graph.add_edge("project_runtime_context", "search_workflow_path")
-    graph.add_edge("search_workflow_path", "verify_workflow")
+    graph.add_edge("search_workflow_path", "detect_capability_gaps")
+    graph.add_edge("detect_capability_gaps", "request_evolution")
+    graph.add_edge("request_evolution", "verify_workflow")
     graph.add_edge("verify_workflow", "compile_aep")
     graph.add_edge("compile_aep", "permission_check")
     graph.add_edge("permission_check", "produce_response")
@@ -129,6 +139,28 @@ def append_plan_only_events(event_log: AgentEventLog, state: PlanOnlyState) -> N
             provenance=provenance,
         )
     )
+    for gap in state.get("capability_gaps", []):
+        event_log.append(
+            AgentEvent(
+                event_id=f"event-{uuid4()}",
+                session_id=session_id,
+                event_type="CapabilityGapDetected",
+                payload=gap.model_dump(mode="json"),
+                provenance=provenance,
+            )
+        )
+    if state.get("evolution_request") is not None:
+        proposed_patch = state.get("proposed_evolution_patch")
+        event_log.append(
+            AgentEvent(
+                event_id=f"event-{uuid4()}",
+                session_id=session_id,
+                event_type="EvolutionRequested",
+                payload=state["evolution_request"].model_dump(mode="json"),
+                graph_patch_ids=[proposed_patch.patch_id] if proposed_patch is not None else [],
+                provenance=provenance,
+            )
+        )
     event_log.append(
         AgentEvent(
             event_id=f"event-{uuid4()}",
@@ -171,6 +203,39 @@ def project_runtime_context(
 def search_workflow_path(state: PlanOnlyState) -> PlanOnlyState:
     result = WorkflowPathSearch().search(state["task_fingerprint"], state["runtime_context"])
     return {**state, "status": "planning", "workflow_search_result": result}
+
+
+def detect_capability_gaps(state: PlanOnlyState) -> PlanOnlyState:
+    gaps = CapabilityGapDetector().detect(
+        fingerprint=state["task_fingerprint"],
+        runtime_context=state["runtime_context"],
+        workflow_search_result=state["workflow_search_result"],
+    )
+    status = "capability_gap_detected" if gaps else state["status"]
+    return {**state, "status": status, "capability_gaps": gaps}
+
+
+def request_evolution(state: PlanOnlyState) -> PlanOnlyState:
+    gaps = state.get("capability_gaps", [])
+    if not gaps:
+        return state
+    source_event = AgentEvent(
+        event_id=f"event-{uuid4()}",
+        session_id=state["session_id"],
+        event_type="CapabilityGapDetected",
+        payload={"gap_ids": [gap.gap_id for gap in gaps]},
+        provenance=[Provenance(source_type="plan_only_orchestrator")],
+    )
+    request, patch = EvolutionAgent().propose_gap_patch(
+        gaps=gaps,
+        source_events=[source_event],
+    )
+    return {
+        **state,
+        "status": "evolution_requested",
+        "evolution_request": request,
+        "proposed_evolution_patch": patch,
+    }
 
 
 def verify_workflow(state: PlanOnlyState) -> PlanOnlyState:

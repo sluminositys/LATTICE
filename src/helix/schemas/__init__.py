@@ -11,7 +11,7 @@ from helix.schemas.common import (
     Provenance,
     WarningItem,
 )
-from helix.schemas.experience import Constraint, ExperienceCandidate
+from helix.schemas.experience import CapabilityGap, Constraint, ExperienceCandidate
 from helix.schemas.graph_asset import PackagedDemoGraphManifest, PackagedGraphTierAsset
 from helix.schemas.graph_patch import GraphPatch, LifecycleTransition
 from helix.schemas.graph_profile import (
@@ -72,6 +72,7 @@ __all__ = [
     "AgenticExecutionPlan",
     "AgenticExecutionStep",
     "ClaimAuditReport",
+    "CapabilityGap",
     "Constraint",
     "ExperienceCandidate",
     "GraphPatch",

@@ -26,6 +26,8 @@ def test_plan_only_flow_appends_event_log(tmp_path) -> None:
         "TaskFingerprinted",
         "RuntimeGraphContextProjected",
         "WorkflowPathSelected",
+        "CapabilityGapDetected",
+        "EvolutionRequested",
         "WorkflowVerified",
         "PermissionChecked",
     ]

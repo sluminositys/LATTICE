@@ -35,3 +35,15 @@ class Constraint(HelixBaseModel):
     repair_hint: str
     provenance: Provenance
     lifecycle_state: LifecycleState = "candidate"
+
+
+class CapabilityGap(HelixBaseModel):
+    gap_id: str
+    task_fingerprint_id: str
+    runtime_graph_context_id: str | None = None
+    gap_type: Literal["workflow", "tool", "toolcall_spec", "runtime_backend", "evidence", "data"]
+    missing_requirements: list[str] = Field(default_factory=list)
+    trigger_condition: dict[str, Any] = Field(default_factory=dict)
+    suggested_discovery_queries: list[str] = Field(default_factory=list)
+    provenance: Provenance
+    lifecycle_state: LifecycleState = "candidate"
