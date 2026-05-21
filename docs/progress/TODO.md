@@ -102,6 +102,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 ## Phase 6: LangGraph Plan-Only Flow
 
 - [x] Define session state model.
+- [x] Implement documented session state transition rules.
 - [ ] Create LangGraph node skeletons:
   - [x] receive request
   - [x] fingerprint task
@@ -206,7 +207,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Start failure-to-constraint extraction.
 - [x] Commit ControlledFullGraphRecall boundary.
 - [x] Commit graph-construction bootstrap workflow.
-- [ ] Commit HookBus runtime control skeleton.
+- [x] Commit HookBus runtime control skeleton.
+- [ ] Commit session state machine.
 
 ## Latest Validation
 

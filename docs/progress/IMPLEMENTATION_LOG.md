@@ -225,6 +225,14 @@ This log records completed work in chronological order. Every implementation ste
 - Enforced no direct L1 writes from hooks.
 - Added optional append-only `AgentEventLog` capture for hook outputs.
 - Added tests for warning hooks, direct L1 write blocking, and event log append behavior.
+- Committed HookBus runtime control skeleton: `a71fe13 hooks: add runtime hook bus`.
+
+### Session state machine
+
+- Added `SessionStateMachine`.
+- Added `SessionStatus` values from architecture section 26.
+- Added transition validation for plan-blocked and execution-success paths.
+- Added tests rejecting skipped required states.
 - Committed database integration requirements: `b254050 docs: add database integration requirements`.
 
 ### ToolCall validator
