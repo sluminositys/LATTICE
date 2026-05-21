@@ -260,6 +260,20 @@ This log records completed work in chronological order. Every implementation ste
 - Added `ClaimVerifier`.
 - Claim verification returns `not_applicable` when there are no claims and `unsupported` until evidence exists.
 - Added focused tests for all three boundaries.
+- Committed PlanMode, ClaimVerifier, and sufficiency checker boundaries: `ef9a4fe planning: add plan exit and verification boundaries`.
+
+### Implementation coverage
+
+- Added architecture implementation coverage document.
+- Listed implemented code boundaries.
+- Listed intentional deferrals that require real database, graph content, or ToolCall installation.
+- Listed remaining architecture gaps.
+
+### Validation
+
+- `uv run pytest`: 72 passed.
+- `uv run ruff check .`: passed.
+- `uv run mypy`: passed.
 - Committed database integration requirements: `b254050 docs: add database integration requirements`.
 
 ### ToolCall validator

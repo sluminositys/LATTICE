@@ -214,10 +214,12 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit capability evolution candidate boundaries.
 - [x] Commit failure-to-constraint extractor.
 - [ ] Commit PlanMode, ClaimVerifier, and sufficiency checker boundaries.
+- [x] Commit PlanMode, ClaimVerifier, and sufficiency checker boundaries.
+- [ ] Commit implementation coverage gap document.
 
 ## Latest Validation
 
-- [x] `uv run pytest` (`51 passed`)
+- [x] `uv run pytest` (`72 passed`)
 - [x] `uv run ruff check .`
 - [x] `uv run mypy`
 - [x] `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-20260521 --event-log D:\workspace\codex\logs\2026-05-21\helix-plan-events-20260521.jsonl`
