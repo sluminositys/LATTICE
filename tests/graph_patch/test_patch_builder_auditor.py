@@ -3,6 +3,17 @@ from helix.runtime import AgentEvent
 from helix.schemas import Provenance
 
 
+def make_valid_node() -> dict[str, object]:
+    return {
+        "node_id": "node-1",
+        "layer": "workflow",
+        "node_type": "Method",
+        "canonical_name": "Method node",
+        "lifecycle_state": "candidate",
+        "provenance": [{"source_type": "test"}],
+    }
+
+
 def test_graph_patch_builder_uses_source_events() -> None:
     event = AgentEvent(
         event_id="event-1",
@@ -52,7 +63,7 @@ def test_graph_patch_auditor_passes_valid_patch() -> None:
         source_module="test",
         provenance=Provenance(source_type="test"),
     )
-    patch.nodes_to_add.append({"node_id": "node-1"})
+    patch.nodes_to_add.append(make_valid_node())
 
     report = GraphPatchAuditor().audit(patch)
 

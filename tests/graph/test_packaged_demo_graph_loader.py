@@ -24,8 +24,44 @@ def write_jsonl(path: Path, records: list[dict[str, object]]) -> None:
 def create_demo_asset_dirs(tmp_path: Path) -> tuple[Path, Path]:
     l0_path = tmp_path / "demo_l0"
     l1_path = tmp_path / "demo_l1"
-    nodes = [{"node_id": "node-1", "node_type": "method"}]
-    edges = [{"edge_id": "edge-1", "source_id": "node-1", "target_id": "node-1"}]
+    operational_profile = {
+        "lifecycle_state": "active_hot",
+        "compiled_from_graph_patch_ids": ["patch-1"],
+    }
+    nodes = [
+        {
+            "node_id": "tool-1",
+            "layer": "resource",
+            "node_type": "Tool",
+            "canonical_name": "Tool node",
+            "lifecycle_state": "active_hot",
+            "operational_profile": operational_profile,
+            "provenance": [{"source_type": "test"}],
+        },
+        {
+            "node_id": "method-1",
+            "layer": "workflow",
+            "node_type": "Method",
+            "canonical_name": "Method node",
+            "lifecycle_state": "active_hot",
+            "operational_profile": operational_profile,
+            "provenance": [{"source_type": "test"}],
+        },
+    ]
+    edges = [
+        {
+            "edge_id": "edge-1",
+            "edge_type": "IMPLEMENTS_METHOD",
+            "source_node_id": "tool-1",
+            "target_node_id": "method-1",
+            "source_layer": "resource",
+            "target_layer": "workflow",
+            "source_type": "packaged_demo",
+            "lifecycle_state": "active_hot",
+            "operational_profile": operational_profile,
+            "provenance": [{"source_type": "test"}],
+        }
+    ]
     write_jsonl(l0_path / "nodes.jsonl", nodes)
     write_jsonl(l0_path / "edges.jsonl", edges)
     write_jsonl(l1_path / "nodes.jsonl", nodes)
@@ -43,7 +79,10 @@ def test_packaged_demo_loader_loads_read_only_l0_store(tmp_path) -> None:
 
     store = JsonlPackagedDemoGraphStoreLoader().load_l0_store(profile)
 
-    assert store.get_node("node-1") == {"node_id": "node-1", "node_type": "method"}
+    node = store.get_node("tool-1")
+    assert node is not None
+    assert node["layer"] == "resource"
+    assert node["node_type"] == "Tool"
     with pytest.raises(PackagedGraphStoreError):
         store.apply_patch(
             GraphPatch(
@@ -69,7 +108,7 @@ def test_packaged_demo_l1_store_projects_runtime_context(tmp_path) -> None:
 
     assert context.sufficiency_report.status == "sufficient"
     assert context.G_task["profile_id"] == "demo-profile"
-    assert context.G_workflow["nodes"] == [{"node_id": "node-1", "node_type": "method"}]
+    assert context.G_workflow["nodes"][0]["node_id"] == "tool-1"
 
 
 def test_plan_only_can_use_packaged_demo_l1_store(tmp_path) -> None:

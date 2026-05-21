@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pydantic import Field
+from pydantic import Field, ValidationError
 
 from helix.graph_health import LifecycleStateError, LifecycleStateManager
-from helix.schemas import GraphPatch, HelixBaseModel
+from helix.schemas import BioEvoKGEdge, BioEvoKGNode, GraphPatch, HelixBaseModel
 
 
 class GraphPatchValidationReport(HelixBaseModel):
@@ -43,9 +43,31 @@ class GraphPatchValidator:
             if "node_id" not in node:
                 blockers.append("GraphPatch node mutation is missing node_id.")
 
+        for node in patch.nodes_to_add:
+            if "node_id" in node:
+                try:
+                    BioEvoKGNode.model_validate(node)
+                except ValidationError as error:
+                    first_error = error.errors()[0]["msg"]
+                    blockers.append(
+                        "GraphPatch node mutation failed Bio-EvoKG schema validation: "
+                        f"{first_error}"
+                    )
+
         for edge in [*patch.edges_to_add, *patch.edges_to_update]:
             if "edge_id" not in edge:
                 blockers.append("GraphPatch edge mutation is missing edge_id.")
+
+        for edge in patch.edges_to_add:
+            if "edge_id" in edge:
+                try:
+                    BioEvoKGEdge.model_validate(edge)
+                except ValidationError as error:
+                    first_error = error.errors()[0]["msg"]
+                    blockers.append(
+                        "GraphPatch edge mutation failed Bio-EvoKG schema validation: "
+                        f"{first_error}"
+                    )
 
         for transition in patch.lifecycle_transitions:
             try:

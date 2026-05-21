@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 from uuid import uuid4
 
 from helix.schemas import (
+    BioEvoKGEdge,
+    BioEvoKGGraphRecords,
+    BioEvoKGNode,
     GraphContextSufficiencyReport,
     GraphPatch,
     GraphProfile,
@@ -25,12 +28,12 @@ class PackagedFullGraphStore:
         self,
         *,
         profile: GraphProfile,
-        nodes: list[dict[str, Any]],
-        edges: list[dict[str, Any]],
+        nodes: list[BioEvoKGNode],
+        edges: list[BioEvoKGEdge],
     ) -> None:
         self.profile = profile
-        self.nodes = nodes
-        self.edges = edges
+        self.nodes = [node.model_dump(mode="json") for node in nodes]
+        self.edges = [edge.model_dump(mode="json") for edge in edges]
         self._nodes_by_id = _index_nodes(nodes)
 
     def apply_patch(self, patch: GraphPatch) -> str:
@@ -46,12 +49,12 @@ class PackagedHealthyGraphStore:
         self,
         *,
         profile: GraphProfile,
-        nodes: list[dict[str, Any]],
-        edges: list[dict[str, Any]],
+        nodes: list[BioEvoKGNode],
+        edges: list[BioEvoKGEdge],
     ) -> None:
         self.profile = profile
-        self.nodes = nodes
-        self.edges = edges
+        self.nodes = [node.model_dump(mode="json") for node in nodes]
+        self.edges = [edge.model_dump(mode="json") for edge in edges]
         self._nodes_by_id = _index_nodes(nodes)
 
     def project_runtime_context(self, fingerprint: TaskFingerprint) -> RuntimeGraphContext:
@@ -94,10 +97,11 @@ class JsonlPackagedDemoGraphStoreLoader:
         if profile.l0_asset_path is None:
             msg = f"Demo profile has no L0 asset path: {profile.profile_id}"
             raise PackagedGraphStoreError(msg)
+        records = _load_graph_records(Path(profile.l0_asset_path), graph_tier="L0")
         return PackagedFullGraphStore(
             profile=profile,
-            nodes=_load_jsonl(Path(profile.l0_asset_path) / "nodes.jsonl"),
-            edges=_load_jsonl(Path(profile.l0_asset_path) / "edges.jsonl"),
+            nodes=records.nodes,
+            edges=records.edges,
         )
 
     def load_l1_store(self, profile: GraphProfile) -> PackagedHealthyGraphStore:
@@ -105,10 +109,11 @@ class JsonlPackagedDemoGraphStoreLoader:
         if profile.l1_asset_path is None:
             msg = f"Demo profile has no L1 asset path: {profile.profile_id}"
             raise PackagedGraphStoreError(msg)
+        records = _load_graph_records(Path(profile.l1_asset_path), graph_tier="L1")
         return PackagedHealthyGraphStore(
             profile=profile,
-            nodes=_load_jsonl(Path(profile.l1_asset_path) / "nodes.jsonl"),
-            edges=_load_jsonl(Path(profile.l1_asset_path) / "edges.jsonl"),
+            nodes=records.nodes,
+            edges=records.edges,
         )
 
 
@@ -124,6 +129,18 @@ def _assert_packaged_demo_profile(profile: GraphProfile) -> None:
     if profile.l0_source != "packaged" or profile.l1_source != "packaged":
         msg = f"Packaged demo loader requires packaged L0 and L1: {profile.profile_id}"
         raise PackagedGraphStoreError(msg)
+
+
+def _load_graph_records(path: Path, *, graph_tier: Literal["L0", "L1"]) -> BioEvoKGGraphRecords:
+    nodes = [BioEvoKGNode.model_validate(record) for record in _load_jsonl(path / "nodes.jsonl")]
+    edges = [BioEvoKGEdge.model_validate(record) for record in _load_jsonl(path / "edges.jsonl")]
+    return BioEvoKGGraphRecords(
+        graph_tier=graph_tier,
+        nodes=nodes,
+        edges=edges,
+        require_l1_operational_profile=graph_tier == "L1",
+        require_l1_healthy_states=graph_tier == "L1",
+    )
 
 
 def _load_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -144,10 +161,8 @@ def _load_jsonl(path: Path) -> list[dict[str, Any]]:
     return records
 
 
-def _index_nodes(nodes: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+def _index_nodes(nodes: list[BioEvoKGNode]) -> dict[str, dict[str, Any]]:
     indexed: dict[str, dict[str, Any]] = {}
     for node in nodes:
-        node_id = node.get("node_id") or node.get("id")
-        if isinstance(node_id, str):
-            indexed[node_id] = node
+        indexed[node.node_id] = node.model_dump(mode="json")
     return indexed

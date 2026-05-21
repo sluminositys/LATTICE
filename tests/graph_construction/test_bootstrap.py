@@ -4,6 +4,17 @@ from helix.graph_construction import GraphConstructionBootstrapWorkflow
 from helix.schemas import GraphPatch, Provenance, create_packaged_demo_graph_profile
 
 
+def make_valid_node() -> dict[str, object]:
+    return {
+        "node_id": "node-1",
+        "layer": "workflow",
+        "node_type": "Method",
+        "canonical_name": "Method node",
+        "lifecycle_state": "candidate",
+        "provenance": [{"source_type": "test"}],
+    }
+
+
 class RecordingFullGraphStore:
     def __init__(self) -> None:
         self.applied_patches: list[GraphPatch] = []
@@ -39,7 +50,7 @@ def test_bootstrap_workflow_applies_l0_patch_and_runs_health_compiler() -> None:
         patch_id="patch-1",
         source_event_ids=["event-1"],
         source_module="test",
-        nodes_to_add=[{"node_id": "node-1"}],
+        nodes_to_add=[make_valid_node()],
         provenance=Provenance(source_type="test"),
     )
 
@@ -63,7 +74,7 @@ def test_bootstrap_workflow_blocks_demo_profile_before_l0_write() -> None:
         patch_id="patch-1",
         source_event_ids=["event-1"],
         source_module="test",
-        nodes_to_add=[{"node_id": "node-1"}],
+        nodes_to_add=[make_valid_node()],
         provenance=Provenance(source_type="test"),
     )
 
