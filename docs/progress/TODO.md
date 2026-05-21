@@ -97,6 +97,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Add tests ensuring GraphPatch cannot target L1.
 - [x] Commit graph tier contracts.
 - [x] Document database adapter requirements for future L0/L1 backends.
+- [x] Add graph-construction bootstrap workflow using existing GraphPatch and MemoryHealthCompiler path.
 
 ## Phase 6: LangGraph Plan-Only Flow
 
@@ -203,6 +204,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Start controlled full graph recall boundary.
 - [ ] Start capability evolution candidate records.
 - [ ] Start failure-to-constraint extraction.
+- [x] Commit graph-construction bootstrap workflow.
 
 ## Latest Validation
 

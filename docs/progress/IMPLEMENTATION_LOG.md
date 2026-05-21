@@ -198,6 +198,15 @@ This log records completed work in chronological order. Every implementation ste
 
 - Reworded database requirements to avoid implying a new `builder agent`.
 - Clarified that background jobs or delegated processes are execution modes for the existing HELIX graph-construction workflow, not additional architecture roles.
+
+### Graph construction bootstrap workflow
+
+- Added `GraphConstructionBootstrapWorkflow`.
+- Added `GraphConstructionBootstrapResult`.
+- The workflow composes `FullGraphStore`, `GraphPatchAuditor`, and `MemoryHealthCompiler`.
+- It blocks before L0 writes when audit fails.
+- It applies audited patches through the L0 store and then runs health compilation.
+- This code path represents bootstrap mode for the existing HELIX graph-construction workflow, not a new agent type.
 - Committed database integration requirements: `b254050 docs: add database integration requirements`.
 
 ### ToolCall validator

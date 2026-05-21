@@ -102,6 +102,14 @@ src/helix/graph/adapters/neo4j_l0.py
 src/helix/graph/adapters/neo4j_l1.py
 ```
 
+The bootstrap orchestration code lives in:
+
+```text
+src/helix/graph_construction/bootstrap.py
+```
+
+It composes `FullGraphStore`, `GraphPatchAuditor`, and `MemoryHealthCompiler`. It does not create a new agent type.
+
 ## First Full Run Expectation
 
 The first complete run should use HELIX's existing graph-building capability, not a separate extra agent type. In practice this means running the architecture's graph-construction workflow in bootstrap mode to:
