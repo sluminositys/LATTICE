@@ -7,6 +7,7 @@ from langgraph.graph import END, START, StateGraph
 from typing_extensions import NotRequired, TypedDict
 
 from helix.core import TaskFingerprinter
+from helix.graph import HealthyGraphStore
 from helix.permissions import PermissionDecision, PermissionGate
 from helix.planning import WorkflowPathSearch, WorkflowSearchResult
 from helix.projection import RuntimeViewProjector
@@ -32,11 +33,17 @@ class PlanOnlyState(TypedDict):
     response: NotRequired[str]
 
 
-def build_plan_only_graph() -> Any:
+def build_plan_only_graph(
+    *,
+    healthy_graph_store: HealthyGraphStore | None = None,
+) -> Any:
     graph = StateGraph(PlanOnlyState)
     graph.add_node("receive_request", receive_request)
     graph.add_node("fingerprint_task", fingerprint_task)
-    graph.add_node("project_runtime_context", project_runtime_context)
+    graph.add_node(
+        "project_runtime_context",
+        lambda state: project_runtime_context(state, healthy_graph_store=healthy_graph_store),
+    )
     graph.add_node("search_workflow_path", search_workflow_path)
     graph.add_node("verify_workflow", verify_workflow)
     graph.add_node("compile_aep", compile_aep)
@@ -60,8 +67,9 @@ def run_plan_only(
     *,
     session_id: str | None = None,
     event_log: AgentEventLog | None = None,
+    healthy_graph_store: HealthyGraphStore | None = None,
 ) -> PlanOnlyState:
-    compiled = build_plan_only_graph()
+    compiled = build_plan_only_graph(healthy_graph_store=healthy_graph_store)
     initial_state: PlanOnlyState = {
         "request": request,
         "session_id": session_id or f"session-{uuid4()}",
@@ -150,9 +158,13 @@ def fingerprint_task(state: PlanOnlyState) -> PlanOnlyState:
     return {**state, "status": "fingerprinted", "task_fingerprint": fingerprint}
 
 
-def project_runtime_context(state: PlanOnlyState) -> PlanOnlyState:
+def project_runtime_context(
+    state: PlanOnlyState,
+    *,
+    healthy_graph_store: HealthyGraphStore | None = None,
+) -> PlanOnlyState:
     fingerprint = state["task_fingerprint"]
-    context = RuntimeViewProjector().project(fingerprint)
+    context = RuntimeViewProjector(healthy_graph_store=healthy_graph_store).project(fingerprint)
     return {**state, "status": "runtime_context_projected", "runtime_context": context}
 
 

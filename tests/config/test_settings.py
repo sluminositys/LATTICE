@@ -9,6 +9,8 @@ def test_loads_base_dev_settings() -> None:
     assert settings.logging.level == "DEBUG"
     assert settings.permissions.default_mode == "plan_only"
     assert settings.tool_registry.allow_unregistered_tools is False
+    assert settings.graph_profiles.active_profile_id is None
+    assert settings.graph_profiles.profiles == {}
 
 
 def test_environment_overrides(monkeypatch) -> None:

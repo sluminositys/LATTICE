@@ -1,7 +1,7 @@
 from typing import Any
 
 from helix.graph_construction import GraphConstructionBootstrapWorkflow
-from helix.schemas import GraphPatch, Provenance
+from helix.schemas import GraphPatch, Provenance, create_packaged_demo_graph_profile
 
 
 class RecordingFullGraphStore:
@@ -50,3 +50,30 @@ def test_bootstrap_workflow_applies_l0_patch_and_runs_health_compiler() -> None:
     assert result.memory_health_report is not None
     assert result.memory_health_report.compiled_patch_ids == ["patch-1"]
     assert store.applied_patches == [patch]
+
+
+def test_bootstrap_workflow_blocks_demo_profile_before_l0_write() -> None:
+    store = RecordingFullGraphStore()
+    profile = create_packaged_demo_graph_profile(
+        profile_id="demo-profile",
+        l0_asset_path="resources/demo/demo_l0",
+        l1_asset_path="resources/demo/demo_l1",
+    )
+    patch = GraphPatch(
+        patch_id="patch-1",
+        source_event_ids=["event-1"],
+        source_module="test",
+        nodes_to_add=[{"node_id": "node-1"}],
+        provenance=Provenance(source_type="test"),
+    )
+
+    result = GraphConstructionBootstrapWorkflow(
+        full_graph_store=store,
+        graph_profile=profile,
+    ).run(patch)
+
+    assert result.status == "blocked"
+    assert result.durable_write_id is None
+    assert result.memory_health_report is None
+    assert result.notes == ["Builder workflows are disabled for graph profile: demo-profile"]
+    assert store.applied_patches == []

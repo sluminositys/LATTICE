@@ -7,6 +7,8 @@ from typing import Any, Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
+from helix.schemas import GraphProfile
+
 PermissionMode = Literal[
     "plan_only",
     "read_only",
@@ -43,6 +45,11 @@ class GraphSettings(StrictModel):
     l0_dsn: str | None = None
     l1_dsn: str | None = None
     controlled_recall_limit: int = Field(default=20, ge=0)
+
+
+class GraphProfilesSettings(StrictModel):
+    active_profile_id: str | None = None
+    profiles: dict[str, GraphProfile] = Field(default_factory=dict)
 
 
 class ToolRegistrySettings(StrictModel):
@@ -89,6 +96,7 @@ class HelixSettings(StrictModel):
     models: ModelSettings = Field(default_factory=ModelSettings)
     runtime_paths: RuntimePathSettings = Field(default_factory=RuntimePathSettings)
     graph: GraphSettings = Field(default_factory=GraphSettings)
+    graph_profiles: GraphProfilesSettings = Field(default_factory=GraphProfilesSettings)
     tool_registry: ToolRegistrySettings = Field(default_factory=ToolRegistrySettings)
     permissions: PermissionSettings = Field(default_factory=PermissionSettings)
     graph_health: GraphHealthSettings = Field(default_factory=GraphHealthSettings)
@@ -109,6 +117,7 @@ def load_settings(
         "logging.yaml",
         "permissions.yaml",
         "graph_health.yaml",
+        "graph_profiles.yaml",
         "tool_registry.yaml",
         f"{env_name}.yaml",
     ]
