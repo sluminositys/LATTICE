@@ -36,7 +36,7 @@ Current handling: enforce recall result statuses and make verifier/permission ch
 
 The document lists exit conditions, but real execution will also need environment availability, tool installation checks, and data sensitivity checks.
 
-Current handling: keep execution disabled until ToolCallSpec, PermissionGate, runtime backend, and environment checks exist.
+Current handling: execution now exists behind ToolCallSpec, PermissionGate, RuntimeBackend, and fail-closed dispatcher checks. Environment availability and data sensitivity policies still need dedicated checks before broad unattended execution.
 
 ### RISK-006: Experience layer could overgeneralize from sparse events
 
@@ -49,3 +49,21 @@ Current handling: add tests preventing one event from becoming a global blocker 
 The first implementation creates a valid `TaskFingerprint` without inferring domain semantics. This avoids silent hallucinated classification, but it means the early plan-only flow will usually produce `unclassified` tasks until an LLM-backed or graph-backed fingerprinter is added.
 
 Current handling: keep the prompt externalized and record missing fields in `ambiguity_items`.
+
+### RISK-008: Externally built L0/L1 assets can be structurally valid but semantically weak
+
+The current system can validate six-layer schema, provenance, lifecycle states, and L1 operational profiles. It cannot prove that externally supplied literature-derived graph content is biologically complete or methodologically correct by schema alone.
+
+Current handling: external L0/L1 assets must enter through graph asset validation/import, and runtime execution remains gated by workflow verification, PermissionGate, ToolCallSpec validation, and experience logging.
+
+### RISK-009: Tool discovery must not bypass lifecycle governance
+
+The evolution path can propose new tools and ToolCallSpec records, but any direct activation of discovered tools would bypass memory health and approval controls.
+
+Current handling: `ToolBuilderAgent` only creates candidate graph mutations. Candidate ToolCallSpec records are not active in `ToolCallRegistry` until promoted through lifecycle policy.
+
+### RISK-010: Runtime backend power differs by agent role
+
+Execution agents should not mutate graphs freely, while evolution and tool-building agents need to propose graph mutations and candidate ToolCallSpec records. Treating all agents with one permission rule would either make execution unsafe or make evolution useless.
+
+Current handling: normal execution writes only structured experience candidates through audited L0 GraphPatch. Capability evolution creates candidate L0 GraphPatch records, not direct L1 writes or active tools.

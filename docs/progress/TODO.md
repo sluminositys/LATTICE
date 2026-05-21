@@ -1,251 +1,87 @@
 # HELIX Implementation TODO
 
-Design source: user-provided HELIX architecture planning document.
+This backlog tracks the project as an independent Python HELIX agent system. Keep changes small, commit frequently, and update this file with each implementation slice.
 
-This TODO is the working backlog for building HELIX as an independent Python agent system. Each small completed unit should be committed separately and reflected in `IMPLEMENTATION_LOG.md`.
+## Build Policy
 
-## Current Build Policy
-
-- Build from small, reversible modules.
-- Keep parameters and runtime policy in `config/`.
-- Do not add mock data, fake experiments, or fake external APIs.
-- Do not let any module write L1 directly.
-- Do not execute unregistered tools.
 - Use `uv` for environment management.
-- Use LangChain and LangGraph for the agent framework.
-- Keep operational logs and generated diagnostics under `D:\workspace\codex`.
+- Keep runtime parameters in `config/`.
+- Do not add mock experiments, fake external APIs, bundled sample workflows, or hidden demo construction scripts.
+- L0 and L1 graph assets must pass the shared six-layer schema before use.
+- Any new graph knowledge enters L0 through GraphPatch or explicit external asset import.
+- L1 is a healthy materialization and must not be directly mutated by normal agent execution.
+- Tool execution must go through active ToolCallSpec plus PermissionGate plus RuntimeBackend.
+- Operational logs and generated reports belong under `D:\workspace\codex`.
 
-## Phase 0: Repository And Tracking
+## Completed Foundation
 
 - [x] Create independent project directory at `D:\workspace\HELIX`.
-- [x] Initialize git repository on `main`.
-- [x] Add remote `git@github.com:sluminositys/HELIX.git`.
-- [x] Add progress ledger docs.
-- [x] Add architecture decomposition docs.
-- [x] Add architecture risks and gaps record.
-- [x] Commit tracking docs.
-- [ ] Add repository hygiene files.
-- [x] Add repository hygiene files.
+- [x] Initialize git repository and remote `git@github.com:sluminositys/HELIX.git`.
+- [x] Add Python package metadata, `uv.lock`, ruff, mypy, and pytest.
+- [x] Add typed settings loader and environment overrides.
+- [x] Add core schemas for task, runtime context, AEP, ToolCall, observations, verification, GraphPatch, experience, graph profiles, and six-layer Bio-EvoKG records.
+- [x] Add append-only file AgentEventLog.
+- [x] Add session state machine.
+- [x] Add graph tier protocols and policy checks.
+- [x] Add MemoryHealthCompiler boundary and lifecycle state manager.
+- [x] Add controlled L0 recall boundary.
+- [x] Add HookBus boundary.
+- [x] Add CLI entrypoint.
 
-## Phase 1: Minimal Python Project
+## Completed Graph And Database Integration
 
-- [x] Create `pyproject.toml` with `uv` project metadata.
-- [x] Set Python version policy.
-- [ ] Add runtime dependencies:
-  - [x] `pydantic`
-  - [x] `pydantic-settings`
-  - [x] `pyyaml`
-  - [x] `langchain`
-  - [x] `langgraph`
-  - [x] `typing-extensions`
-- [ ] Add dev dependencies:
-  - [x] `pytest`
-  - [x] `ruff`
-  - [x] `mypy`
-- [x] Create `src/helix/`.
-- [x] Add package `__init__.py`.
-- [x] Add placeholder test directory.
-- [x] Generate `uv.lock`.
-- [x] Commit minimal project metadata.
+- [x] Add demo/production graph profile policies.
+- [x] Add packaged demoL0/demoL1 loader with read-only stores.
+- [x] Project packaged demoL1 through the same five runtime views as production L1.
+- [x] Add graph asset validation and import path for externally built L0/L1.
+- [x] Add Neo4j L0 store with GraphPatch apply and external record replacement.
+- [x] Add Neo4j L1 store with runtime context projection and external record replacement.
+- [x] Add PostgreSQL core table initializer.
+- [x] Add PostgreSQL AgentEventLog adapter.
+- [x] Add PostgreSQL ToolCallSpec store.
+- [x] Add Qdrant graph node vector index adapter.
+- [x] Add config keys for Neo4j, PostgreSQL, and Qdrant.
 
-## Phase 2: Configuration Layer
+## Completed Planning, Execution, And Evolution
 
-- [x] Create `config/base.yaml`.
-- [x] Create `config/dev.yaml`.
-- [x] Create `config/logging.yaml`.
-- [x] Create `config/permissions.yaml`.
-- [x] Create `config/graph_health.yaml`.
-- [x] Create `config/tool_registry.yaml`.
-- [x] Implement settings loader in `src/helix/config/`.
-- [x] Support environment variable overrides.
-- [x] Add tests for settings loading.
-- [ ] Commit config layer.
-
-## Phase 3: Core Object Contracts
-
-- [x] Add schema package skeleton.
-- [x] Implement shared base model conventions.
-- [x] Add `TaskFingerprint`.
-- [x] Add `GraphContextSufficiencyReport`.
-- [x] Add `RuntimeGraphContext`.
-- [x] Add `AgenticExecutionPlan` and plan step model.
-- [x] Add `ToolCallSpec`.
-- [x] Add `StructuredObservation`.
-- [x] Add `WorkflowAuditReport`.
-- [x] Add `ClaimAuditReport`.
-- [x] Add `LifecycleTransition`.
-- [x] Add `GraphPatch`.
-- [x] Add `ExperienceCandidate`.
-- [x] Add schema validation tests.
-- [x] Commit remaining core schema contracts.
-
-## Phase 4: Append-Only Runtime Event Log
-
-- [x] Define `AgentEvent`.
-- [x] Define event type enum from architecture section 18.
-- [x] Add append-only file event log backend.
-- [x] Add event provenance requirements.
-- [x] Add tests preventing event overwrite.
-- [ ] Commit runtime event log.
-
-## Phase 5: Graph Tier Interfaces
-
-- [x] Define `FullGraphStore` protocol for L0.
-- [x] Define `HealthyGraphStore` protocol for L1.
-- [x] Define `RuntimeGraphContext` usage boundary for L2.
-- [x] Define graph tier policy checks.
-- [x] Add tests ensuring GraphPatch cannot target L1.
-- [x] Commit graph tier contracts.
-- [x] Document database adapter requirements for future L0/L1 backends.
-- [x] Add graph-construction bootstrap workflow using existing GraphPatch and MemoryHealthCompiler path.
-
-## Phase 6: LangGraph Plan-Only Flow
-
-- [x] Define session state model.
-- [x] Implement documented session state transition rules.
-- [ ] Create LangGraph node skeletons:
-  - [x] receive request
-  - [x] fingerprint task
-  - [x] project runtime context
-  - [x] search workflow path
-  - [x] verify workflow
-  - [x] compile AEP
-  - [x] permission check
-  - [x] produce response
-- [x] Add plan-only stopping behavior.
-- [x] Add tests for state transitions.
-- [x] Commit orchestration skeleton.
-
-## Phase 7: Task Fingerprinting
-
-- [x] Implement task fingerprinting interface.
-- [x] Keep LLM prompt/template externalized.
-- [x] Return ambiguity items instead of guessing silently.
-- [x] Add tests for deterministic non-LLM normalization.
-- [ ] Commit task fingerprint module.
-
-## Phase 8: Runtime Projection
-
-- [x] Implement five-view projector interfaces.
-- [ ] Implement sufficiency checker.
-- [x] Implement controlled recall boundary without direct L1 promotion.
-- [x] Add tests for insufficient context.
-- [ ] Commit runtime projection module.
-
-## Phase 9: Planning And Verification
-
-- [x] Implement workflow path search contracts.
-- [ ] Implement deterministic ordering tuple.
-- [x] Implement workflow verifier skeleton.
-- [ ] Implement parameter source checker skeleton.
-- [ ] Compile AEP only after verifier pass or warning.
-- [ ] Add blocked-plan tests.
-- [ ] Commit planning and verification.
-- [x] Implement PlanMode ExitPlanGate boundary.
-
-## Phase 10: Permissions And ToolCall
-
-- [x] Implement `PermissionGate`.
-- [x] Implement permission mode policies.
-- [x] Implement ToolCall registry.
-- [x] Implement ToolCall validator.
-- [x] Implement dispatcher boundary.
-- [x] Add no-unregistered-tool tests.
-- [x] Commit permissions and ToolCall base.
-
-## Phase 11: GraphPatch Write Path
-
-- [x] Implement patch builder from events.
-- [x] Implement patch validator.
-- [x] Implement patch auditor.
-- [ ] Add audit checks:
-  - [x] schema completeness
-  - [x] provenance completeness
-  - [x] source event validity
-  - [ ] duplicate detection placeholder
-  - [ ] conflict detection placeholder
-  - [x] lifecycle transition validity
-  - [x] target tier restriction
-- [x] Commit GraphPatch builder/validator/auditor pipeline.
-
-## Phase 12: Memory Health Compiler
-
-- [x] Implement compiler input/output contracts.
-- [x] Implement lifecycle state manager.
-- [ ] Implement health policy config.
-- [ ] Implement candidate promotion gates.
-- [ ] Implement quarantine/retirement policy skeletons.
-- [ ] Add tests that only compiler updates L1 materialization.
-- [x] Add tests that only compiler updates L1 materialization.
-- [x] Commit graph health compiler skeleton.
-
-## Phase 13: Experience And Capability Evolution
-
-- [x] Implement failure-to-constraint candidate extraction.
-- [ ] Implement preference consolidation boundaries.
-- [x] Implement capability gap candidate records.
-- [x] Implement candidate ToolCallSpec builder boundaries.
-- [x] Add tests preventing single failure from becoming global hard rule.
-- [ ] Commit evolution modules.
-
-## Phase 14: Entrypoints
-
-- [x] Add CLI plan command.
-- [ ] Add API app skeleton only after core flow exists.
-- [x] Add structured output for blocked/verified plans.
-- [ ] Commit full app entrypoints.
+- [x] Add LangGraph plan flow.
+- [x] Add LangGraph execution flow.
+- [x] Add WorkflowPathSearch over L2 workflow nodes.
+- [x] Add AgenticExecutionPlanBuilder from selected workflow steps.
+- [x] Add WorkflowVerifier blockers for missing path, missing ToolCallSpec, missing executable steps, and unresolved requirements.
+- [x] Add PermissionGate modes for read-only, plan-only, approval-required, and execution modes.
+- [x] Add ToolCallRegistry loading from RuntimeGraphContext.
+- [x] Add ToolCallValidator and ToolCallDispatcher.
+- [x] Add RuntimeBackend implementations for Python functions, CLI, REST API, database API, and containerized CLI.
+- [x] Add execution experience GraphPatch generation.
+- [x] Add ability to write audited execution experience patches to L0.
+- [x] Add capability gap detector.
+- [x] Add EvolutionAgent for L0 candidate gap patches.
+- [x] Add ToolBuilderAgent for candidate Tool and ToolCallSpec GraphPatch creation.
 
 ## Active Next Steps
 
-- [x] Commit database integration requirements.
-- [x] Commit ToolCall validator.
-- [x] Commit ToolCall dispatcher boundary.
-- [x] Commit lifecycle state manager.
-- [x] Commit plan-only event logging.
-- [x] Commit GraphPatch validator.
-- [x] Start controlled full graph recall boundary.
-- [ ] Start capability evolution candidate records.
-- [ ] Start failure-to-constraint extraction.
-- [x] Commit ControlledFullGraphRecall boundary.
-- [x] Commit graph-construction bootstrap workflow.
-- [x] Commit HookBus runtime control skeleton.
-- [ ] Commit session state machine.
-- [x] Commit session state machine.
-- [x] Commit capability evolution candidate boundaries.
-- [x] Commit failure-to-constraint extractor.
-- [ ] Commit PlanMode, ClaimVerifier, and sufficiency checker boundaries.
-- [x] Commit PlanMode, ClaimVerifier, and sufficiency checker boundaries.
-- [ ] Commit implementation coverage gap document.
+- [ ] Add production API layer after CLI and core flow stabilize.
+- [ ] Add versioned database migrations instead of only bootstrap DDL strings.
+- [ ] Add concrete Qdrant collection creation policy once embedding model settings are finalized.
+- [ ] Add richer WorkflowPathSearch ranking signals from OperationalProfile.
+- [ ] Add parameter source checker as a separate gate before execution.
+- [ ] Add result sanity checker and deeper claim/workflow post-execution verification.
+- [ ] Expand MemoryHealthCompiler from boundary/reporting into policy-driven materialization.
+- [ ] Add graph patch duplicate/conflict detection against real L0 queries.
+- [ ] Add admin approval workflow for high-risk GraphPatch writes.
+- [ ] Add LLM-backed TaskFingerprinter and graph-backed disambiguation after model provider config is finalized.
+- [ ] Add external ToolDiscovery ingestion interface for user-built or separately discovered tools.
+- [ ] Add packaging path for user-supplied demoL0/demoL1 assets when the demo graph is ready.
+
+## Explicitly Deferred
+
+- [ ] First complete L0 construction from literature and broad domain discovery: deferred because the user will build and provide it separately.
+- [ ] First complete demoL0/demoL1 construction: deferred because the user will build it externally and only package final graph assets into HELIX.
+- [ ] Bundled bioinformatics tools and domain-specific workflows: deferred until real ToolCallSpec and graph content are supplied or discovered through the controlled tool-building path.
 
 ## Latest Validation
 
-- [x] `uv run pytest` (`72 passed`)
+- [x] `uv run pytest` (`103 passed`)
 - [x] `uv run ruff check .`
 - [x] `uv run mypy`
-- [x] CLI plan smoke check with event logging enabled.
-- [x] Push `main` to `origin/main`
-
-## Content Hygiene
-
-- [x] Remove concrete demo task strings from README and docs.
-- [x] Remove concrete demo domain/tool/input strings from tests.
-- [x] Remove hardcoded local architecture document path from repository docs and tests.
-- [ ] Keep future docs and tests free of mock experiments, fake interfaces, and sample datasets unless explicitly requested.
-
-## Demo Graph Profile
-
-- [x] Add graph profile schema for demo and production modes.
-- [x] Enforce packaged/read-only demo profile policy.
-- [x] Block builder, evolution, and GraphPatch writes in demo profiles.
-- [x] Add packaged demo graph manifest schema.
-- [x] Add packaged demoL0/demoL1 JSONL loader boundary.
-- [x] Allow plan-only orchestration to receive a loaded healthy graph store.
-- [x] Add shared six-layer L0/L1 heterogeneous graph node schema.
-- [x] Add shared six-layer L0/L1 heterogeneous graph edge schema.
-- [x] Enforce node layer/type compatibility.
-- [x] Enforce node/edge provenance and lifecycle state.
-- [x] Enforce L1 OperationalProfile and healthy state validation for packaged demoL1.
-- [x] Validate packaged demoL0/demoL1 assets through the shared graph schema before loading.
-- [x] Validate GraphPatch node/edge additions through the shared graph schema.
-- [ ] Add CLI/config selection for active graph profile.
-- [ ] Add packaged demo graph asset validation command once real demoL0/demoL1 assets exist.

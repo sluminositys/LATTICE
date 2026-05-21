@@ -359,3 +359,61 @@ This log records completed work in chronological order. Every implementation ste
 - Updated packaged demoL0/demoL1 loader to validate JSONL assets through the same six-layer schema before they enter stores.
 - Updated GraphPatch validation so added nodes and edges must pass `BioEvoKGNode` / `BioEvoKGEdge` schema validation.
 - Validation after schema work: `uv run pytest` passed with 89 tests; `uv run ruff check .` passed; `uv run mypy` passed.
+
+### Database-backed runtime integration
+
+- Added database settings for Neo4j, PostgreSQL, and Qdrant.
+- Added Neo4j L0 store for audited GraphPatch application, node lookup, and external L0 record replacement.
+- Added Neo4j L1 store for healthy runtime context projection, node lookup, and external L1 record replacement.
+- Added PostgreSQL bootstrap DDL for graph profiles, agent events, graph patches, audit reports, ToolCallSpec records, and sessions.
+- Added PostgreSQL AgentEventLog adapter.
+- Added PostgreSQL ToolCallSpec store with upsert, lookup, and active listing.
+- Added Qdrant graph node vector index adapter.
+- Added runtime graph loader for packaged demo graphs and Neo4j-backed production graphs.
+
+### Graph asset import and profile CLI
+
+- Added `GraphAssetImporter` for externally built L0/L1 assets.
+- Added `load_graph_records` export for shared JSONL graph record validation.
+- Added `helix graph validate-assets`.
+- Added `helix graph import-assets`.
+- Added `helix db init-postgres`.
+- Added `--config-dir` and `--graph-profile` selection to the plan command.
+
+### Executable orchestration
+
+- Added `AgenticExecutionPlanBuilder`.
+- Extended `WorkflowPathSearch` to select active L2 workflow paths and validate step-level ToolCallSpec references.
+- Extended `WorkflowVerifier` blockers for missing executable steps and unresolved requirements.
+- Added LangGraph execution flow with task fingerprinting, L2 projection, path search, gap detection, workflow verification, AEP compilation, permission checking, ToolCall dispatch, experience patch generation, and optional L0 write.
+- Added `helix execute`.
+- Updated `PermissionGate` so read-only and approval-required modes fail closed.
+- Added tests for successful executable flow through a registered Python runtime backend.
+
+### Runtime backends
+
+- Implemented `PythonFunctionBackend`.
+- Implemented `CliBackend` with `shell=False`, executable allowlist support, and input/parameter token resolution.
+- Implemented `RestApiBackend`.
+- Implemented `DatabaseApiBackend`.
+- Implemented `ContainerizedCliBackend`.
+- Added backend tests covering success paths and fail-closed policy paths.
+
+### Capability evolution expansion
+
+- Added `CapabilityGapDetector`.
+- Added `EvolutionAgent` that converts gaps into candidate L0 GraphPatch records.
+- Added `ToolDiscoveryRecord`.
+- Added `ToolBuilderAgent` that creates candidate Tool and ToolCallSpec graph mutations without directly activating them.
+- Added plan and execution flow events for capability gaps and evolution requests.
+
+### Current validation
+
+- `uv run pytest`: 103 passed.
+- `uv run ruff check .`: passed.
+- `uv run mypy`: passed.
+
+### External HTML report
+
+- Regenerated the Chinese architecture and implementation inventory report outside the project tree.
+- Report path: `D:\workspace\codex\artifacts\2026-05-21\helix-design-inventory\HELIX_design_inventory.html`.
