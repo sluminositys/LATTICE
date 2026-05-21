@@ -207,6 +207,14 @@ This log records completed work in chronological order. Every implementation ste
 - It blocks before L0 writes when audit fails.
 - It applies audited patches through the L0 store and then runs health compilation.
 - This code path represents bootstrap mode for the existing HELIX graph-construction workflow, not a new agent type.
+
+### Controlled full graph recall
+
+- Added `ControlledFullGraphRecall`.
+- Added `FullGraphRecallProvider` protocol for future L0 database adapters.
+- Added `FullGraphRecallCandidate` and `ControlledFullGraphRecallResult`.
+- Enforced recall safety rules for tombstoned, quarantined, deprecated, and low-provenance candidates.
+- Added tests for blocked tombstoned content, review-only quarantined content, and weak low-provenance candidates.
 - Committed database integration requirements: `b254050 docs: add database integration requirements`.
 
 ### ToolCall validator

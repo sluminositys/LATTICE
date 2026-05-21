@@ -127,7 +127,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 - [x] Implement five-view projector interfaces.
 - [ ] Implement sufficiency checker.
-- [ ] Implement controlled recall boundary without direct L1 promotion.
+- [x] Implement controlled recall boundary without direct L1 promotion.
 - [x] Add tests for insufficient context.
 - [ ] Commit runtime projection module.
 
@@ -201,9 +201,10 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit lifecycle state manager.
 - [x] Commit plan-only event logging.
 - [x] Commit GraphPatch validator.
-- [ ] Start controlled full graph recall boundary.
+- [x] Start controlled full graph recall boundary.
 - [ ] Start capability evolution candidate records.
 - [ ] Start failure-to-constraint extraction.
+- [ ] Commit ControlledFullGraphRecall boundary.
 - [x] Commit graph-construction bootstrap workflow.
 
 ## Latest Validation
