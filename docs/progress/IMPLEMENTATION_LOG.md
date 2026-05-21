@@ -251,6 +251,15 @@ This log records completed work in chronological order. Every implementation ste
 - Extracted failed ToolCall events into candidate warning constraints by default.
 - Added guard preventing a single failure event from becoming a global blocker constraint.
 - Added tests for extraction, global blocker rejection, and non-failure event rejection.
+- Committed failure-to-constraint extractor: `520ab7e memory: add failure to constraint extractor`.
+
+### PlanMode, claim verification, and sufficiency checking
+
+- Added `ExitPlanGate`.
+- Added `GraphContextSufficiencyChecker`.
+- Added `ClaimVerifier`.
+- Claim verification returns `not_applicable` when there are no claims and `unsupported` until evidence exists.
+- Added focused tests for all three boundaries.
 - Committed database integration requirements: `b254050 docs: add database integration requirements`.
 
 ### ToolCall validator

@@ -141,6 +141,7 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Compile AEP only after verifier pass or warning.
 - [ ] Add blocked-plan tests.
 - [ ] Commit planning and verification.
+- [x] Implement PlanMode ExitPlanGate boundary.
 
 ## Phase 10: Permissions And ToolCall
 
@@ -211,7 +212,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [ ] Commit session state machine.
 - [x] Commit session state machine.
 - [x] Commit capability evolution candidate boundaries.
-- [ ] Commit failure-to-constraint extractor.
+- [x] Commit failure-to-constraint extractor.
+- [ ] Commit PlanMode, ClaimVerifier, and sufficiency checker boundaries.
 
 ## Latest Validation
 
