@@ -2,7 +2,7 @@
 
 Source architecture: `E:\donwloads\HELIX_architecture_v7.md`
 
-This document defines the database integration contract for HELIX. It intentionally does not choose or require a concrete graph database yet. The first full run can populate L0 and L1 through dedicated builder agents after the database is installed.
+This document defines the database integration contract for HELIX. It intentionally does not choose or require a concrete graph database yet. The first full run can populate L0 and L1 through HELIX's existing graph-construction and health-compilation workflow after the database is installed.
 
 ## Design Position
 
@@ -104,7 +104,7 @@ src/helix/graph/adapters/neo4j_l1.py
 
 ## First Full Run Expectation
 
-The first complete run can use dedicated subagents or builder jobs to:
+The first complete run should use HELIX's existing graph-building capability, not a separate extra agent type. In practice this means running the architecture's graph-construction workflow in bootstrap mode to:
 
 - ingest source architecture and curated domain resources into L0,
 - construct initial ToolCallSpec records,
@@ -115,3 +115,5 @@ The first complete run can use dedicated subagents or builder jobs to:
 - then allow normal plan/execution flows to use L1 projection.
 
 Until then, the correct behavior is to return structured insufficient-context reports instead of hallucinating graph content.
+
+If this bootstrap flow is executed as a background job or delegated process, that is only an execution mode for the existing HELIX graph-construction workflow. It is not a new architectural agent outside the design.
