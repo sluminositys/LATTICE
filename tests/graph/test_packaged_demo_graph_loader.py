@@ -108,7 +108,8 @@ def test_packaged_demo_l1_store_projects_runtime_context(tmp_path) -> None:
 
     assert context.sufficiency_report.status == "sufficient"
     assert context.G_task["profile_id"] == "demo-profile"
-    assert context.G_workflow["nodes"][0]["node_id"] == "tool-1"
+    assert context.G_workflow["nodes"][0]["node_id"] == "method-1"
+    assert context.G_resource["nodes"][0]["node_id"] == "tool-1"
 
 
 def test_plan_only_can_use_packaged_demo_l1_store(tmp_path) -> None:

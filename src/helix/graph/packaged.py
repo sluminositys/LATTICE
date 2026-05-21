@@ -58,6 +58,7 @@ class PackagedHealthyGraphStore:
         self._nodes_by_id = _index_nodes(nodes)
 
     def project_runtime_context(self, fingerprint: TaskFingerprint) -> RuntimeGraphContext:
+        views = _split_runtime_views(self.nodes, self.edges)
         report = GraphContextSufficiencyReport(
             report_id=f"gcsr-{uuid4()}",
             status="sufficient" if self.nodes else "insufficient",
@@ -72,11 +73,13 @@ class PackagedHealthyGraphStore:
                 "profile_id": self.profile.profile_id,
                 "mode": self.profile.mode,
                 "task": fingerprint.task,
+                "nodes": views["task"]["nodes"],
+                "edges": views["task"]["edges"],
             },
-            G_workflow={
-                "nodes": self.nodes,
-                "edges": self.edges,
-            },
+            G_evidence=views["evidence"],
+            G_workflow=views["workflow"],
+            G_resource=views["resource"],
+            G_experience_preference=views["experience"],
             sufficiency_report=report,
             provenance=[
                 Provenance(
@@ -97,7 +100,7 @@ class JsonlPackagedDemoGraphStoreLoader:
         if profile.l0_asset_path is None:
             msg = f"Demo profile has no L0 asset path: {profile.profile_id}"
             raise PackagedGraphStoreError(msg)
-        records = _load_graph_records(Path(profile.l0_asset_path), graph_tier="L0")
+        records = load_graph_records(Path(profile.l0_asset_path), graph_tier="L0")
         return PackagedFullGraphStore(
             profile=profile,
             nodes=records.nodes,
@@ -109,7 +112,7 @@ class JsonlPackagedDemoGraphStoreLoader:
         if profile.l1_asset_path is None:
             msg = f"Demo profile has no L1 asset path: {profile.profile_id}"
             raise PackagedGraphStoreError(msg)
-        records = _load_graph_records(Path(profile.l1_asset_path), graph_tier="L1")
+        records = load_graph_records(Path(profile.l1_asset_path), graph_tier="L1")
         return PackagedHealthyGraphStore(
             profile=profile,
             nodes=records.nodes,
@@ -131,9 +134,20 @@ def _assert_packaged_demo_profile(profile: GraphProfile) -> None:
         raise PackagedGraphStoreError(msg)
 
 
-def _load_graph_records(path: Path, *, graph_tier: Literal["L0", "L1"]) -> BioEvoKGGraphRecords:
-    nodes = [BioEvoKGNode.model_validate(record) for record in _load_jsonl(path / "nodes.jsonl")]
-    edges = [BioEvoKGEdge.model_validate(record) for record in _load_jsonl(path / "edges.jsonl")]
+def load_graph_records(
+    path: str | Path,
+    *,
+    graph_tier: Literal["L0", "L1"],
+) -> BioEvoKGGraphRecords:
+    asset_path = Path(path)
+    nodes = [
+        BioEvoKGNode.model_validate(record)
+        for record in _load_jsonl(asset_path / "nodes.jsonl")
+    ]
+    edges = [
+        BioEvoKGEdge.model_validate(record)
+        for record in _load_jsonl(asset_path / "edges.jsonl")
+    ]
     return BioEvoKGGraphRecords(
         graph_tier=graph_tier,
         nodes=nodes,
@@ -166,3 +180,30 @@ def _index_nodes(nodes: list[BioEvoKGNode]) -> dict[str, dict[str, Any]]:
     for node in nodes:
         indexed[node.node_id] = node.model_dump(mode="json")
     return indexed
+
+
+def _split_runtime_views(
+    nodes: list[dict[str, Any]],
+    edges: list[dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    views: dict[str, dict[str, Any]] = {
+        "task": {"nodes": [], "edges": []},
+        "evidence": {"nodes": [], "edges": []},
+        "workflow": {"nodes": [], "edges": []},
+        "resource": {"nodes": [], "edges": []},
+        "experience": {"nodes": [], "edges": []},
+    }
+    node_view: dict[str, str] = {}
+    for node in nodes:
+        layer = node.get("layer")
+        view_name = "resource" if layer == "implementation" else str(layer)
+        if view_name in views:
+            views[view_name]["nodes"].append(node)
+            node_view[str(node["node_id"])] = view_name
+
+    for edge in edges:
+        source_view = node_view.get(str(edge.get("source_node_id")))
+        target_view = node_view.get(str(edge.get("target_node_id")))
+        if source_view == target_view and source_view in views:
+            views[source_view]["edges"].append(edge)
+    return views

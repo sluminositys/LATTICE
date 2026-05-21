@@ -11,13 +11,16 @@ def test_loads_base_dev_settings() -> None:
     assert settings.tool_registry.allow_unregistered_tools is False
     assert settings.graph_profiles.active_profile_id is None
     assert settings.graph_profiles.profiles == {}
+    assert settings.databases.neo4j_uri is None
 
 
 def test_environment_overrides(monkeypatch) -> None:
     monkeypatch.setenv("HELIX_GRAPH__CONTROLLED_RECALL_LIMIT", "7")
     monkeypatch.setenv("HELIX_LOGGING__JSON_LOGS", "true")
+    monkeypatch.setenv("HELIX_DATABASES__POSTGRES_DSN", "postgresql://localhost/helix")
 
     settings = load_settings("config")
 
     assert settings.graph.controlled_recall_limit == 7
     assert settings.logging.json_logs is True
+    assert settings.databases.postgres_dsn == "postgresql://localhost/helix"

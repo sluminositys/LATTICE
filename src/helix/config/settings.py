@@ -39,6 +39,17 @@ class RuntimePathSettings(StrictModel):
     scratch_subdir: str = "scratch"
 
 
+class DatabaseSettings(StrictModel):
+    neo4j_uri: str | None = None
+    neo4j_user: str | None = None
+    neo4j_password: str | None = None
+    neo4j_database: str | None = None
+    postgres_dsn: str | None = None
+    qdrant_url: str | None = None
+    qdrant_api_key: str | None = None
+    qdrant_prefer_grpc: bool = False
+
+
 class GraphSettings(StrictModel):
     l0_backend: str = "protocol_only"
     l1_backend: str = "protocol_only"
@@ -95,6 +106,7 @@ class HelixSettings(StrictModel):
     environment: str = "dev"
     models: ModelSettings = Field(default_factory=ModelSettings)
     runtime_paths: RuntimePathSettings = Field(default_factory=RuntimePathSettings)
+    databases: DatabaseSettings = Field(default_factory=DatabaseSettings)
     graph: GraphSettings = Field(default_factory=GraphSettings)
     graph_profiles: GraphProfilesSettings = Field(default_factory=GraphProfilesSettings)
     tool_registry: ToolRegistrySettings = Field(default_factory=ToolRegistrySettings)

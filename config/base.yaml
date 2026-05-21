@@ -14,6 +14,16 @@ runtime_paths:
   artifacts_subdir: artifacts
   scratch_subdir: scratch
 
+databases:
+  neo4j_uri: null
+  neo4j_user: null
+  neo4j_password: null
+  neo4j_database: null
+  postgres_dsn: null
+  qdrant_url: null
+  qdrant_api_key: null
+  qdrant_prefer_grpc: false
+
 graph:
   l0_backend: protocol_only
   l1_backend: protocol_only
