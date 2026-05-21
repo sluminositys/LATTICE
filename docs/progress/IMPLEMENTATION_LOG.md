@@ -242,6 +242,15 @@ This log records completed work in chronological order. Every implementation ste
 - Added `ToolCallSpecBuilder`.
 - Enforced that new candidate tools/workflows cannot start as active lifecycle states.
 - Added tests proving candidate ToolCallSpec records are not active in `ToolCallRegistry`.
+- Committed capability evolution candidate boundaries: `eb37788 capability-evolution: add candidate boundaries`.
+
+### Failure-to-constraint
+
+- Added `Constraint` schema.
+- Added `FailureToConstraintExtractor`.
+- Extracted failed ToolCall events into candidate warning constraints by default.
+- Added guard preventing a single failure event from becoming a global blocker constraint.
+- Added tests for extraction, global blocker rejection, and non-failure event rejection.
 - Committed database integration requirements: `b254050 docs: add database integration requirements`.
 
 ### ToolCall validator

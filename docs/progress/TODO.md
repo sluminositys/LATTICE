@@ -180,11 +180,11 @@ This TODO is the working backlog for building HELIX as an independent Python age
 
 ## Phase 13: Experience And Capability Evolution
 
-- [ ] Implement failure-to-constraint candidate extraction.
+- [x] Implement failure-to-constraint candidate extraction.
 - [ ] Implement preference consolidation boundaries.
 - [x] Implement capability gap candidate records.
 - [x] Implement candidate ToolCallSpec builder boundaries.
-- [ ] Add tests preventing single failure from becoming global hard rule.
+- [x] Add tests preventing single failure from becoming global hard rule.
 - [ ] Commit evolution modules.
 
 ## Phase 14: Entrypoints
@@ -210,7 +210,8 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] Commit HookBus runtime control skeleton.
 - [ ] Commit session state machine.
 - [x] Commit session state machine.
-- [ ] Commit capability evolution candidate boundaries.
+- [x] Commit capability evolution candidate boundaries.
+- [ ] Commit failure-to-constraint extractor.
 
 ## Latest Validation
 

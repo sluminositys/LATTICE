@@ -11,7 +11,7 @@ from helix.schemas.common import (
     Provenance,
     WarningItem,
 )
-from helix.schemas.experience import ExperienceCandidate
+from helix.schemas.experience import Constraint, ExperienceCandidate
 from helix.schemas.graph_patch import GraphPatch, LifecycleTransition
 from helix.schemas.planning import AgenticExecutionPlan, AgenticExecutionStep
 from helix.schemas.runtime_context import GraphContextSufficiencyReport, RuntimeGraphContext
@@ -33,6 +33,7 @@ __all__ = [
     "AgenticExecutionPlan",
     "AgenticExecutionStep",
     "ClaimAuditReport",
+    "Constraint",
     "ExperienceCandidate",
     "GraphPatch",
     "StructuredObservation",
