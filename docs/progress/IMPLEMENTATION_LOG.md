@@ -171,7 +171,7 @@ This log records completed work in chronological order. Every implementation ste
 - `uv run pytest`: 35 passed.
 - `uv run ruff check .`: passed.
 - `uv run mypy`: passed.
-- `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-demo`: returned structured `plan_blocked` response with `NO_WORKFLOW_PATH` and `NO_TOOLCALL_SPEC`.
+- CLI plan smoke check with a generic task request: returned structured `plan_blocked` response with `NO_WORKFLOW_PATH` and `NO_TOOLCALL_SPEC`.
 
 ### Remote sync
 
@@ -327,4 +327,12 @@ This log records completed work in chronological order. Every implementation ste
 - `uv run pytest`: 51 passed.
 - `uv run ruff check .`: passed.
 - `uv run mypy`: passed.
-- `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-20260521 --event-log D:\workspace\codex\logs\2026-05-21\helix-plan-events-20260521.jsonl`: wrote 7 append-only events.
+- CLI plan smoke check with event logging enabled: wrote 7 append-only events.
+
+### README and demo-content cleanup
+
+- Rewrote `README.md` as a system-level HELIX description without local source document paths or architecture-version shorthand.
+- Removed concrete demo task strings from README, architecture overview docs, progress docs, and tests.
+- Replaced domain-specific test strings with abstract task/tool/input names so tests validate control flow only.
+- Confirmed no remaining repository references to the removed demo task strings, demo file names, or local architecture document path.
+- Validation after cleanup: `uv run pytest` passed with 72 tests; `uv run ruff check .` passed; `uv run mypy` passed.

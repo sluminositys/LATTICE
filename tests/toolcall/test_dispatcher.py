@@ -42,7 +42,7 @@ def make_step() -> AgenticExecutionStep:
         step_id="step-1",
         workflow_step_id="wf-step-1",
         toolcall_spec_id="toolcall-1",
-        input_bindings={"input_path": "reads.fastq.gz"},
+        input_bindings={"input_path": "input.dat"},
     )
 
 

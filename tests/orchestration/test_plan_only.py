@@ -3,7 +3,7 @@ from helix.runtime import FileAgentEventLog
 
 
 def test_plan_only_flow_blocks_without_graph_or_tool_specs() -> None:
-    state = run_plan_only("Plan RNA-seq QC workflow", session_id="session-1")
+    state = run_plan_only("Plan requested workflow", session_id="session-1")
 
     assert state["status"] == "plan_blocked"
     assert state["task_fingerprint"].execution_intent == "plan_only"
@@ -17,7 +17,7 @@ def test_plan_only_flow_blocks_without_graph_or_tool_specs() -> None:
 def test_plan_only_flow_appends_event_log(tmp_path) -> None:
     event_log = FileAgentEventLog(tmp_path / "events.jsonl")
 
-    run_plan_only("Plan RNA-seq QC workflow", session_id="session-1", event_log=event_log)
+    run_plan_only("Plan requested workflow", session_id="session-1", event_log=event_log)
 
     events = event_log.read_all()
     assert [event.event_type for event in events] == [

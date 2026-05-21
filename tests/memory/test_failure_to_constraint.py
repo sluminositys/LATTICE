@@ -10,7 +10,7 @@ def make_failure_event() -> AgentEvent:
         event_id="event-1",
         session_id="session-1",
         event_type="ToolCallFailed",
-        payload={"tool_name": "fastqc", "error_class": "MissingInput"},
+        payload={"tool_name": "candidate-tool", "error_class": "MissingInput"},
         provenance=[Provenance(source_type="toolcall_runtime")],
     )
 
@@ -19,7 +19,7 @@ def test_failure_to_constraint_extracts_candidate_constraint() -> None:
     constraint = FailureToConstraintExtractor().extract(make_failure_event())
 
     assert constraint.type == "failure_condition"
-    assert constraint.subject == "fastqc"
+    assert constraint.subject == "candidate-tool"
     assert constraint.object == "MissingInput"
     assert constraint.severity == "warning"
     assert constraint.lifecycle_state == "candidate"

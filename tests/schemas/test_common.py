@@ -12,8 +12,8 @@ def test_schema_models_reject_extra_fields() -> None:
 def test_provenance_requires_source_type() -> None:
     provenance = Provenance(
         source_type="architecture",
-        source_path="E:/donwloads/HELIX_architecture_v7.md",
+        source_path="docs/source-architecture.md",
     )
 
     assert provenance.source_type == "architecture"
-    assert provenance.source_path == "E:/donwloads/HELIX_architecture_v7.md"
+    assert provenance.source_path == "docs/source-architecture.md"

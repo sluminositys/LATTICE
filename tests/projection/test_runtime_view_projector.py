@@ -3,7 +3,7 @@ from helix.projection import RuntimeViewProjector
 
 
 def test_runtime_view_projector_reports_insufficient_without_l1_store() -> None:
-    fingerprint = TaskFingerprinter().fingerprint("Plan variant annotation")
+    fingerprint = TaskFingerprinter().fingerprint("Plan requested workflow")
     context = RuntimeViewProjector().project(fingerprint)
 
     assert context.task_fingerprint_id == fingerprint.fingerprint_id

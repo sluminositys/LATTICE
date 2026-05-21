@@ -9,9 +9,9 @@ def test_task_fingerprint_defaults_to_plan_only() -> None:
     fingerprint = TaskFingerprint(
         fingerprint_id="tf-1",
         user_id="user-1",
-        task="Build a workflow for RNA-seq quality control",
-        task_category="rna_seq_qc",
-        data_types=["fastq"],
+        task="Build a workflow for the requested analysis",
+        task_category="unclassified",
+        data_types=["input_data"],
     )
 
     assert fingerprint.execution_intent == "plan_only"

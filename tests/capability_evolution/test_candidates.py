@@ -8,9 +8,9 @@ from helix.toolcall import ToolCallRegistry, ToolCallRegistryError
 
 def make_candidate_tool() -> CandidateTool:
     return CandidateTool(
-        candidate_id="fastqc",
-        name="FastQC candidate",
-        tool_name="fastqc",
+        candidate_id="candidate-tool",
+        name="Candidate tool",
+        tool_name="candidate-tool",
         runtime_backend="cli",
         input_schema={"required": ["input_path"]},
         output_schema={"type": "object"},
@@ -21,9 +21,9 @@ def make_candidate_tool() -> CandidateTool:
 def test_candidate_tool_cannot_start_active() -> None:
     with pytest.raises(ValidationError):
         CandidateTool(
-            candidate_id="fastqc",
-            name="FastQC candidate",
-            tool_name="fastqc",
+            candidate_id="candidate-tool",
+            name="Candidate tool",
+            tool_name="candidate-tool",
             runtime_backend="cli",
             input_schema={"required": ["input_path"]},
             output_schema={"type": "object"},

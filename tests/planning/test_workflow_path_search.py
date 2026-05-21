@@ -4,7 +4,7 @@ from helix.projection import RuntimeViewProjector
 
 
 def test_workflow_search_blocks_on_insufficient_context() -> None:
-    fingerprint = TaskFingerprinter().fingerprint("Plan RNA-seq QC")
+    fingerprint = TaskFingerprinter().fingerprint("Plan requested workflow")
     context = RuntimeViewProjector().project(fingerprint)
     result = WorkflowPathSearch().search(fingerprint, context)
 

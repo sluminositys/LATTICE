@@ -1,6 +1,6 @@
 # HELIX Implementation TODO
 
-Source architecture: `E:\donwloads\HELIX_architecture_v7.md`
+Design source: user-provided HELIX architecture planning document.
 
 This TODO is the working backlog for building HELIX as an independent Python agent system. Each small completed unit should be committed separately and reflected in `IMPLEMENTATION_LOG.md`.
 
@@ -222,5 +222,12 @@ This TODO is the working backlog for building HELIX as an independent Python age
 - [x] `uv run pytest` (`72 passed`)
 - [x] `uv run ruff check .`
 - [x] `uv run mypy`
-- [x] `uv run helix plan "Plan RNA-seq QC workflow" --session-id session-20260521 --event-log D:\workspace\codex\logs\2026-05-21\helix-plan-events-20260521.jsonl`
+- [x] CLI plan smoke check with event logging enabled.
 - [x] Push `main` to `origin/main`
+
+## Content Hygiene
+
+- [x] Remove concrete demo task strings from README and docs.
+- [x] Remove concrete demo domain/tool/input strings from tests.
+- [x] Remove hardcoded local architecture document path from repository docs and tests.
+- [ ] Keep future docs and tests free of mock experiments, fake interfaces, and sample datasets unless explicitly requested.

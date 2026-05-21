@@ -3,7 +3,7 @@ from helix.projection import GraphContextSufficiencyChecker, RuntimeViewProjecto
 
 
 def test_sufficiency_checker_reads_runtime_context_report() -> None:
-    fingerprint = TaskFingerprinter().fingerprint("Plan RNA-seq QC")
+    fingerprint = TaskFingerprinter().fingerprint("Plan requested workflow")
     context = RuntimeViewProjector().project(fingerprint)
     checker = GraphContextSufficiencyChecker()
 

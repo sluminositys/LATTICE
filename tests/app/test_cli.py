@@ -4,7 +4,7 @@ from helix.app.cli import main
 
 
 def test_cli_plan_outputs_blocked_plan(capsys) -> None:
-    exit_code = main(["plan", "Plan RNA-seq QC", "--session-id", "session-1"])
+    exit_code = main(["plan", "Plan requested workflow", "--session-id", "session-1"])
 
     output = json.loads(capsys.readouterr().out)
 
@@ -20,7 +20,7 @@ def test_cli_plan_can_write_event_log(capsys, tmp_path) -> None:
     exit_code = main(
         [
             "plan",
-            "Plan RNA-seq QC",
+            "Plan requested workflow",
             "--session-id",
             "session-1",
             "--event-log",

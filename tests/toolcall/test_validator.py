@@ -51,7 +51,7 @@ def test_toolcall_validator_passes_complete_step() -> None:
         step_id="step-1",
         workflow_step_id="wf-step-1",
         toolcall_spec_id="toolcall-1",
-        input_bindings={"input_path": "reads.fastq.gz"},
+        input_bindings={"input_path": "input.dat"},
         parameter_bindings={"threads": 4},
     )
     registry = ToolCallRegistry([make_active_spec()])
