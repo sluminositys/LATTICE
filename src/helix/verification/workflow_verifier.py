@@ -24,6 +24,25 @@ class WorkflowVerifier:
                     message="No active ToolCallSpec is registered for execution.",
                 )
             )
+        if any("executable steps" in item for item in search_result.unresolved_requirements):
+            blockers.append(
+                Blocker(
+                    code="NO_EXECUTABLE_WORKFLOW_STEPS",
+                    message="The selected workflow path has no executable step sequence.",
+                )
+            )
+        remaining_unresolved = [
+            item
+            for item in search_result.unresolved_requirements
+            if "ToolCallSpec" not in item and "executable steps" not in item
+        ]
+        if remaining_unresolved and search_result.selected_workflow_path_id is not None:
+            blockers.append(
+                Blocker(
+                    code="UNRESOLVED_WORKFLOW_REQUIREMENTS",
+                    message="Workflow path search returned unresolved requirements.",
+                )
+            )
 
         if blockers:
             return WorkflowAuditReport(

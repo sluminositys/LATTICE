@@ -32,4 +32,4 @@ def test_cli_plan_can_write_event_log(capsys, tmp_path) -> None:
 
     assert exit_code == 0
     assert event_log_path.exists()
-    assert len(event_log_path.read_text(encoding="utf-8").splitlines()) == 7
+    assert len(event_log_path.read_text(encoding="utf-8").splitlines()) == 9
