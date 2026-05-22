@@ -1,8 +1,8 @@
-import pytest
+﻿import pytest
 
-from helix.hooks import HookBus, HookBusError, HookEvent, HookOutput
-from helix.runtime import FileAgentEventLog
-from helix.schemas import Provenance
+from lattice.hooks import HookBus, HookBusError, HookEvent, HookOutput
+from lattice.runtime import FileAgentEventLog
+from lattice.schemas import Provenance
 
 
 def test_hook_bus_collects_runtime_warnings() -> None:

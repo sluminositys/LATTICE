@@ -1,7 +1,7 @@
-import pytest
+﻿import pytest
 from pydantic import ValidationError
 
-from helix.schemas.common import Provenance
+from lattice.schemas.common import Provenance
 
 
 def test_schema_models_reject_extra_fields() -> None:

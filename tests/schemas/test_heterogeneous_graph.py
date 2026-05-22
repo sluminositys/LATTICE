@@ -1,7 +1,7 @@
-import pytest
+﻿import pytest
 from pydantic import ValidationError
 
-from helix.schemas import BioEvoKGEdge, BioEvoKGGraphRecords, BioEvoKGNode, OperationalProfile
+from lattice.schemas import BioEvoKGEdge, BioEvoKGGraphRecords, BioEvoKGNode, OperationalProfile
 
 
 def make_node(

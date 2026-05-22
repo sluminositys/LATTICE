@@ -1,8 +1,8 @@
-# HELIX Database Integration Requirements
+﻿# LATTICE Database Integration Requirements
 
-Design source: user-provided HELIX architecture planning document.
+Design source: user-provided LATTICE architecture planning document.
 
-This document defines the database integration contract for HELIX. It intentionally does not choose or require a concrete graph database yet. The first full run can populate L0 and L1 through HELIX's existing graph-construction and health-compilation workflow after the database is installed.
+This document defines the database integration contract for LATTICE. It intentionally does not choose or require a concrete graph database yet. The first full run can populate L0 and L1 through LATTICE's existing graph-construction and health-compilation workflow after the database is installed.
 
 ## Design Position
 
@@ -92,27 +92,27 @@ The current code keeps backend choice open. Viable future adapters include:
 
 Future database adapters should implement:
 
-- `helix.graph.FullGraphStore`
-- `helix.graph.HealthyGraphStore`
+- `lattice.graph.FullGraphStore`
+- `lattice.graph.HealthyGraphStore`
 
 Adapters should live outside core contracts, for example:
 
 ```text
-src/helix/graph/adapters/neo4j_l0.py
-src/helix/graph/adapters/neo4j_l1.py
+src/lattice/graph/adapters/neo4j_l0.py
+src/lattice/graph/adapters/neo4j_l1.py
 ```
 
 The bootstrap orchestration code lives in:
 
 ```text
-src/helix/graph_construction/bootstrap.py
+src/lattice/graph_construction/bootstrap.py
 ```
 
 It composes `FullGraphStore`, `GraphPatchAuditor`, and `MemoryHealthCompiler`. It does not create a new agent type.
 
 ## First Full Run Expectation
 
-The first complete run should use HELIX's existing graph-building capability, not a separate extra agent type. In practice this means running the architecture's graph-construction workflow in bootstrap mode to:
+The first complete run should use LATTICE's existing graph-building capability, not a separate extra agent type. In practice this means running the architecture's graph-construction workflow in bootstrap mode to:
 
 - ingest source architecture and curated domain resources into L0,
 - construct initial ToolCallSpec records,
@@ -124,4 +124,4 @@ The first complete run should use HELIX's existing graph-building capability, no
 
 Until then, the correct behavior is to return structured insufficient-context reports instead of hallucinating graph content.
 
-If this bootstrap flow is executed as a background job or delegated process, that is only an execution mode for the existing HELIX graph-construction workflow. It is not a new architectural agent outside the design.
+If this bootstrap flow is executed as a background job or delegated process, that is only an execution mode for the existing LATTICE graph-construction workflow. It is not a new architectural agent outside the design.

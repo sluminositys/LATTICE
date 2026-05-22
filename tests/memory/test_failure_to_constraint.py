@@ -1,8 +1,8 @@
-import pytest
+﻿import pytest
 
-from helix.memory import FailureToConstraintExtractor
-from helix.runtime import AgentEvent
-from helix.schemas import Provenance
+from lattice.memory import FailureToConstraintExtractor
+from lattice.runtime import AgentEvent
+from lattice.schemas import Provenance
 
 
 def make_failure_event() -> AgentEvent:

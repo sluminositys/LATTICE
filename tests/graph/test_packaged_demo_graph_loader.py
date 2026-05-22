@@ -1,16 +1,16 @@
-import json
+﻿import json
 from pathlib import Path
 
 import pytest
 
-from helix.core import TaskFingerprinter
-from helix.graph import (
+from lattice.core import TaskFingerprinter
+from lattice.graph import (
     JsonlPackagedDemoGraphStoreLoader,
     PackagedGraphStoreError,
     load_packaged_demo_graph_manifest,
 )
-from helix.orchestration import run_plan_only
-from helix.schemas import GraphPatch, Provenance, create_packaged_demo_graph_profile
+from lattice.orchestration import run_plan_only
+from lattice.schemas import GraphPatch, Provenance, create_packaged_demo_graph_profile
 
 
 def write_jsonl(path: Path, records: list[dict[str, object]]) -> None:

@@ -1,35 +1,9 @@
-# Python
+.venv/
 __pycache__/
-*.py[cod]
-*.pyo
-*.pyd
+*.pyc
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
-.coverage
-htmlcov/
-
-# Virtual environments
-.venv/
-venv/
-env/
-
-# Build artifacts
-build/
 dist/
+build/
 *.egg-info/
-
-# Local environment
-.env
-.env.*
-!.env.example
-
-# IDE
-.idea/
-.vscode/
-
-# Runtime output belongs outside the repo under D:\workspace\codex
-logs/
-runs/
-artifacts/
-scratch/

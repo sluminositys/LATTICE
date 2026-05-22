@@ -1,7 +1,7 @@
 [project]
-name = "helix"
+name = "lattice"
 version = "0.1.0"
-description = "Agent-native workflow knowledge graph system for bioinformatics planning and controlled execution."
+description = "Layered Agent for Tool-Augmented Task Intelligence, Curation, and Evolution in Genomics and Bioinformatics."
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 dependencies = [
@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-helix = "helix.app.cli:main"
+lattice = "lattice.app.cli:main"
 
 [dependency-groups]
 dev = [
@@ -45,4 +45,4 @@ addopts = "-q"
 [tool.mypy]
 python_version = "3.10"
 strict = true
-packages = ["helix"]
+packages = ["lattice"]

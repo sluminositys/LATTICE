@@ -1,10 +1,10 @@
-# HELIX Decisions
+﻿# LATTICE Decisions
 
 ## DEC-001: Repository Location
 
 Status: accepted
 
-Use `D:\workspace\HELIX` as the project repository. Keep `D:\workspace` as a parent workspace only.
+Use `D:\workspace\LATTICE` as the project repository. Keep `D:\workspace` as a parent workspace only.
 
 ## DEC-002: Build Order
 
@@ -16,7 +16,7 @@ Build tracking docs first, then `uv` project metadata, then config, schemas, eve
 
 Status: accepted
 
-The first usable HELIX flow is `plan_only`. Tool execution remains disabled until ToolCall registry, PermissionGate, and runtime backend checks are implemented.
+The first usable LATTICE flow is `plan_only`. Tool execution remains disabled until ToolCall registry, PermissionGate, and runtime backend checks are implemented.
 
 ## DEC-004: Graph Store Backend
 

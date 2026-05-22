@@ -1,6 +1,6 @@
-from helix.core import TaskFingerprinter
-from helix.planning import WorkflowPathSearch
-from helix.projection import RuntimeViewProjector
+﻿from lattice.core import TaskFingerprinter
+from lattice.planning import WorkflowPathSearch
+from lattice.projection import RuntimeViewProjector
 
 
 def test_workflow_search_blocks_on_insufficient_context() -> None:

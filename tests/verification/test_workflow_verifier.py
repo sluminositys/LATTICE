@@ -1,5 +1,5 @@
-from helix.planning import WorkflowSearchResult
-from helix.verification import WorkflowVerifier
+﻿from lattice.planning import WorkflowSearchResult
+from lattice.verification import WorkflowVerifier
 
 
 def test_workflow_verifier_blocks_without_selected_path() -> None:

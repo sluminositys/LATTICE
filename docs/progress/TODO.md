@@ -1,6 +1,6 @@
-# HELIX Implementation TODO
+﻿# LATTICE Implementation TODO
 
-This backlog tracks the project as an independent Python HELIX agent system. Keep changes small, commit frequently, and update this file with each implementation slice.
+This backlog tracks the project as an independent Python LATTICE agent system. Keep changes small, commit frequently, and update this file with each implementation slice.
 
 ## Build Policy
 
@@ -15,8 +15,8 @@ This backlog tracks the project as an independent Python HELIX agent system. Kee
 
 ## Completed Foundation
 
-- [x] Create independent project directory at `D:\workspace\HELIX`.
-- [x] Initialize git repository and remote `git@github.com:sluminositys/HELIX.git`.
+- [x] Create independent project directory at `D:\workspace\LATTICE`.
+- [x] Initialize git repository and remote `git@github.com:sluminositys/LATTICE.git`.
 - [x] Add Python package metadata, `uv.lock`, ruff, mypy, and pytest.
 - [x] Add typed settings loader and environment overrides.
 - [x] Add core schemas for task, runtime context, AEP, ToolCall, observations, verification, GraphPatch, experience, graph profiles, and six-layer Bio-EvoKG records.
@@ -77,7 +77,7 @@ This backlog tracks the project as an independent Python HELIX agent system. Kee
 ## Explicitly Deferred
 
 - [ ] First complete L0 construction from literature and broad domain discovery: deferred because the user will build and provide it separately.
-- [ ] First complete demoL0/demoL1 construction: deferred because the user will build it externally and only package final graph assets into HELIX.
+- [ ] First complete demoL0/demoL1 construction: deferred because the user will build it externally and only package final graph assets into LATTICE.
 - [ ] Bundled bioinformatics tools and domain-specific workflows: deferred until real ToolCallSpec and graph content are supplied or discovered through the controlled tool-building path.
 
 ## Latest Validation

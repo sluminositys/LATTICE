@@ -1,8 +1,8 @@
-# HELIX Architecture Gaps And Risks
+﻿# LATTICE Architecture Gaps And Risks
 
-Design source: user-provided HELIX architecture planning document.
+Design source: user-provided LATTICE architecture planning document.
 
-This file records possible model, architecture, or engineering risks discovered while implementing HELIX. Items here are not blockers by default; they are decisions or constraints that need to be tracked explicitly.
+This file records possible model, architecture, or engineering risks discovered while implementing LATTICE. Items here are not blockers by default; they are decisions or constraints that need to be tracked explicitly.
 
 ## Open Items
 

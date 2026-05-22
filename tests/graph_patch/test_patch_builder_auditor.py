@@ -1,6 +1,6 @@
-from helix.graph_patch import GraphPatchAuditor, GraphPatchBuilder
-from helix.runtime import AgentEvent
-from helix.schemas import Provenance
+﻿from lattice.graph_patch import GraphPatchAuditor, GraphPatchBuilder
+from lattice.runtime import AgentEvent
+from lattice.schemas import Provenance
 
 
 def make_valid_node() -> dict[str, object]:

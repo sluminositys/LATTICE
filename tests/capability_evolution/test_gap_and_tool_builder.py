@@ -1,15 +1,15 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
-from helix.capability_evolution import (
+from lattice.capability_evolution import (
     CapabilityGapDetector,
     EvolutionAgent,
     ToolBuilderAgent,
     ToolDiscoveryRecord,
 )
-from helix.core import TaskFingerprinter
-from helix.planning import WorkflowSearchResult
-from helix.runtime import AgentEvent
-from helix.schemas import GraphContextSufficiencyReport, Provenance, RuntimeGraphContext
+from lattice.core import TaskFingerprinter
+from lattice.planning import WorkflowSearchResult
+from lattice.runtime import AgentEvent
+from lattice.schemas import GraphContextSufficiencyReport, Provenance, RuntimeGraphContext
 
 
 def test_gap_detector_converts_unresolved_toolcall_need_to_gap() -> None:

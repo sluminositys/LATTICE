@@ -1,8 +1,8 @@
-import pytest
+﻿import pytest
 from pydantic import ValidationError
 
-from helix.runtime import AgentEvent, FileAgentEventLog
-from helix.schemas import Provenance
+from lattice.runtime import AgentEvent, FileAgentEventLog
+from lattice.schemas import Provenance
 
 
 def test_file_event_log_appends_without_overwriting(tmp_path) -> None:

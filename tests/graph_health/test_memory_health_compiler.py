@@ -1,5 +1,5 @@
-from helix.graph_health import MemoryHealthCompiler
-from helix.schemas import GraphPatch, Provenance
+﻿from lattice.graph_health import MemoryHealthCompiler
+from lattice.schemas import GraphPatch, Provenance
 
 
 def test_memory_health_compiler_skips_empty_patch_set() -> None:

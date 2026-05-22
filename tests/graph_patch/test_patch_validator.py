@@ -1,5 +1,5 @@
-from helix.graph_patch import GraphPatchValidator
-from helix.schemas import GraphPatch, LifecycleTransition, Provenance
+﻿from lattice.graph_patch import GraphPatchValidator
+from lattice.schemas import GraphPatch, LifecycleTransition, Provenance
 
 
 def make_valid_node() -> dict[str, object]:

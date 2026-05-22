@@ -1,32 +1,32 @@
-# HELIX 当前代码实现说明
+﻿# LATTICE 当前代码实现说明
 
-本文档说明 `D:\workspace\HELIX` 当前代码结构、内部流程、模块职责，以及现在已经实现和仍未实现的部分。
+本文档说明 `D:\workspace\LATTICE` 当前代码结构、内部流程、模块职责，以及现在已经实现和仍未实现的部分。
 
-设计依据：用户提供的 HELIX 架构规划文档。
+设计依据：用户提供的 LATTICE 架构规划文档。
 
 ## 当前定位
 
-当前 HELIX 已经是一个 Python 包，具备一个可运行的 `plan-only` agent 主流程，并且已经预留了图构建、ToolCall 执行、GraphPatch 写入、MemoryHealthCompiler、Controlled Full Graph Recall、HookBus、自进化、demo/production graph profile 等核心边界。
+当前 LATTICE 已经是一个 Python 包，具备一个可运行的 `plan-only` agent 主流程，并且已经预留了图构建、ToolCall 执行、GraphPatch 写入、MemoryHealthCompiler、Controlled Full Graph Recall、HookBus、自进化、demo/production graph profile 等核心边界。
 
 代码里刻意没有加入真实生物信息学工具、假 L0 图数据、假 L1 healthy graph 数据或假数据库 adapter。正式模式下，它们必须通过真实 `ToolCallSpec`、经过审计的 `GraphPatch`、L0 存储和 `MemoryHealthCompiler` 进入系统。demo 模式下，系统只读取外部手动构建并随系统打包的 demoL0/demoL1 图资产，不启动 builder、evolution 或 GraphPatch 写入。demoL0、demoL1 和正式 L0/L1 共用同一套六层异构图 schema。
 
 ## 现在有几个 Agent？
 
-当前代码层面只有一个 HELIX agent 系统。
+当前代码层面只有一个 LATTICE agent 系统。
 
 代码里有多个 workflow 和模块，但不是多个独立 agent：
 
 - `plan-only orchestration`：当前可运行的 agent 主流程。
-- `graph-construction bootstrap workflow`：HELIX 既有图构建路径的 bootstrap 模式。
+- `graph-construction bootstrap workflow`：LATTICE 既有图构建路径的 bootstrap 模式。
 - `capability evolution`：受控的新工具 / 新 workflow 候选能力扩展路径。
 - `memory evolution`：从失败事件提取 constraint 的经验演化路径。
 
-这些都是 HELIX 内部 workflow 或模块边界，不是额外新增的架构外 agent。
+这些都是 LATTICE 内部 workflow 或模块边界，不是额外新增的架构外 agent。
 
 ## 顶层模块结构
 
 ```text
-src/helix/
+src/lattice/
   app/
   capability_evolution/
   config/
@@ -53,7 +53,7 @@ src/helix/
 
 应用入口。
 
-当前已有 CLI 命令入口：`helix plan`。
+当前已有 CLI 命令入口：`lattice plan`。
 
 具体任务文本应来自真实用户请求；本文档不固化示例实验或示例工作流。可选事件日志通过 `--event-log` 写入指定 JSONL 文件。
 
@@ -281,7 +281,7 @@ candidate/probationary/active/cold_reference -> quarantined -> retired -> tombst
 
 ### `graph_construction`
 
-HELIX 既有图构建 workflow 的 bootstrap 模式。
+LATTICE 既有图构建 workflow 的 bootstrap 模式。
 
 当前组件：
 
@@ -329,7 +329,7 @@ GraphPatch
 
 ```mermaid
 flowchart TD
-    A["CLI: helix plan"] --> B["run_plan_only"]
+    A["CLI: lattice plan"] --> B["run_plan_only"]
     B --> C["receive_request"]
     C --> D["TaskFingerprinter"]
     D --> E["RuntimeViewProjector"]
@@ -457,7 +457,7 @@ mypy passed
 
 ## 实用总结
 
-当前 HELIX 已经可以：
+当前 LATTICE 已经可以：
 
 - 加载配置
 - 运行 LangGraph plan-only 主流程
@@ -472,7 +472,7 @@ mypy passed
 - 从失败事件提取 candidate constraint
 - 防止假的 active tool 或假的 global hard rule
 
-当前 HELIX 还不能：
+当前 LATTICE 还不能：
 
 - 执行真实生物信息学工具
 - 查询真实图数据库

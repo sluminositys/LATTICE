@@ -1,7 +1,7 @@
-from typing import Any
+﻿from typing import Any
 
-from helix.graph_construction import GraphConstructionBootstrapWorkflow
-from helix.schemas import GraphPatch, Provenance, create_packaged_demo_graph_profile
+from lattice.graph_construction import GraphConstructionBootstrapWorkflow
+from lattice.schemas import GraphPatch, Provenance, create_packaged_demo_graph_profile
 
 
 def make_valid_node() -> dict[str, object]:

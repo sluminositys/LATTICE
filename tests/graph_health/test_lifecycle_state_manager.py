@@ -1,7 +1,7 @@
-import pytest
+﻿import pytest
 
-from helix.graph_health import LifecycleStateError, LifecycleStateManager
-from helix.schemas import LifecycleTransition
+from lattice.graph_health import LifecycleStateError, LifecycleStateManager
+from lattice.schemas import LifecycleTransition
 
 
 def test_lifecycle_manager_allows_capability_promotion_path() -> None:

@@ -1,5 +1,5 @@
-from helix.core import TaskFingerprinter
-from helix.projection import GraphContextSufficiencyChecker, RuntimeViewProjector
+﻿from lattice.core import TaskFingerprinter
+from lattice.projection import GraphContextSufficiencyChecker, RuntimeViewProjector
 
 
 def test_sufficiency_checker_reads_runtime_context_report() -> None:

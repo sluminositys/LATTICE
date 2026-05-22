@@ -1,9 +1,9 @@
-import pytest
+﻿import pytest
 from pydantic import ValidationError
 
-from helix.capability_evolution import CandidateTool, CandidateWorkflow, ToolCallSpecBuilder
-from helix.schemas import Provenance
-from helix.toolcall import ToolCallRegistry, ToolCallRegistryError
+from lattice.capability_evolution import CandidateTool, CandidateWorkflow, ToolCallSpecBuilder
+from lattice.schemas import Provenance
+from lattice.toolcall import ToolCallRegistry, ToolCallRegistryError
 
 
 def make_candidate_tool() -> CandidateTool:

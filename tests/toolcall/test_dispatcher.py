@@ -1,6 +1,6 @@
-from helix.schemas import AgenticExecutionStep, Provenance, StructuredObservation, ToolCallSpec
-from helix.toolcall import ToolCallDispatcher, ToolCallRegistry
-from helix.toolcall.backends import RuntimeBackend
+﻿from lattice.schemas import AgenticExecutionStep, Provenance, StructuredObservation, ToolCallSpec
+from lattice.toolcall import ToolCallDispatcher, ToolCallRegistry
+from lattice.toolcall.backends import RuntimeBackend
 
 
 class RecordingBackend:

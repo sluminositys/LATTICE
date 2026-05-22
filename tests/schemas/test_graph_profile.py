@@ -1,7 +1,7 @@
-import pytest
+﻿import pytest
 from pydantic import ValidationError
 
-from helix.schemas import GraphProfile, create_packaged_demo_graph_profile
+from lattice.schemas import GraphProfile, create_packaged_demo_graph_profile
 
 
 def test_packaged_demo_graph_profile_disables_mutating_workflows() -> None:

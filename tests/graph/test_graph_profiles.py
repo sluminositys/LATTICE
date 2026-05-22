@@ -1,7 +1,7 @@
-import pytest
+﻿import pytest
 
-from helix.graph import GraphProfileRegistry, GraphProfileRegistryError, GraphTierPolicy
-from helix.schemas import GraphProfile, create_packaged_demo_graph_profile
+from lattice.graph import GraphProfileRegistry, GraphProfileRegistryError, GraphTierPolicy
+from lattice.schemas import GraphProfile, create_packaged_demo_graph_profile
 
 
 def make_production_profile() -> GraphProfile:

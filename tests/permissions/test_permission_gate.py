@@ -1,5 +1,5 @@
-from helix.permissions import PermissionGate
-from helix.schemas import Blocker, WorkflowAuditReport
+﻿from lattice.permissions import PermissionGate
+from lattice.schemas import Blocker, WorkflowAuditReport
 
 
 def test_permission_gate_blocks_failed_workflow_verification() -> None:

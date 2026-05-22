@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>HELIX 当前代码实现总览</title>
+    <title>LATTICE 当前代码实现总览</title>
     <script type="module">
       import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
       mermaid.initialize({
@@ -333,7 +333,7 @@
     <div class="layout">
       <aside class="sidebar">
         <div class="brand">
-          <strong>HELIX</strong>
+          <strong>LATTICE</strong>
           <span>当前代码实现总览</span>
         </div>
         <nav class="nav">
@@ -352,14 +352,14 @@
 
       <main>
         <section class="hero" id="position">
-          <h1>HELIX 当前代码实现说明</h1>
+          <h1>LATTICE 当前代码实现说明</h1>
           <p class="lead">
             当前仓库已经具备一个可运行的 plan-only agent 主流程，并预留了图构建、ToolCall、
             GraphPatch、MemoryHealthCompiler、Controlled Recall、HookBus、自进化、六层异构图 schema 和 demo/production graph profile 等核心边界。
           </p>
           <div class="meta">
-            <span class="pill">项目：D:\workspace\HELIX</span>
-            <span class="pill">设计源：HELIX 架构规划</span>
+            <span class="pill">项目：D:\workspace\LATTICE</span>
+            <span class="pill">设计源：LATTICE 架构规划</span>
             <span class="pill">当前模式：plan_only</span>
             <span class="pill">测试：89 passed</span>
           </div>
@@ -369,10 +369,10 @@
           <h2>现在有几个 Agent？</h2>
           <div class="grid two">
             <article class="card status good">
-              <h3>代码层面：一个 HELIX agent 系统</h3>
+              <h3>代码层面：一个 LATTICE agent 系统</h3>
               <p>
                 当前代码里没有新增架构外 agent。存在的是多个内部 workflow 和模块边界，
-                它们共同组成 HELIX agent 系统。
+                它们共同组成 LATTICE agent 系统。
               </p>
             </article>
             <article class="card status warn">
@@ -388,7 +388,7 @@
         <section id="modules">
           <h2>顶层模块结构</h2>
           <div class="module-grid">
-            <div class="module"><strong>app</strong><span>CLI 入口，当前提供 `helix plan`。</span></div>
+            <div class="module"><strong>app</strong><span>CLI 入口，当前提供 `lattice plan`。</span></div>
             <div class="module"><strong>config</strong><span>外置配置和 prompt 配置。</span></div>
             <div class="module"><strong>schemas</strong><span>跨模块共享的 Pydantic 对象契约。</span></div>
             <div class="module"><strong>core</strong><span>核心服务，目前包含保守 TaskFingerprinter。</span></div>
@@ -414,7 +414,7 @@
           <div class="diagram">
             <pre class="mermaid">
 flowchart TD
-    A["CLI: helix plan"] --> B["run_plan_only"]
+    A["CLI: lattice plan"] --> B["run_plan_only"]
     B --> C["receive_request"]
     C --> D["TaskFingerprinter"]
     D --> E["RuntimeViewProjector"]
@@ -440,7 +440,7 @@ blockers:
         <section id="graph-bootstrap">
           <h2>图构建 Bootstrap 流程</h2>
           <p>
-            这不是新 agent，而是 HELIX 既有图构建 workflow 的 bootstrap 运行模式。
+            这不是新 agent，而是 LATTICE 既有图构建 workflow 的 bootstrap 运行模式。
             等真实数据库 adapter 接入后，第一次完整构建 L0/L1 会走这条受控路径。
           </p>
           <div class="diagram">
@@ -550,13 +550,13 @@ PermissionChecked</code></pre>
           <h2>实用总结</h2>
           <div class="grid two">
             <article class="card status good">
-              <h3>当前 HELIX 可以做什么</h3>
+              <h3>当前 LATTICE 可以做什么</h3>
               <p>
                 它可以跑通受控 plan-only 主链路，拒绝编造工具和 workflow，并把运行过程记录成结构化事件。
               </p>
             </article>
             <article class="card status danger">
-              <h3>当前 HELIX 还不能做什么</h3>
+              <h3>当前 LATTICE 还不能做什么</h3>
               <p>
                 它还不能执行真实生信工具、查询真实图数据库、构建真实 L1 healthy graph，或基于真实证据输出领域 workflow。
               </p>

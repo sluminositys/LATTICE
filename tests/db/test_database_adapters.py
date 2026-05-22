@@ -1,16 +1,16 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from typing import Any
 
-from helix.db import (
+from lattice.db import (
     Neo4jFullGraphStore,
     PostgresAgentEventLog,
     PostgresSchemaManager,
     PostgresToolCallSpecStore,
     QdrantGraphIndex,
 )
-from helix.runtime import AgentEvent
-from helix.schemas import (
+from lattice.runtime import AgentEvent
+from lattice.schemas import (
     BioEvoKGGraphRecords,
     BioEvoKGNode,
     Provenance,
@@ -231,13 +231,13 @@ def test_qdrant_graph_index_upserts_and_searches_node_vectors() -> None:
     index = QdrantGraphIndex(url="http://qdrant", client=client)
 
     index.upsert_node_embedding(
-        collection_name="helix",
+        collection_name="lattice",
         node=make_node(),
         vector=[0.1, 0.2],
         graph_profile_id="profile-1",
         graph_tier="L0",
     )
-    hits = index.search(collection_name="helix", query_vector=[0.1, 0.2])
+    hits = index.search(collection_name="lattice", query_vector=[0.1, 0.2])
 
     assert client.upserts[0]["points"][0]["id"] == "profile-1:L0:node-1"
     assert hits[0].point_id == "point-1"

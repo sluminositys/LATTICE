@@ -1,4 +1,4 @@
-from helix.schemas import (
+﻿from lattice.schemas import (
     AgenticExecutionPlan,
     AgenticExecutionStep,
     Provenance,

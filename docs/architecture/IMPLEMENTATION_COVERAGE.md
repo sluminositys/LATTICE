@@ -1,4 +1,4 @@
-# HELIX Implementation Coverage
+﻿# LATTICE Implementation Coverage
 
 This file tracks which architecture concepts are represented in code and which remain open.
 
@@ -59,6 +59,6 @@ This file tracks which architecture concepts are represented in code and which r
 
 ## Current Expected Behavior
 
-With valid L0/L1 assets and active ToolCallSpec nodes, `helix execute` can select an L2 workflow path, compile an AEP, pass permission checks, dispatch ToolCalls through registered backends, and write structured execution experience candidates to L0.
+With valid L0/L1 assets and active ToolCallSpec nodes, `lattice execute` can select an L2 workflow path, compile an AEP, pass permission checks, dispatch ToolCalls through registered backends, and write structured execution experience candidates to L0.
 
-Without valid graph content or active ToolCallSpec records, HELIX returns structured blockers and capability-gap events instead of inventing a workflow.
+Without valid graph content or active ToolCallSpec records, LATTICE returns structured blockers and capability-gap events instead of inventing a workflow.

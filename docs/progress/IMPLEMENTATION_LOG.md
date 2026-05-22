@@ -1,4 +1,4 @@
-# HELIX Implementation Log
+﻿# LATTICE Implementation Log
 
 This log records completed work in chronological order. Every implementation step should update this file before commit.
 
@@ -6,9 +6,9 @@ This log records completed work in chronological order. Every implementation ste
 
 ### Repository bootstrap
 
-- Created independent repository directory: `D:\workspace\HELIX`.
+- Created independent repository directory: `D:\workspace\LATTICE`.
 - Initialized git repository on `main`.
-- Added remote: `git@github.com:sluminositys/HELIX.git`.
+- Added remote: `git@github.com:sluminositys/LATTICE.git`.
 - Kept workspace root `D:\workspace` outside git.
 
 ### Tracking docs
@@ -17,7 +17,7 @@ This log records completed work in chronological order. Every implementation ste
 - Started implementation log.
 - Started architecture risk/gap record.
 - Started architecture decomposition record.
-- Committed tracking docs: `9e99220 docs: add HELIX implementation tracking`.
+- Committed tracking docs: `9e99220 docs: add LATTICE implementation tracking`.
 
 ### Repository hygiene
 
@@ -29,7 +29,7 @@ This log records completed work in chronological order. Every implementation ste
 
 - Added `.python-version`.
 - Added `pyproject.toml` with `uv`, LangChain, LangGraph, Pydantic, pytest, ruff, and mypy dependencies.
-- Added package root `src/helix`.
+- Added package root `src/lattice`.
 - Added placeholder package test.
 - Generated `uv.lock`.
 - Committed minimal Python project: `23efdb6 chore: bootstrap uv python package`.
@@ -37,8 +37,8 @@ This log records completed work in chronological order. Every implementation ste
 ### Configuration layer
 
 - Added external YAML configuration files under `config/`.
-- Added typed settings loader in `src/helix/config/settings.py`.
-- Added `HELIX_` environment overrides with `__` nested keys.
+- Added typed settings loader in `src/lattice/config/settings.py`.
+- Added `LATTICE_` environment overrides with `__` nested keys.
 - Added tests for default loading and environment overrides.
 - Renamed logging JSON flag to `json_logs` to avoid shadowing Pydantic model methods.
 - Committed externalized config layer: `1b6ecfc config: add external settings loader`.
@@ -63,7 +63,7 @@ This log records completed work in chronological order. Every implementation ste
 
 ### Validation hygiene
 
-- Added `src/helix/py.typed` for type-checkable package metadata.
+- Added `src/lattice/py.typed` for type-checkable package metadata.
 - Added `types-PyYAML` dev dependency.
 - Fixed ruff import ordering and long-line violations.
 - Verified:
@@ -160,7 +160,7 @@ This log records completed work in chronological order. Every implementation ste
 
 ### CLI entrypoint
 
-- Added `helix plan` command.
+- Added `lattice plan` command.
 - Added structured JSON output for the current plan-only flow.
 - Added CLI test for blocked plan output.
 - Updated README development command examples.
@@ -192,12 +192,12 @@ This log records completed work in chronological order. Every implementation ste
 - Clarified that L0 and L1 stay behind graph store protocols until a concrete database is installed.
 - Documented minimum L0 patch/write and query primitives.
 - Documented L1 read/materialization boundary and forbidden direct GraphPatch-to-L1 writes.
-- Clarified that the first complete L0/L1 build should use HELIX's existing graph-construction and health-compilation workflow in bootstrap mode after database installation, not a new architectural agent type.
+- Clarified that the first complete L0/L1 build should use LATTICE's existing graph-construction and health-compilation workflow in bootstrap mode after database installation, not a new architectural agent type.
 
 ### Terminology correction
 
 - Reworded database requirements to avoid implying a new `builder agent`.
-- Clarified that background jobs or delegated processes are execution modes for the existing HELIX graph-construction workflow, not additional architecture roles.
+- Clarified that background jobs or delegated processes are execution modes for the existing LATTICE graph-construction workflow, not additional architecture roles.
 
 ### Graph construction bootstrap workflow
 
@@ -206,7 +206,7 @@ This log records completed work in chronological order. Every implementation ste
 - The workflow composes `FullGraphStore`, `GraphPatchAuditor`, and `MemoryHealthCompiler`.
 - It blocks before L0 writes when audit fails.
 - It applies audited patches through the L0 store and then runs health compilation.
-- This code path represents bootstrap mode for the existing HELIX graph-construction workflow, not a new agent type.
+- This code path represents bootstrap mode for the existing LATTICE graph-construction workflow, not a new agent type.
 
 ### Controlled full graph recall
 
@@ -309,7 +309,7 @@ This log records completed work in chronological order. Every implementation ste
 
 - Added optional `AgentEventLog` integration to `run_plan_only`.
 - Plan-only runs can now append `UserRequestReceived`, `PlanModeEntered`, `TaskFingerprinted`, `RuntimeGraphContextProjected`, `WorkflowPathSelected`, `WorkflowVerified`, and `PermissionChecked`.
-- Added `helix plan --event-log <path>`.
+- Added `lattice plan --event-log <path>`.
 - Added orchestration and CLI tests for event logging.
 - Committed plan-only event logging: `d1b59f3 orchestration: append plan-only events`.
 
@@ -331,7 +331,7 @@ This log records completed work in chronological order. Every implementation ste
 
 ### README and demo-content cleanup
 
-- Rewrote `README.md` as a system-level HELIX description without local source document paths or architecture-version shorthand.
+- Rewrote `README.md` as a system-level LATTICE description without local source document paths or architecture-version shorthand.
 - Removed concrete demo task strings from README, architecture overview docs, progress docs, and tests.
 - Replaced domain-specific test strings with abstract task/tool/input names so tests validate control flow only.
 - Confirmed no remaining repository references to the removed demo task strings, demo file names, or local architecture document path.
@@ -375,9 +375,9 @@ This log records completed work in chronological order. Every implementation ste
 
 - Added `GraphAssetImporter` for externally built L0/L1 assets.
 - Added `load_graph_records` export for shared JSONL graph record validation.
-- Added `helix graph validate-assets`.
-- Added `helix graph import-assets`.
-- Added `helix db init-postgres`.
+- Added `lattice graph validate-assets`.
+- Added `lattice graph import-assets`.
+- Added `lattice db init-postgres`.
 - Added `--config-dir` and `--graph-profile` selection to the plan command.
 
 ### Executable orchestration
@@ -386,7 +386,7 @@ This log records completed work in chronological order. Every implementation ste
 - Extended `WorkflowPathSearch` to select active L2 workflow paths and validate step-level ToolCallSpec references.
 - Extended `WorkflowVerifier` blockers for missing executable steps and unresolved requirements.
 - Added LangGraph execution flow with task fingerprinting, L2 projection, path search, gap detection, workflow verification, AEP compilation, permission checking, ToolCall dispatch, experience patch generation, and optional L0 write.
-- Added `helix execute`.
+- Added `lattice execute`.
 - Updated `PermissionGate` so read-only and approval-required modes fail closed.
 - Added tests for successful executable flow through a registered Python runtime backend.
 
@@ -416,4 +416,4 @@ This log records completed work in chronological order. Every implementation ste
 ### External HTML report
 
 - Regenerated the Chinese architecture and implementation inventory report outside the project tree.
-- Report path: `D:\workspace\codex\artifacts\2026-05-21\helix-design-inventory\HELIX_design_inventory.html`.
+- Report path: `D:\workspace\codex\artifacts\2026-05-21\lattice-design-inventory\LATTICE_design_inventory.html`.

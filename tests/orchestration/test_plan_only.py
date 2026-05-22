@@ -1,5 +1,5 @@
-from helix.orchestration import run_plan_only
-from helix.runtime import FileAgentEventLog
+﻿from lattice.orchestration import run_plan_only
+from lattice.runtime import FileAgentEventLog
 
 
 def test_plan_only_flow_blocks_without_graph_or_tool_specs() -> None:

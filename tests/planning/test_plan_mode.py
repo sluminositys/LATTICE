@@ -1,5 +1,5 @@
-from helix.planning import ExitPlanGate
-from helix.schemas import WorkflowAuditReport
+﻿from lattice.planning import ExitPlanGate
+from lattice.schemas import WorkflowAuditReport
 
 
 def test_exit_plan_gate_blocks_without_aep_or_permission() -> None:

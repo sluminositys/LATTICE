@@ -1,5 +1,5 @@
-from helix.schemas import AgenticExecutionStep, Provenance, ToolCallSpec
-from helix.toolcall import ToolCallRegistry, ToolCallValidator
+﻿from lattice.schemas import AgenticExecutionStep, Provenance, ToolCallSpec
+from lattice.toolcall import ToolCallRegistry, ToolCallValidator
 
 
 def make_active_spec() -> ToolCallSpec:

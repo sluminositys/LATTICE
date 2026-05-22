@@ -1,9 +1,9 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from typing import Any
 
-from helix.orchestration import run_execution
-from helix.schemas import (
+from lattice.orchestration import run_execution
+from lattice.schemas import (
     GraphContextSufficiencyReport,
     GraphPatch,
     Provenance,
@@ -11,7 +11,7 @@ from helix.schemas import (
     TaskFingerprint,
     ToolCallSpec,
 )
-from helix.toolcall import PythonFunctionBackend
+from lattice.toolcall import PythonFunctionBackend
 
 
 class FakeHealthyGraphStore:

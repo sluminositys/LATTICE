@@ -1,6 +1,6 @@
-import pytest
+﻿import pytest
 
-from helix.runtime import SessionStateMachine, SessionStateTransitionError
+from lattice.runtime import SessionStateMachine, SessionStateTransitionError
 
 
 def test_session_state_machine_allows_documented_plan_blocked_path() -> None:

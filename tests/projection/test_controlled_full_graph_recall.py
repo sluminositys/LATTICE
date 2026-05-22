@@ -1,8 +1,8 @@
-from collections.abc import Sequence
+﻿from collections.abc import Sequence
 
-from helix.core import TaskFingerprinter
-from helix.projection import ControlledFullGraphRecall, FullGraphRecallCandidate
-from helix.schemas import Provenance, TaskFingerprint
+from lattice.core import TaskFingerprinter
+from lattice.projection import ControlledFullGraphRecall, FullGraphRecallCandidate
+from lattice.schemas import Provenance, TaskFingerprint
 
 
 class StaticRecallProvider:

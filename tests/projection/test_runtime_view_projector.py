@@ -1,5 +1,5 @@
-from helix.core import TaskFingerprinter
-from helix.projection import RuntimeViewProjector
+﻿from lattice.core import TaskFingerprinter
+from lattice.projection import RuntimeViewProjector
 
 
 def test_runtime_view_projector_reports_insufficient_without_l1_store() -> None:

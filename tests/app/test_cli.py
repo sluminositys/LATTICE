@@ -1,6 +1,6 @@
-import json
+﻿import json
 
-from helix.app.cli import main
+from lattice.app.cli import main
 
 
 def test_cli_plan_outputs_blocked_plan(capsys) -> None:

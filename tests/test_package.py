@@ -1,4 +1,4 @@
-from helix import __version__
+﻿from lattice import __version__
 
 
 def test_package_version() -> None:

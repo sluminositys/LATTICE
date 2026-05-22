@@ -1,7 +1,7 @@
-import pytest
+﻿import pytest
 from pydantic import ValidationError
 
-from helix.schemas import (
+from lattice.schemas import (
     ClaimAuditReport,
     ExperienceCandidate,
     GraphPatch,

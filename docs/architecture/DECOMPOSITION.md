@@ -1,6 +1,6 @@
-# HELIX Architecture Decomposition
+﻿# LATTICE Architecture Decomposition
 
-Design source: user-provided HELIX architecture planning document.
+Design source: user-provided LATTICE architecture planning document.
 
 ## Core Invariants
 
@@ -70,7 +70,7 @@ Tool execution, graph writes, memory health compilation, and evolution are added
 ## Initial Python Package Layout
 
 ```text
-src/helix/
+src/lattice/
   app/
   capability_evolution/
   config/

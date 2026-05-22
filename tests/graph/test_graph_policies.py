@@ -1,7 +1,7 @@
-import pytest
+﻿import pytest
 
-from helix.graph import GraphTierPolicy, GraphTierPolicyError
-from helix.schemas import GraphPatch, Provenance
+from lattice.graph import GraphTierPolicy, GraphTierPolicyError
+from lattice.schemas import GraphPatch, Provenance
 
 
 def test_graph_patch_policy_allows_l0_patch() -> None:

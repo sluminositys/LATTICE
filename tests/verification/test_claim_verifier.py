@@ -1,4 +1,4 @@
-from helix.verification import ClaimVerifier
+﻿from lattice.verification import ClaimVerifier
 
 
 def test_claim_verifier_is_not_applicable_without_claims() -> None:

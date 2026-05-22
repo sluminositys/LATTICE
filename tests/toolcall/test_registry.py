@@ -1,7 +1,7 @@
-import pytest
+﻿import pytest
 
-from helix.schemas import LifecycleState, Provenance, ToolCallSpec
-from helix.toolcall import ToolCallRegistry, ToolCallRegistryError
+from lattice.schemas import LifecycleState, Provenance, ToolCallSpec
+from lattice.toolcall import ToolCallRegistry, ToolCallRegistryError
 
 
 def make_toolcall_spec(lifecycle_state: LifecycleState) -> ToolCallSpec:

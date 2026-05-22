@@ -1,10 +1,10 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 from pathlib import Path
 
-from helix.graph import GraphAssetImporter
-from helix.schemas import BioEvoKGGraphRecords, GraphProfile
+from lattice.graph import GraphAssetImporter
+from lattice.schemas import BioEvoKGGraphRecords, GraphProfile
 
 
 class RecordingGraphRecordStore:

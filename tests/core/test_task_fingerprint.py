@@ -1,4 +1,4 @@
-from helix.core import TaskFingerprinter
+﻿from lattice.core import TaskFingerprinter
 
 
 def test_task_fingerprinter_is_conservative_about_unknown_fields() -> None:

@@ -1,6 +1,8 @@
-# HELIX
+# LATTICE
 
-HELIX 是一个独立的 Python agent-native workflow knowledge graph system，用于把用户提出的生物信息学研究需求转化为可检索、可验证、可执行、可审计、可持续进化的工作流。
+**Layered Agent for Tool-Augmented Task Intelligence, Curation, and Evolution in Genomics and Bioinformatics**
+
+LATTICE 是一个独立的 Python agent-native workflow knowledge graph system，用于把用户提出的生物信息学研究需求转化为可检索、可验证、可执行、可审计、可持续进化的工作流。
 
 系统核心不是把大模型包装成问答接口，而是围绕三层图谱和 ToolCall 执行闭环工作：
 
@@ -46,12 +48,12 @@ uv run mypy
 ```
 
 ```powershell
-uv run helix --help
-uv run helix db init-postgres --config-dir config
-uv run helix graph validate-assets --l0-path <L0资产目录> --l1-path <L1资产目录>
-uv run helix graph import-assets --config-dir config --graph-profile <profile> --tier L0 --asset-path <L0资产目录>
-uv run helix plan "<用户请求>" --config-dir config --graph-profile <profile>
-uv run helix execute "<用户请求>" --config-dir config --graph-profile <profile>
+uv run lattice --help
+uv run lattice db init-postgres --config-dir config
+uv run lattice graph validate-assets --l0-path <L0资产目录> --l1-path <L1资产目录>
+uv run lattice graph import-assets --config-dir config --graph-profile <profile> --tier L0 --asset-path <L0资产目录>
+uv run lattice plan "<用户请求>" --config-dir config --graph-profile <profile>
+uv run lattice execute "<用户请求>" --config-dir config --graph-profile <profile>
 ```
 
 运行日志、命令记录、诊断输出和临时产物应放在 `D:\workspace\codex` 下，不直接写到仓库根目录。

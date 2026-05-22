@@ -1,6 +1,6 @@
-# Task Fingerprint Prompt
+﻿# Task Fingerprint Prompt
 
-Extract a HELIX `TaskFingerprint` from the user request.
+Extract a LATTICE `TaskFingerprint` from the user request.
 
 Return structured fields only. If a field is ambiguous or not present, record it in `ambiguity_items` instead of guessing.
 
