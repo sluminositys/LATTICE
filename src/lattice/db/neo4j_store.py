@@ -48,7 +48,7 @@ class Neo4jFullGraphStore(FullGraphStore):
         query = """
         MATCH (n:BioEvoKGNode {
             graph_profile_id: $graph_profile_id,
-            graph_tier: 'L0',
+            graph_tier: 'G0',
             node_id: $node_id
         })
         RETURN properties(n) AS node
@@ -93,10 +93,10 @@ class Neo4jFullGraphStore(FullGraphStore):
         )
         for raw_node in patch.nodes_to_add:
             node = BioEvoKGNode.model_validate(raw_node)
-            _merge_node(tx, self.graph_profile_id, "L0", node)
+            _merge_node(tx, self.graph_profile_id, "G0", node)
         for raw_edge in patch.edges_to_add:
             edge = BioEvoKGEdge.model_validate(raw_edge)
-            _merge_edge(tx, self.graph_profile_id, "L0", edge)
+            _merge_edge(tx, self.graph_profile_id, "G0", edge)
 
     def _replace_records_tx(
         self,
@@ -135,7 +135,7 @@ class Neo4jHealthyGraphStore(HealthyGraphStore):
 
     def project_runtime_context(self, fingerprint: TaskFingerprint) -> RuntimeGraphContext:
         query = """
-        MATCH (n:BioEvoKGNode {graph_profile_id: $graph_profile_id, graph_tier: 'L1'})
+        MATCH (n:BioEvoKGNode {graph_profile_id: $graph_profile_id, graph_tier: 'G1'})
         WHERE n.lifecycle_state IN ['active_hot', 'active_warm']
         RETURN properties(n) AS node
         LIMIT 250
@@ -161,9 +161,9 @@ class Neo4jHealthyGraphStore(HealthyGraphStore):
 
         missing: list[str] = []
         if not by_layer["workflow"]:
-            missing.append("no workflow layer nodes projected from L1")
+            missing.append("no workflow layer nodes projected from G1")
         if not by_layer["resource"]:
-            missing.append("no resource or implementation layer nodes projected from L1")
+            missing.append("no resource or implementation layer nodes projected from G1")
         status: Literal["sufficient", "insufficient"] = (
             "sufficient" if not missing else "insufficient"
         )
@@ -172,14 +172,14 @@ class Neo4jHealthyGraphStore(HealthyGraphStore):
             status=status,
             missing_workflow_info=missing,
             controlled_recall_required=bool(missing),
-            controlled_recall_reason="L1 projection did not provide enough runtime graph context"
+            controlled_recall_reason="G1 projection did not provide enough runtime graph context"
             if missing
             else None,
         )
         return RuntimeGraphContext(
             graph_context_id=f"rgc-{uuid4()}",
             task_fingerprint_id=fingerprint.fingerprint_id,
-            source_graph_tier="L1",
+            source_graph_tier="G1",
             G_task={"task": fingerprint.task, "nodes": by_layer["task"]},
             G_evidence={"nodes": by_layer["evidence"]},
             G_workflow={"nodes": by_layer["workflow"]},
@@ -188,7 +188,7 @@ class Neo4jHealthyGraphStore(HealthyGraphStore):
             sufficiency_report=report,
             provenance=[
                 Provenance(
-                    source_type="neo4j_l1_projection",
+                    source_type="neo4j_g1_projection",
                     source_id=self.graph_profile_id,
                 )
             ],
@@ -198,7 +198,7 @@ class Neo4jHealthyGraphStore(HealthyGraphStore):
         query = """
         MATCH (n:BioEvoKGNode {
             graph_profile_id: $graph_profile_id,
-            graph_tier: 'L1',
+            graph_tier: 'G1',
             node_id: $node_id
         })
         RETURN properties(n) AS node
@@ -217,10 +217,10 @@ class Neo4jHealthyGraphStore(HealthyGraphStore):
         return dict(record["node"])
 
     def replace_records(self, records: BioEvoKGGraphRecords) -> str:
-        if records.graph_tier != "L1":
-            msg = "Neo4jHealthyGraphStore can only import L1 records."
+        if records.graph_tier != "G1":
+            msg = "Neo4jHealthyGraphStore can only import G1 records."
             raise Neo4jStoreError(msg)
-        write_id = f"neo4j-l1-import-{uuid4()}"
+        write_id = f"neo4j-g1-import-{uuid4()}"
         with self.driver.session(database=self.database) as session:
             session.execute_write(_replace_records_tx, self.graph_profile_id, records, write_id)
         return write_id

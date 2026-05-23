@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 from pathlib import Path
@@ -54,7 +54,7 @@ def test_graph_asset_importer_validates_and_replaces_records(tmp_path: Path) -> 
             evolution_enabled=True,
             health_policy="memory_health_compiler",
         ),
-        graph_tier="L0",
+        graph_tier="G0",
         asset_path=asset_path,
         store=store,
     )

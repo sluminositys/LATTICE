@@ -62,13 +62,13 @@ class PackagedHealthyGraphStore:
         report = GraphContextSufficiencyReport(
             report_id=f"gcsr-{uuid4()}",
             status="sufficient" if self.nodes else "insufficient",
-            missing_workflow_info=[] if self.nodes else ["packaged demo L1 has no nodes"],
+            missing_workflow_info=[] if self.nodes else ["packaged demo G1 has no nodes"],
             controlled_recall_required=False,
         )
         return RuntimeGraphContext(
             graph_context_id=f"rgc-{uuid4()}",
             task_fingerprint_id=fingerprint.fingerprint_id,
-            source_graph_tier="L1",
+            source_graph_tier="G1",
             G_task={
                 "profile_id": self.profile.profile_id,
                 "mode": self.profile.mode,
@@ -83,7 +83,7 @@ class PackagedHealthyGraphStore:
             sufficiency_report=report,
             provenance=[
                 Provenance(
-                    source_type="packaged_demo_l1",
+                    source_type="packaged_demo_g1",
                     source_id=self.profile.profile_id,
                     source_path=self.profile.l1_asset_path,
                 )
@@ -98,9 +98,9 @@ class JsonlPackagedDemoGraphStoreLoader:
     def load_l0_store(self, profile: GraphProfile) -> PackagedFullGraphStore:
         _assert_packaged_demo_profile(profile)
         if profile.l0_asset_path is None:
-            msg = f"Demo profile has no L0 asset path: {profile.profile_id}"
+            msg = f"Demo profile has no G0 asset path: {profile.profile_id}"
             raise PackagedGraphStoreError(msg)
-        records = load_graph_records(Path(profile.l0_asset_path), graph_tier="L0")
+        records = load_graph_records(Path(profile.l0_asset_path), graph_tier="G0")
         return PackagedFullGraphStore(
             profile=profile,
             nodes=records.nodes,
@@ -110,9 +110,9 @@ class JsonlPackagedDemoGraphStoreLoader:
     def load_l1_store(self, profile: GraphProfile) -> PackagedHealthyGraphStore:
         _assert_packaged_demo_profile(profile)
         if profile.l1_asset_path is None:
-            msg = f"Demo profile has no L1 asset path: {profile.profile_id}"
+            msg = f"Demo profile has no G1 asset path: {profile.profile_id}"
             raise PackagedGraphStoreError(msg)
-        records = load_graph_records(Path(profile.l1_asset_path), graph_tier="L1")
+        records = load_graph_records(Path(profile.l1_asset_path), graph_tier="G1")
         return PackagedHealthyGraphStore(
             profile=profile,
             nodes=records.nodes,
@@ -130,14 +130,14 @@ def _assert_packaged_demo_profile(profile: GraphProfile) -> None:
         msg = f"Packaged demo loader only accepts demo profiles: {profile.profile_id}"
         raise PackagedGraphStoreError(msg)
     if profile.l0_source != "packaged" or profile.l1_source != "packaged":
-        msg = f"Packaged demo loader requires packaged L0 and L1: {profile.profile_id}"
+        msg = f"Packaged demo loader requires packaged G0 and G1: {profile.profile_id}"
         raise PackagedGraphStoreError(msg)
 
 
 def load_graph_records(
     path: str | Path,
     *,
-    graph_tier: Literal["L0", "L1"],
+    graph_tier: Literal["G0", "G1"],
 ) -> BioEvoKGGraphRecords:
     asset_path = Path(path)
     nodes = [
@@ -152,8 +152,8 @@ def load_graph_records(
         graph_tier=graph_tier,
         nodes=nodes,
         edges=edges,
-        require_l1_operational_profile=graph_tier == "L1",
-        require_l1_healthy_states=graph_tier == "L1",
+        require_l1_operational_profile=graph_tier == "G1",
+        require_l1_healthy_states=graph_tier == "G1",
     )
 
 

@@ -11,7 +11,7 @@ from lattice.schemas import GraphPatch, GraphProfile, LatticeBaseModel
 
 
 class GraphConstructionBootstrapResult(LatticeBaseModel):
-    status: Literal["blocked", "applied_to_l0_and_compiled_l1"]
+    status: Literal["blocked", "applied_to_g0_and_compiled_g1"]
     patch_id: str
     audit_report: PatchAuditReport
     durable_write_id: str | None = None
@@ -22,7 +22,7 @@ class GraphConstructionBootstrapResult(LatticeBaseModel):
 class GraphConstructionBootstrapWorkflow:
     """Bootstrap mode for LATTICE's existing graph-construction workflow.
 
-    This is not a new agent type. It composes the existing L0 GraphPatch write path and
+    This is not a new agent type. It composes the existing G0 GraphPatch write path and
     MemoryHealthCompiler so an initial graph build can run once a real database adapter exists.
     """
 
@@ -48,7 +48,7 @@ class GraphConstructionBootstrapWorkflow:
                 status="blocked",
                 patch_id=patch.patch_id,
                 audit_report=audit_report,
-                notes=["Graph construction bootstrap stopped before L0 write."],
+                notes=["Graph construction bootstrap stopped before G0 write."],
             )
 
         if self.graph_profile is not None:
@@ -66,13 +66,13 @@ class GraphConstructionBootstrapWorkflow:
         durable_write_id = self.full_graph_store.apply_patch(patch)
         memory_health_report = self.memory_health_compiler.compile([patch])
         return GraphConstructionBootstrapResult(
-            status="applied_to_l0_and_compiled_l1",
+            status="applied_to_g0_and_compiled_g1",
             patch_id=patch.patch_id,
             audit_report=audit_report,
             durable_write_id=durable_write_id,
             memory_health_report=memory_health_report,
             notes=[
-                "GraphPatch applied to L0 through FullGraphStore.",
-                "MemoryHealthCompiler ran after L0 write.",
+                "GraphPatch applied to G0 through FullGraphStore.",
+                "MemoryHealthCompiler ran after G0 write.",
             ],
         )

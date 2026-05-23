@@ -9,7 +9,7 @@ from lattice.schemas.common import LatticeBaseModel, Provenance
 
 
 class PackagedGraphTierAsset(LatticeBaseModel):
-    tier: Literal["L0", "L1"]
+    tier: Literal["G0", "G1"]
     nodes_path: str
     edges_path: str
     node_count: int | None = Field(default=None, ge=0)
@@ -29,10 +29,10 @@ class PackagedDemoGraphManifest(LatticeBaseModel):
 
     @model_validator(mode="after")
     def validate_tiers(self) -> Self:
-        if self.l0.tier != "L0":
-            msg = "Packaged demo manifest l0 asset must target L0."
+        if self.l0.tier != "G0":
+            msg = "Packaged demo manifest l0 asset must target G0."
             raise ValueError(msg)
-        if self.l1.tier != "L1":
-            msg = "Packaged demo manifest l1 asset must target L1."
+        if self.l1.tier != "G1":
+            msg = "Packaged demo manifest l1 asset must target G1."
             raise ValueError(msg)
         return self

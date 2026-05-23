@@ -33,11 +33,13 @@ EvidenceNodeType = Literal[
     "Paper",
     "Preprint",
     "OpenAccessArticle",
+    "PaperSection",
+    "EvidenceSpan",
     "Protocol",
-    "OfficialDocumentation",
     "BenchmarkStudy",
     "DatabaseRecord",
     "EvidenceSource",
+    "ExternalEvidenceSource",
     "CuratorDecision",
 ]
 
@@ -66,17 +68,11 @@ ResourceNodeType = Literal[
 ]
 
 ImplementationNodeType = Literal[
-    "ToolVersion",
-    "DatabaseVersion",
-    "Parameter",
-    "ParameterSchema",
-    "InputSchema",
-    "OutputSchema",
-    "FileFormat",
-    "ToolCallSpec",
-    "ToolWrapper",
-    "RuntimeBackend",
-    "EnvironmentRequirement",
+    "ToolImplementationProfile",
+    "AggregatedToolProfile",
+    "ConfigurationProfile",
+    "ReferenceImplementationProfile",
+    "DatabaseImplementationProfile",
 ]
 
 ExperienceNodeType = Literal[
@@ -111,13 +107,12 @@ TaskEdgeType = Literal[
     "REQUIRES_INPUT_FORMAT",
     "PRODUCES_OUTPUT_GOAL",
     "HAS_REQUIRED_CHECK",
-    "HAS_CANDIDATE_WORKFLOW",
+    "HAS_EVIDENCE",
 ]
 
 EvidenceEdgeType = Literal[
     "REPORTS_METHOD",
-    "USES_TOOL",
-    "DOCUMENTS_TOOL",
+    "REPORTS_WORKFLOW",
     "SUPPORTS_WORKFLOW",
     "SUPPORTS_CLAIM",
     "REFUTES_CLAIM",
@@ -131,6 +126,9 @@ WorkflowEdgeType = Literal[
     "REQUIRES_INPUT",
     "PRODUCES_OUTPUT",
     "USES_METHOD",
+    "USES_TOOL",
+    "USES_DATABASE",
+    "USES_REFERENCE",
     "VALIDATED_BY",
     "HAS_REPAIR_ACTION",
     "HAS_FAILURE_RISK",
@@ -143,18 +141,14 @@ ResourceEdgeType = Literal[
     "ALTERNATIVE_TO",
     "INCOMPATIBLE_WITH",
     "QUERIES_DATABASE",
-    "HAS_OFFICIAL_DOC",
+    "HAS_IMPLEMENTATION_PROFILE",
 ]
 
 ImplementationEdgeType = Literal[
-    "HAS_VERSION",
-    "HAS_PARAMETER",
-    "HAS_INPUT_SCHEMA",
-    "HAS_OUTPUT_SCHEMA",
-    "WRAPS_TOOL",
-    "RUNS_ON_BACKEND",
-    "REQUIRES_ENVIRONMENT",
-    "HAS_PARAMETER_SOURCE_POLICY",
+    "HAS_FAILURE_CONDITION",
+    "HAS_CONSTRAINT",
+    "HAS_REPAIR_ACTION",
+    "HAS_QUALITY_SIGNAL",
 ]
 
 ExperienceEdgeType = Literal[
@@ -162,9 +156,6 @@ ExperienceEdgeType = Literal[
     "FAILED_WITH",
     "GENERALIZED_TO",
     "TRIGGERED_BY",
-    "APPLIES_TO_TASK",
-    "APPLIES_TO_TOOL",
-    "APPLIES_TO_WORKFLOW_STEP",
     "PREFERS",
     "AVOIDS",
     "GENERATED_PATCH",
@@ -196,11 +187,13 @@ NODE_TYPES_BY_LAYER: dict[str, set[str]] = {
         "Paper",
         "Preprint",
         "OpenAccessArticle",
+        "PaperSection",
+        "EvidenceSpan",
         "Protocol",
-        "OfficialDocumentation",
         "BenchmarkStudy",
         "DatabaseRecord",
         "EvidenceSource",
+        "ExternalEvidenceSource",
         "CuratorDecision",
     },
     "workflow": {
@@ -226,17 +219,11 @@ NODE_TYPES_BY_LAYER: dict[str, set[str]] = {
         "AnnotationResource",
     },
     "implementation": {
-        "ToolVersion",
-        "DatabaseVersion",
-        "Parameter",
-        "ParameterSchema",
-        "InputSchema",
-        "OutputSchema",
-        "FileFormat",
-        "ToolCallSpec",
-        "ToolWrapper",
-        "RuntimeBackend",
-        "EnvironmentRequirement",
+        "ToolImplementationProfile",
+        "AggregatedToolProfile",
+        "ConfigurationProfile",
+        "ReferenceImplementationProfile",
+        "DatabaseImplementationProfile",
     },
     "experience": {
         "ExecutionTrace",
@@ -263,12 +250,11 @@ EDGE_TYPES_BY_FAMILY: dict[str, set[str]] = {
         "REQUIRES_INPUT_FORMAT",
         "PRODUCES_OUTPUT_GOAL",
         "HAS_REQUIRED_CHECK",
-        "HAS_CANDIDATE_WORKFLOW",
+        "HAS_EVIDENCE",
     },
     "evidence": {
         "REPORTS_METHOD",
-        "USES_TOOL",
-        "DOCUMENTS_TOOL",
+        "REPORTS_WORKFLOW",
         "SUPPORTS_WORKFLOW",
         "SUPPORTS_CLAIM",
         "REFUTES_CLAIM",
@@ -281,6 +267,9 @@ EDGE_TYPES_BY_FAMILY: dict[str, set[str]] = {
         "REQUIRES_INPUT",
         "PRODUCES_OUTPUT",
         "USES_METHOD",
+        "USES_TOOL",
+        "USES_DATABASE",
+        "USES_REFERENCE",
         "VALIDATED_BY",
         "HAS_REPAIR_ACTION",
         "HAS_FAILURE_RISK",
@@ -292,26 +281,19 @@ EDGE_TYPES_BY_FAMILY: dict[str, set[str]] = {
         "ALTERNATIVE_TO",
         "INCOMPATIBLE_WITH",
         "QUERIES_DATABASE",
-        "HAS_OFFICIAL_DOC",
+        "HAS_IMPLEMENTATION_PROFILE",
     },
     "implementation": {
-        "HAS_VERSION",
-        "HAS_PARAMETER",
-        "HAS_INPUT_SCHEMA",
-        "HAS_OUTPUT_SCHEMA",
-        "WRAPS_TOOL",
-        "RUNS_ON_BACKEND",
-        "REQUIRES_ENVIRONMENT",
-        "HAS_PARAMETER_SOURCE_POLICY",
+        "HAS_FAILURE_CONDITION",
+        "HAS_CONSTRAINT",
+        "HAS_REPAIR_ACTION",
+        "HAS_QUALITY_SIGNAL",
     },
     "experience": {
         "CALLED_TOOLCALL",
         "FAILED_WITH",
         "GENERALIZED_TO",
         "TRIGGERED_BY",
-        "APPLIES_TO_TASK",
-        "APPLIES_TO_TOOL",
-        "APPLIES_TO_WORKFLOW_STEP",
         "PREFERS",
         "AVOIDS",
         "GENERATED_PATCH",
@@ -422,8 +404,18 @@ class BioEvoKGEdge(LatticeBaseModel):
         return self
 
 
+LAYER_ORDER = {
+    "task": 1,
+    "evidence": 2,
+    "workflow": 3,
+    "resource": 4,
+    "implementation": 5,
+    "experience": 6,
+}
+
+
 class BioEvoKGGraphRecords(LatticeBaseModel):
-    graph_tier: Literal["L0", "L1"]
+    graph_tier: Literal["G0", "G1"]
     nodes: list[BioEvoKGNode] = Field(default_factory=list)
     edges: list[BioEvoKGEdge] = Field(default_factory=list)
     require_l1_operational_profile: bool = False
@@ -457,9 +449,16 @@ class BioEvoKGGraphRecords(LatticeBaseModel):
                 msg = f"Edge {edge.edge_id} target_layer does not match target node layer."
                 raise ValueError(msg)
 
-        if self.graph_tier == "L1" and self.require_l1_operational_profile:
+            if abs(LAYER_ORDER[edge.source_layer] - LAYER_ORDER[edge.target_layer]) > 1:
+                msg = (
+                    "Non-adjacent layer edge is not allowed in G0/G1 main graph: "
+                    f"{edge.edge_type} {edge.source_layer}->{edge.target_layer}"
+                )
+                raise ValueError(msg)
+
+        if self.graph_tier == "G1" and self.require_l1_operational_profile:
             _assert_l1_operational_profiles(self.nodes, self.edges)
-        if self.graph_tier == "L1" and self.require_l1_healthy_states:
+        if self.graph_tier == "G1" and self.require_l1_healthy_states:
             _assert_l1_healthy_states(self.nodes, self.edges)
         return self
 

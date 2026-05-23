@@ -1,4 +1,4 @@
-﻿import pytest
+import pytest
 from pydantic import ValidationError
 
 from lattice.schemas import BioEvoKGEdge, BioEvoKGGraphRecords, BioEvoKGNode, OperationalProfile
@@ -48,7 +48,7 @@ def test_each_heterogeneous_layer_accepts_documented_node_types() -> None:
         ("evidence", "Paper"),
         ("workflow", "WorkflowPath"),
         ("resource", "Tool"),
-        ("implementation", "ToolCallSpec"),
+        ("implementation", "ToolImplementationProfile"),
         ("experience", "FailureCondition"),
     ]
 
@@ -82,7 +82,7 @@ def test_nodes_and_edges_require_provenance() -> None:
 def test_l1_graph_records_require_operational_profiles_and_healthy_states() -> None:
     profile = OperationalProfile(lifecycle_state="active_hot")
     records = BioEvoKGGraphRecords(
-        graph_tier="L1",
+        graph_tier="G1",
         nodes=[
             BioEvoKGNode.model_validate(
                 make_node(
@@ -110,13 +110,13 @@ def test_l1_graph_records_require_operational_profiles_and_healthy_states() -> N
         require_l1_healthy_states=True,
     )
 
-    assert records.graph_tier == "L1"
+    assert records.graph_tier == "G1"
 
 
 def test_l1_graph_records_reject_missing_operational_profile() -> None:
     with pytest.raises(ValidationError):
         BioEvoKGGraphRecords(
-            graph_tier="L1",
+            graph_tier="G1",
             nodes=[
                 BioEvoKGNode.model_validate(
                     make_node(

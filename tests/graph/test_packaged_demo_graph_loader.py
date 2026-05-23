@@ -1,4 +1,4 @@
-﻿import json
+import json
 from pathlib import Path
 
 import pytest
@@ -128,9 +128,10 @@ def test_plan_only_can_use_packaged_demo_l1_store(tmp_path) -> None:
     )
 
     assert state["runtime_context"].G_task["profile_id"] == "demo-profile"
-    assert "no healthy graph store is configured" not in state[
-        "workflow_search_result"
-    ].unresolved_requirements
+    assert (
+        "no healthy graph store is configured"
+        not in state["workflow_search_result"].unresolved_requirements
+    )
 
 
 def test_load_packaged_demo_graph_manifest(tmp_path) -> None:
@@ -141,12 +142,12 @@ def test_load_packaged_demo_graph_manifest(tmp_path) -> None:
                 "manifest_id": "manifest-1",
                 "profile_id": "demo-profile",
                 "l0": {
-                    "tier": "L0",
+                    "tier": "G0",
                     "nodes_path": "demo_l0/nodes.jsonl",
                     "edges_path": "demo_l0/edges.jsonl",
                 },
                 "l1": {
-                    "tier": "L1",
+                    "tier": "G1",
                     "nodes_path": "demo_l1/nodes.jsonl",
                     "edges_path": "demo_l1/edges.jsonl",
                 },

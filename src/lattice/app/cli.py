@@ -56,7 +56,7 @@ def main(argv: list[str] | None = None) -> int:
     graph_subparsers = graph_parser.add_subparsers(dest="graph_command", required=True)
     validate_parser = graph_subparsers.add_parser(
         "validate-assets",
-        help="Validate L0/L1 asset directories against the shared six-layer schema.",
+        help="Validate G0/G1 asset directories against the shared six-layer schema.",
     )
     validate_parser.add_argument("--l0-path", required=True)
     validate_parser.add_argument("--l1-path", required=True)
@@ -67,7 +67,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     import_parser.add_argument("--config-dir", default="config")
     import_parser.add_argument("--graph-profile", required=True)
-    import_parser.add_argument("--tier", choices=["L0", "L1"], required=True)
+    import_parser.add_argument("--tier", choices=["G0", "G1"], required=True)
     import_parser.add_argument("--asset-path", required=True)
 
     db_parser = subparsers.add_parser("db", help="Database setup helpers.")
@@ -112,8 +112,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "graph":
         if args.graph_command == "validate-assets":
-            l0_records = load_graph_records(args.l0_path, graph_tier="L0")
-            l1_records = load_graph_records(args.l1_path, graph_tier="L1")
+            l0_records = load_graph_records(args.l0_path, graph_tier="G0")
+            l1_records = load_graph_records(args.l1_path, graph_tier="G1")
             print(
                 json.dumps(
                     {
@@ -130,7 +130,7 @@ def main(argv: list[str] | None = None) -> int:
         if args.graph_command == "import-assets":
             settings = load_settings(args.config_dir)
             runtime = load_graph_runtime(settings, profile_id=args.graph_profile)
-            store = runtime.l0_store if args.tier == "L0" else runtime.l1_store
+            store = runtime.l0_store if args.tier == "G0" else runtime.l1_store
             if store is None or not hasattr(store, "replace_records"):
                 raise GraphRuntimeLoadError(
                     f"Configured {args.tier} store does not support asset import."

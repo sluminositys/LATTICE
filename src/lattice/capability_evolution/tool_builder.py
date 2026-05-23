@@ -42,7 +42,7 @@ class ToolBuilderAgent:
             provenance=discovery.provenance,
         )
         tool_node_id = f"resource-tool-{candidate_tool.candidate_id}"
-        spec_node_id = f"implementation-{spec.toolcall_spec_id}"
+        profile_node_id = f"implementation-profile-{spec.toolcall_spec_id}"
         patch.nodes_to_add.extend(
             [
                 {
@@ -59,11 +59,18 @@ class ToolBuilderAgent:
                     "provenance": [candidate_tool.provenance.model_dump(mode="json")],
                 },
                 {
-                    "node_id": spec_node_id,
+                    "node_id": profile_node_id,
                     "layer": "implementation",
-                    "node_type": "ToolCallSpec",
-                    "canonical_name": spec.name,
-                    "attributes": spec.model_dump(mode="json"),
+                    "node_type": "ToolImplementationProfile",
+                    "canonical_name": f"{spec.name} implementation profile",
+                    "attributes": {
+                        "software_id": tool_node_id,
+                        "software_name": candidate_tool.name,
+                        "agent_callability": {
+                            "enabled": True,
+                            "tool_call_specs": [spec.model_dump(mode="json")],
+                        },
+                    },
                     "lifecycle_state": spec.lifecycle_state,
                     "provenance": [spec.provenance.model_dump(mode="json")],
                 },
@@ -72,11 +79,11 @@ class ToolBuilderAgent:
         patch.edges_to_add.append(
             {
                 "edge_id": f"edge-{uuid4()}",
-                "edge_type": "WRAPS_TOOL",
-                "source_node_id": spec_node_id,
-                "target_node_id": tool_node_id,
-                "source_layer": "implementation",
-                "target_layer": "resource",
+                "edge_type": "HAS_IMPLEMENTATION_PROFILE",
+                "source_node_id": tool_node_id,
+                "target_node_id": profile_node_id,
+                "source_layer": "resource",
+                "target_layer": "implementation",
                 "source_type": "tool_builder_agent",
                 "lifecycle_state": spec.lifecycle_state,
                 "provenance": [spec.provenance.model_dump(mode="json")],

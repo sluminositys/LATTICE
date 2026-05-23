@@ -6,7 +6,6 @@ from lattice.schemas import (
     ExperienceCandidate,
     GraphPatch,
     LifecycleTransition,
-    Provenance,
     WorkflowAuditReport,
 )
 
@@ -28,13 +27,15 @@ def test_claim_report_can_be_not_applicable_for_plan_only_flow() -> None:
     assert report.final_claim_status == "not_applicable"
 
 
-def test_graph_patch_target_is_l0_only() -> None:
+def test_graph_patch_target_is_g0_only() -> None:
     with pytest.raises(ValidationError):
-        GraphPatch(
-            patch_id="patch-1",
-            source_module="test",
-            target_graph_tier="L1",
-            provenance=Provenance(source_type="test"),
+        GraphPatch.model_validate(
+            {
+                "patch_id": "patch-1",
+                "source_module": "test",
+                "target_graph_tier": "G1",
+                "provenance": {"source_type": "test"},
+            }
         )
 
 

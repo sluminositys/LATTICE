@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from typing import Any
 
@@ -31,7 +31,7 @@ class FakeHealthyGraphStore:
         return RuntimeGraphContext(
             graph_context_id="rgc-test",
             task_fingerprint_id=fingerprint.fingerprint_id,
-            source_graph_tier="L1",
+            source_graph_tier="G1",
             G_workflow={
                 "nodes": [
                     {
@@ -60,9 +60,14 @@ class FakeHealthyGraphStore:
                     {
                         "node_id": "implementation-toolcall-double",
                         "layer": "implementation",
-                        "node_type": "ToolCallSpec",
+                        "node_type": "ToolImplementationProfile",
                         "lifecycle_state": "active_hot",
-                        "attributes": spec.model_dump(mode="json"),
+                        "attributes": {
+                            "agent_callability": {
+                                "enabled": True,
+                                "tool_call_specs": [spec.model_dump(mode="json")],
+                            }
+                        },
                     }
                 ],
                 "edges": [],

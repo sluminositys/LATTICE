@@ -1,4 +1,4 @@
-﻿from lattice.schemas import (
+from lattice.schemas import (
     GraphContextSufficiencyReport,
     RuntimeGraphContext,
     TaskFingerprint,
@@ -29,7 +29,7 @@ def test_runtime_context_can_report_insufficient_graph_context() -> None:
     context = RuntimeGraphContext(
         graph_context_id="rgc-1",
         task_fingerprint_id="tf-1",
-        source_graph_tier="L1",
+        source_graph_tier="G1",
         sufficiency_report=report,
     )
 

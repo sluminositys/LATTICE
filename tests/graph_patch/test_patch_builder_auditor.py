@@ -1,4 +1,4 @@
-﻿from lattice.graph_patch import GraphPatchAuditor, GraphPatchBuilder
+from lattice.graph_patch import GraphPatchAuditor, GraphPatchBuilder
 from lattice.runtime import AgentEvent
 from lattice.schemas import Provenance
 
@@ -29,7 +29,7 @@ def test_graph_patch_builder_uses_source_events() -> None:
     )
 
     assert patch.source_event_ids == ["event-1"]
-    assert patch.target_graph_tier == "L0"
+    assert patch.target_graph_tier == "G0"
     assert patch.approval_status == "proposed"
 
 
@@ -45,8 +45,7 @@ def test_graph_patch_auditor_blocks_patch_without_source_events() -> None:
     assert report.status == "blocked"
     assert "GraphPatch must reference at least one source event." in report.blockers
     assert (
-        "GraphPatch must contain at least one mutation or lifecycle transition."
-        in report.blockers
+        "GraphPatch must contain at least one mutation or lifecycle transition." in report.blockers
     )
 
 

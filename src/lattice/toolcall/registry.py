@@ -22,15 +22,17 @@ class ToolCallRegistry:
     def from_runtime_context(cls, runtime_context: RuntimeGraphContext) -> ToolCallRegistry:
         specs: list[ToolCallSpec] = []
         for node in _runtime_nodes(runtime_context.G_resource):
-            if node.get("node_type") != "ToolCallSpec":
-                continue
             attributes = node.get("attributes", {})
             if not isinstance(attributes, dict):
                 continue
-            try:
-                specs.append(ToolCallSpec.model_validate(attributes))
-            except ValidationError:
-                continue
+            if node.get("node_type") == "ToolCallSpec":
+                _append_spec(specs, attributes)
+            if node.get("node_type") == "ToolImplementationProfile":
+                callability = attributes.get("agent_callability", {})
+                if isinstance(callability, dict):
+                    for spec_payload in callability.get("tool_call_specs", []):
+                        if isinstance(spec_payload, dict):
+                            _append_spec(specs, spec_payload)
         return cls(specs)
 
     def get(self, toolcall_spec_id: str) -> ToolCallSpec | None:
@@ -56,3 +58,10 @@ def _runtime_nodes(view: dict[str, Any]) -> list[dict[str, Any]]:
     if not isinstance(nodes, list):
         return []
     return [node for node in nodes if isinstance(node, dict)]
+
+
+def _append_spec(specs: list[ToolCallSpec], payload: dict[str, Any]) -> None:
+    try:
+        specs.append(ToolCallSpec.model_validate(payload))
+    except ValidationError:
+        return

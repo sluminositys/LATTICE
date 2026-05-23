@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from typing import Any
 
@@ -211,7 +211,7 @@ def test_postgres_event_log_round_trips_events() -> None:
 
 def test_neo4j_full_graph_store_replaces_l0_records() -> None:
     driver = FakeNeo4jDriver()
-    records = BioEvoKGGraphRecords(graph_tier="L0", nodes=[make_node()], edges=[])
+    records = BioEvoKGGraphRecords(graph_tier="G0", nodes=[make_node()], edges=[])
 
     write_id = Neo4jFullGraphStore(
         uri="bolt://test",
@@ -235,10 +235,10 @@ def test_qdrant_graph_index_upserts_and_searches_node_vectors() -> None:
         node=make_node(),
         vector=[0.1, 0.2],
         graph_profile_id="profile-1",
-        graph_tier="L0",
+        graph_tier="G0",
     )
     hits = index.search(collection_name="lattice", query_vector=[0.1, 0.2])
 
-    assert client.upserts[0]["points"][0]["id"] == "profile-1:L0:node-1"
+    assert client.upserts[0]["points"][0]["id"] == "profile-1:G0:node-1"
     assert hits[0].point_id == "point-1"
     assert hits[0].payload == {"node_id": "node-1"}

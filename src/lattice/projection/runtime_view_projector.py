@@ -25,6 +25,6 @@ class RuntimeViewProjector:
         return RuntimeGraphContext(
             graph_context_id=f"rgc-{uuid4()}",
             task_fingerprint_id=fingerprint.fingerprint_id,
-            source_graph_tier="L1",
+            source_graph_tier="G1",
             sufficiency_report=report,
         )

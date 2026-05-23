@@ -21,13 +21,13 @@ class RecordingFullGraphStore:
 
     def apply_patch(self, patch: GraphPatch) -> str:
         self.applied_patches.append(patch)
-        return f"l0-write-{patch.patch_id}"
+        return f"g0-write-{patch.patch_id}"
 
     def get_node(self, node_id: str) -> dict[str, Any] | None:
         return None
 
 
-def test_bootstrap_workflow_blocks_before_l0_write_when_audit_fails() -> None:
+def test_bootstrap_workflow_blocks_before_g0_write_when_audit_fails() -> None:
     store = RecordingFullGraphStore()
     patch = GraphPatch(
         patch_id="patch-1",
@@ -44,7 +44,7 @@ def test_bootstrap_workflow_blocks_before_l0_write_when_audit_fails() -> None:
     assert store.applied_patches == []
 
 
-def test_bootstrap_workflow_applies_l0_patch_and_runs_health_compiler() -> None:
+def test_bootstrap_workflow_applies_g0_patch_and_runs_health_compiler() -> None:
     store = RecordingFullGraphStore()
     patch = GraphPatch(
         patch_id="patch-1",
@@ -56,14 +56,14 @@ def test_bootstrap_workflow_applies_l0_patch_and_runs_health_compiler() -> None:
 
     result = GraphConstructionBootstrapWorkflow(full_graph_store=store).run(patch)
 
-    assert result.status == "applied_to_l0_and_compiled_l1"
-    assert result.durable_write_id == "l0-write-patch-1"
+    assert result.status == "applied_to_g0_and_compiled_g1"
+    assert result.durable_write_id == "g0-write-patch-1"
     assert result.memory_health_report is not None
     assert result.memory_health_report.compiled_patch_ids == ["patch-1"]
     assert store.applied_patches == [patch]
 
 
-def test_bootstrap_workflow_blocks_demo_profile_before_l0_write() -> None:
+def test_bootstrap_workflow_blocks_demo_profile_before_g0_write() -> None:
     store = RecordingFullGraphStore()
     profile = create_packaged_demo_graph_profile(
         profile_id="demo-profile",

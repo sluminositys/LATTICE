@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from lattice.capability_evolution import (
     CapabilityGapDetector,
@@ -17,7 +17,7 @@ def test_gap_detector_converts_unresolved_toolcall_need_to_gap() -> None:
     context = RuntimeGraphContext(
         graph_context_id="rgc-1",
         task_fingerprint_id=fingerprint.fingerprint_id,
-        source_graph_tier="L1",
+        source_graph_tier="G1",
         sufficiency_report=GraphContextSufficiencyReport(
             report_id="gcsr-1",
             status="insufficient",
@@ -37,12 +37,12 @@ def test_gap_detector_converts_unresolved_toolcall_need_to_gap() -> None:
     assert gaps[0].task_fingerprint_id == fingerprint.fingerprint_id
 
 
-def test_evolution_agent_proposes_l0_gap_patch() -> None:
+def test_evolution_agent_proposes_g0_gap_patch() -> None:
     fingerprint = TaskFingerprinter().fingerprint("Need a workflow")
     context = RuntimeGraphContext(
         graph_context_id="rgc-1",
         task_fingerprint_id=fingerprint.fingerprint_id,
-        source_graph_tier="L1",
+        source_graph_tier="G1",
         sufficiency_report=GraphContextSufficiencyReport(
             report_id="gcsr-1",
             status="insufficient",
@@ -52,7 +52,7 @@ def test_evolution_agent_proposes_l0_gap_patch() -> None:
         fingerprint=fingerprint,
         runtime_context=context,
         workflow_search_result=WorkflowSearchResult(
-            unresolved_requirements=["no active workflow path nodes projected from L1"]
+            unresolved_requirements=["no active workflow path nodes projected from G1"]
         ),
     )[0]
     event = AgentEvent(
@@ -66,11 +66,11 @@ def test_evolution_agent_proposes_l0_gap_patch() -> None:
     request, patch = EvolutionAgent().propose_gap_patch(gaps=[gap], source_events=[event])
 
     assert request.proposed_graph_patch_id == patch.patch_id
-    assert patch.target_graph_tier == "L0"
+    assert patch.target_graph_tier == "G0"
     assert patch.nodes_to_add[0]["node_type"] == "QualitySignal"
 
 
-def test_tool_builder_proposes_tool_and_toolcall_spec_patch() -> None:
+def test_tool_builder_proposes_tool_and_implementation_profile_patch() -> None:
     discovery = ToolDiscoveryRecord(
         discovery_id="discovery-1",
         name="External tool",
@@ -96,6 +96,10 @@ def test_tool_builder_proposes_tool_and_toolcall_spec_patch() -> None:
         source_events=[event],
     )
 
-    assert [node["node_type"] for node in patch.nodes_to_add] == ["Tool", "ToolCallSpec"]
-    assert patch.edges_to_add[0]["edge_type"] == "WRAPS_TOOL"
-    assert patch.nodes_to_add[1]["attributes"]["runtime_backend"] == "cli"
+    assert [node["node_type"] for node in patch.nodes_to_add] == [
+        "Tool",
+        "ToolImplementationProfile",
+    ]
+    assert patch.edges_to_add[0]["edge_type"] == "HAS_IMPLEMENTATION_PROFILE"
+    tool_specs = patch.nodes_to_add[1]["attributes"]["agent_callability"]["tool_call_specs"]
+    assert tool_specs[0]["runtime_backend"] == "cli"

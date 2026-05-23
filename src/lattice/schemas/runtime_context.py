@@ -22,7 +22,7 @@ class GraphContextSufficiencyReport(LatticeBaseModel):
 class RuntimeGraphContext(LatticeBaseModel):
     graph_context_id: str
     task_fingerprint_id: str
-    source_graph_tier: Literal["L1", "L1_plus_controlled_L0_recall"]
+    source_graph_tier: Literal["G1", "G1_plus_controlled_G0_recall"]
     G_task: dict[str, Any] = Field(default_factory=dict)
     G_evidence: dict[str, Any] = Field(default_factory=dict)
     G_workflow: dict[str, Any] = Field(default_factory=dict)

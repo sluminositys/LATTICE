@@ -16,7 +16,7 @@ class GraphRecordStore(Protocol):
 
 class GraphAssetImportReport(LatticeBaseModel):
     profile_id: str
-    graph_tier: Literal["L0", "L1"]
+    graph_tier: Literal["G0", "G1"]
     status: Literal["imported", "blocked"]
     node_count: int = 0
     edge_count: int = 0
@@ -29,11 +29,11 @@ class GraphAssetImporter:
         self,
         *,
         profile: GraphProfile,
-        graph_tier: Literal["L0", "L1"],
+        graph_tier: Literal["G0", "G1"],
         asset_path: str | Path,
         store: GraphRecordStore,
     ) -> GraphAssetImportReport:
-        if graph_tier == "L1" and profile.mode == "production" and profile.l1_source not in {
+        if graph_tier == "G1" and profile.mode == "production" and profile.l1_source not in {
             "database",
             "memory_health_compiler",
             "packaged",
@@ -42,7 +42,7 @@ class GraphAssetImporter:
                 profile_id=profile.profile_id,
                 graph_tier=graph_tier,
                 status="blocked",
-                blockers=[f"Unsupported L1 source for import: {profile.l1_source}"],
+                blockers=[f"Unsupported G1 source for import: {profile.l1_source}"],
             )
 
         records = load_graph_records(asset_path, graph_tier=graph_tier)

@@ -10,7 +10,7 @@ class LatticeBaseModel(BaseModel):
     model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
 
-GraphTier = Literal["L0", "L1", "L2", "L1_plus_controlled_L0_recall"]
+GraphTier = Literal["G0", "G1", "G2", "G1_plus_controlled_G0_recall"]
 
 LifecycleState = Literal[
     "candidate",
