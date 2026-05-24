@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import Any, Literal
@@ -108,6 +108,7 @@ TaskEdgeType = Literal[
     "PRODUCES_OUTPUT_GOAL",
     "HAS_REQUIRED_CHECK",
     "HAS_EVIDENCE",
+    "EXTRACTED_FROM",
 ]
 
 EvidenceEdgeType = Literal[
@@ -118,6 +119,7 @@ EvidenceEdgeType = Literal[
     "REFUTES_CLAIM",
     "BENCHMARKS_METHOD",
     "VALIDATED_BY",
+    "REPORTS_EXPERIENCE",
 ]
 
 WorkflowEdgeType = Literal[
@@ -140,6 +142,9 @@ ResourceEdgeType = Literal[
     "PRODUCES_FORMAT",
     "ALTERNATIVE_TO",
     "INCOMPATIBLE_WITH",
+    "FEEDS_INTO",
+    "DEPENDS_ON",
+    "COMPATIBLE_WITH",
     "QUERIES_DATABASE",
     "HAS_IMPLEMENTATION_PROFILE",
 ]
@@ -251,6 +256,7 @@ EDGE_TYPES_BY_FAMILY: dict[str, set[str]] = {
         "PRODUCES_OUTPUT_GOAL",
         "HAS_REQUIRED_CHECK",
         "HAS_EVIDENCE",
+        "EXTRACTED_FROM",
     },
     "evidence": {
         "REPORTS_METHOD",
@@ -260,6 +266,7 @@ EDGE_TYPES_BY_FAMILY: dict[str, set[str]] = {
         "REFUTES_CLAIM",
         "BENCHMARKS_METHOD",
         "VALIDATED_BY",
+        "REPORTS_EXPERIENCE",
     },
     "workflow": {
         "HAS_STEP",
@@ -280,6 +287,9 @@ EDGE_TYPES_BY_FAMILY: dict[str, set[str]] = {
         "PRODUCES_FORMAT",
         "ALTERNATIVE_TO",
         "INCOMPATIBLE_WITH",
+        "FEEDS_INTO",
+        "DEPENDS_ON",
+        "COMPATIBLE_WITH",
         "QUERIES_DATABASE",
         "HAS_IMPLEMENTATION_PROFILE",
     },
@@ -413,6 +423,9 @@ LAYER_ORDER = {
     "experience": 6,
 }
 
+L4_DATAFLOW_EDGE_TYPES = {"FEEDS_INTO", "DEPENDS_ON", "COMPATIBLE_WITH", "INCOMPATIBLE_WITH"}
+L4_DATAFLOW_CONTEXT_KEYS = {"workflow_id", "workflow_temp_id", "stage_id", "stage_temp_id"}
+
 
 class BioEvoKGGraphRecords(LatticeBaseModel):
     graph_tier: Literal["G0", "G1"]
@@ -449,10 +462,17 @@ class BioEvoKGGraphRecords(LatticeBaseModel):
                 msg = f"Edge {edge.edge_id} target_layer does not match target node layer."
                 raise ValueError(msg)
 
-            if abs(LAYER_ORDER[edge.source_layer] - LAYER_ORDER[edge.target_layer]) > 1:
+            if not _is_allowed_main_graph_layer_relation(edge):
                 msg = (
-                    "Non-adjacent layer edge is not allowed in G0/G1 main graph: "
+                    "Non-adjacent layer edge is not allowed in G0/G1 main graph unless "
+                    "it is an L2->L6 evidence-support exception: "
                     f"{edge.edge_type} {edge.source_layer}->{edge.target_layer}"
+                )
+                raise ValueError(msg)
+            if _is_l4_l4_edge(edge) and not _is_valid_l4_l4_dataflow_edge(edge):
+                msg = (
+                    "L4-L4 resource edges must be concrete dataflow/dependency/compatibility edges "
+                    f"with L3 workflow or stage context: {edge.edge_type}"
                 )
                 raise ValueError(msg)
 
@@ -461,6 +481,26 @@ class BioEvoKGGraphRecords(LatticeBaseModel):
         if self.graph_tier == "G1" and self.require_l1_healthy_states:
             _assert_l1_healthy_states(self.nodes, self.edges)
         return self
+
+
+def _is_allowed_main_graph_layer_relation(edge: BioEvoKGEdge) -> bool:
+    if abs(LAYER_ORDER[edge.source_layer] - LAYER_ORDER[edge.target_layer]) <= 1:
+        return True
+    return (
+        edge.source_layer == "evidence"
+        and edge.target_layer == "experience"
+        and edge.edge_type == "REPORTS_EXPERIENCE"
+    )
+
+
+def _is_l4_l4_edge(edge: BioEvoKGEdge) -> bool:
+    return edge.source_layer == "resource" and edge.target_layer == "resource"
+
+
+def _is_valid_l4_l4_dataflow_edge(edge: BioEvoKGEdge) -> bool:
+    if edge.edge_type not in L4_DATAFLOW_EDGE_TYPES:
+        return False
+    return any(edge.attributes.get(key) for key in L4_DATAFLOW_CONTEXT_KEYS)
 
 
 def _assert_l1_operational_profiles(

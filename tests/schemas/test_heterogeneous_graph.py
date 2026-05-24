@@ -130,3 +130,132 @@ def test_l1_graph_records_reject_missing_operational_profile() -> None:
             edges=[],
             require_l1_operational_profile=True,
         )
+
+
+def test_g0_records_allow_l2_to_l6_reports_experience_exception() -> None:
+    evidence = BioEvoKGNode.model_validate(
+        make_node(
+            node_id="evidence:paper",
+            layer="evidence",
+            node_type="Paper",
+            operational_profile=None,
+        )
+    )
+    experience = BioEvoKGNode.model_validate(
+        make_node(
+            node_id="experience:risk",
+            layer="experience",
+            node_type="FailureCondition",
+            operational_profile=None,
+        )
+    )
+    edge = BioEvoKGEdge.model_validate(
+        {
+            "edge_id": "edge:evidence-experience",
+            "edge_type": "REPORTS_EXPERIENCE",
+            "source_node_id": evidence.node_id,
+            "target_node_id": experience.node_id,
+            "source_layer": evidence.layer,
+            "target_layer": experience.layer,
+            "source_type": evidence.node_type,
+            "lifecycle_state": "candidate",
+            "operational_profile": None,
+            "provenance": [{"source_type": "test"}],
+        }
+    )
+
+    records = BioEvoKGGraphRecords(graph_tier="G0", nodes=[evidence, experience], edges=[edge])
+
+    assert records.edges[0].edge_type == "REPORTS_EXPERIENCE"
+
+
+def test_g0_records_still_reject_l1_to_l6_experience_edges() -> None:
+    task = BioEvoKGNode.model_validate(
+        make_node(
+            node_id="task:assembly",
+            layer="task",
+            node_type="Task",
+            operational_profile=None,
+        )
+    )
+    experience = BioEvoKGNode.model_validate(
+        make_node(
+            node_id="experience:risk",
+            layer="experience",
+            node_type="FailureCondition",
+            operational_profile=None,
+        )
+    )
+    edge = BioEvoKGEdge.model_validate(
+        {
+            "edge_id": "edge:task-experience",
+            "edge_type": "REPORTS_EXPERIENCE",
+            "source_node_id": task.node_id,
+            "target_node_id": experience.node_id,
+            "source_layer": task.layer,
+            "target_layer": experience.layer,
+            "source_type": task.node_type,
+            "lifecycle_state": "candidate",
+            "operational_profile": None,
+            "provenance": [{"source_type": "test"}],
+        }
+    )
+
+    with pytest.raises(ValidationError):
+        BioEvoKGGraphRecords(graph_tier="G0", nodes=[task, experience], edges=[edge])
+
+
+def test_g0_records_require_l4_l4_dataflow_context() -> None:
+    aligner = BioEvoKGNode.model_validate(
+        make_node(
+            node_id="resource:bwa",
+            layer="resource",
+            node_type="Tool",
+            operational_profile=None,
+        )
+    )
+    processor = BioEvoKGNode.model_validate(
+        make_node(
+            node_id="resource:samtools",
+            layer="resource",
+            node_type="Tool",
+            operational_profile=None,
+        )
+    )
+    valid_edge = BioEvoKGEdge.model_validate(
+        {
+            "edge_id": "edge:bwa-samtools",
+            "edge_type": "FEEDS_INTO",
+            "source_node_id": aligner.node_id,
+            "target_node_id": processor.node_id,
+            "source_layer": aligner.layer,
+            "target_layer": processor.layer,
+            "source_type": aligner.node_type,
+            "attributes": {"workflow_temp_id": "workflow:variant-calling"},
+            "lifecycle_state": "candidate",
+            "operational_profile": None,
+            "provenance": [{"source_type": "test"}],
+        }
+    )
+
+    records = BioEvoKGGraphRecords(graph_tier="G0", nodes=[aligner, processor], edges=[valid_edge])
+
+    assert records.edges[0].edge_type == "FEEDS_INTO"
+
+    generic_edge = valid_edge.model_copy(
+        update={
+            "edge_id": "edge:generic",
+            "edge_type": "SUPPORTS_WORKFLOW",
+            "attributes": {"workflow_temp_id": "workflow:variant-calling"},
+        }
+    )
+    missing_context_edge = valid_edge.model_copy(
+        update={
+            "edge_id": "edge:missing-context",
+            "attributes": {},
+        }
+    )
+
+    for edge in (generic_edge, missing_context_edge):
+        with pytest.raises(ValidationError):
+            BioEvoKGGraphRecords(graph_tier="G0", nodes=[aligner, processor], edges=[edge])
