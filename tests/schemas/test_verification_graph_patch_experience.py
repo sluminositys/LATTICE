@@ -27,13 +27,24 @@ def test_claim_report_can_be_not_applicable_for_plan_only_flow() -> None:
     assert report.final_claim_status == "not_applicable"
 
 
-def test_graph_patch_target_is_g0_only() -> None:
+def test_graph_patch_target_allows_g0_and_compiler_materialized_g1() -> None:
+    patch = GraphPatch.model_validate(
+        {
+            "patch_id": "patch-1",
+            "source_module": "MemoryHealthCompiler",
+            "target_graph_tier": "G1",
+            "provenance": {"source_type": "test"},
+        }
+    )
+
+    assert patch.target_graph_tier == "G1"
+
     with pytest.raises(ValidationError):
         GraphPatch.model_validate(
             {
                 "patch_id": "patch-1",
                 "source_module": "test",
-                "target_graph_tier": "G1",
+                "target_graph_tier": "G2",
                 "provenance": {"source_type": "test"},
             }
         )

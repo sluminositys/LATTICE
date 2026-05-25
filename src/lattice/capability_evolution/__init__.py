@@ -7,6 +7,12 @@ from lattice.capability_evolution.candidates import (
 )
 from lattice.capability_evolution.evolution_agent import EvolutionAgent, EvolutionRequest
 from lattice.capability_evolution.gap_detector import CapabilityGapDetector
+from lattice.capability_evolution.runtime_discovery import (
+    NoopRuntimeCapabilityDiscoverer,
+    RuntimeCapabilityDiscoverer,
+    RuntimeDiscoveryResult,
+    RuntimeDiscoveryStatus,
+)
 from lattice.capability_evolution.tool_builder import ToolBuilderAgent
 from lattice.capability_evolution.toolcall_spec_builder import ToolCallSpecBuilder
 
@@ -16,6 +22,10 @@ __all__ = [
     "CandidateWorkflow",
     "EvolutionAgent",
     "EvolutionRequest",
+    "NoopRuntimeCapabilityDiscoverer",
+    "RuntimeCapabilityDiscoverer",
+    "RuntimeDiscoveryResult",
+    "RuntimeDiscoveryStatus",
     "ToolBuilderAgent",
     "ToolCallSpecBuilder",
     "ToolDiscoveryRecord",

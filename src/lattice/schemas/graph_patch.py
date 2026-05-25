@@ -23,7 +23,7 @@ class GraphPatch(LatticeBaseModel):
     patch_id: str
     source_event_ids: list[str] = Field(default_factory=list)
     source_module: str
-    target_graph_tier: Literal["G0"] = "G0"
+    target_graph_tier: Literal["G0", "G1"] = "G0"
     nodes_to_add: list[dict[str, Any]] = Field(default_factory=list)
     edges_to_add: list[dict[str, Any]] = Field(default_factory=list)
     nodes_to_update: list[dict[str, Any]] = Field(default_factory=list)

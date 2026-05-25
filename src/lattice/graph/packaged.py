@@ -93,6 +93,10 @@ class PackagedHealthyGraphStore:
     def get_node(self, node_id: str) -> dict[str, Any] | None:
         return self._nodes_by_id.get(node_id)
 
+    def materialize_from_patches(self, patches: list[GraphPatch]) -> str:
+        msg = f"Packaged graph profile is read-only: {self.profile.profile_id}"
+        raise PackagedGraphStoreError(msg)
+
 
 class JsonlPackagedDemoGraphStoreLoader:
     def load_l0_store(self, profile: GraphProfile) -> PackagedFullGraphStore:

@@ -36,6 +36,8 @@ AgentEventType = Literal[
     "ExperienceCandidateCreated",
     "CapabilityGapDetected",
     "EvolutionRequested",
+    "RuntimeCapabilityDiscoveryStarted",
+    "RuntimeCapabilityDiscoveryCompleted",
     "CandidateToolCreated",
     "ToolCallSpecCandidateCreated",
     "PreGraphPatch",

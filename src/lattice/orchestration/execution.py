@@ -7,9 +7,17 @@ from uuid import uuid4
 from langgraph.graph import END, START, StateGraph
 from typing_extensions import NotRequired, TypedDict
 
-from lattice.capability_evolution import CapabilityGapDetector, EvolutionAgent, EvolutionRequest
+from lattice.capability_evolution import (
+    CapabilityGapDetector,
+    EvolutionAgent,
+    EvolutionRequest,
+    NoopRuntimeCapabilityDiscoverer,
+    RuntimeCapabilityDiscoverer,
+    RuntimeDiscoveryResult,
+)
 from lattice.core import TaskFingerprinter
 from lattice.graph import FullGraphStore, HealthyGraphStore
+from lattice.graph_health import MemoryHealthCompiler
 from lattice.graph_patch import GraphPatchAuditor, PatchAuditReport
 from lattice.permissions import PermissionDecision, PermissionGate
 from lattice.planning import (
@@ -46,13 +54,18 @@ class ExecutionState(TypedDict):
     capability_gaps: NotRequired[list[CapabilityGap]]
     evolution_request: NotRequired[EvolutionRequest]
     proposed_evolution_patch: NotRequired[GraphPatch | None]
+    runtime_discovery_result: NotRequired[RuntimeDiscoveryResult]
+    runtime_graph_patches: NotRequired[list[GraphPatch]]
     workflow_report: NotRequired[WorkflowAuditReport]
     execution_plan: NotRequired[AgenticExecutionPlan | None]
     permission_decision: NotRequired[PermissionDecision]
     observations: NotRequired[list[StructuredObservation]]
     experience_patch: NotRequired[GraphPatch | None]
     experience_patch_audit: NotRequired[PatchAuditReport | None]
+    graph_patch_audits: NotRequired[list[PatchAuditReport]]
     graph_write_id: NotRequired[str | None]
+    graph_update_write_ids: NotRequired[list[str]]
+    healthy_graph_write_id: NotRequired[str | None]
     response: NotRequired[str]
 
 
@@ -62,6 +75,7 @@ def build_execution_graph(
     full_graph_store: FullGraphStore | None = None,
     toolcall_registry: ToolCallRegistry | None = None,
     runtime_backends: Mapping[str, RuntimeBackend] | None = None,
+    runtime_discoverer: RuntimeCapabilityDiscoverer | None = None,
     apply_experience_patch: bool = True,
 ) -> Any:
     graph = StateGraph(ExecutionState)
@@ -74,6 +88,13 @@ def build_execution_graph(
     graph.add_node("search_workflow_path", search_workflow_path)
     graph.add_node("detect_capability_gaps", detect_capability_gaps)
     graph.add_node("request_evolution", request_evolution)
+    graph.add_node(
+        "discover_runtime_capabilities",
+        lambda state: discover_runtime_capabilities(
+            state,
+            runtime_discoverer=runtime_discoverer,
+        ),
+    )
     graph.add_node("verify_workflow", verify_workflow)
     graph.add_node("compile_execution_plan", compile_execution_plan)
     graph.add_node("permission_check", permission_check)
@@ -91,6 +112,7 @@ def build_execution_graph(
         lambda state: write_experience_patch(
             state,
             full_graph_store=full_graph_store,
+            healthy_graph_store=healthy_graph_store,
             apply_experience_patch=apply_experience_patch,
         ),
     )
@@ -102,7 +124,8 @@ def build_execution_graph(
     graph.add_edge("project_runtime_context", "search_workflow_path")
     graph.add_edge("search_workflow_path", "detect_capability_gaps")
     graph.add_edge("detect_capability_gaps", "request_evolution")
-    graph.add_edge("request_evolution", "verify_workflow")
+    graph.add_edge("request_evolution", "discover_runtime_capabilities")
+    graph.add_edge("discover_runtime_capabilities", "verify_workflow")
     graph.add_edge("verify_workflow", "compile_execution_plan")
     graph.add_edge("compile_execution_plan", "permission_check")
     graph.add_edge("permission_check", "execute_toolcalls")
@@ -123,6 +146,7 @@ def run_execution(
     full_graph_store: FullGraphStore | None = None,
     toolcall_registry: ToolCallRegistry | None = None,
     runtime_backends: Mapping[str, RuntimeBackend] | None = None,
+    runtime_discoverer: RuntimeCapabilityDiscoverer | None = None,
     apply_experience_patch: bool = True,
 ) -> ExecutionState:
     compiled = build_execution_graph(
@@ -130,6 +154,7 @@ def run_execution(
         full_graph_store=full_graph_store,
         toolcall_registry=toolcall_registry,
         runtime_backends=runtime_backends,
+        runtime_discoverer=runtime_discoverer,
         apply_experience_patch=apply_experience_patch,
     )
     initial_state: ExecutionState = {
@@ -202,7 +227,50 @@ def request_evolution(state: ExecutionState) -> ExecutionState:
     }
 
 
+def discover_runtime_capabilities(
+    state: ExecutionState,
+    *,
+    runtime_discoverer: RuntimeCapabilityDiscoverer | None = None,
+) -> ExecutionState:
+    search_result = state["workflow_search_result"]
+    workflow_ready = (
+        search_result.selected_workflow_path_id is not None
+        and not search_result.unresolved_requirements
+    )
+    discoverer = runtime_discoverer or NoopRuntimeCapabilityDiscoverer()
+    result = discoverer.discover(
+        request=state["request"],
+        fingerprint=state["task_fingerprint"],
+        runtime_context=state["runtime_context"],
+        workflow_search_result=search_result,
+        capability_gaps=state.get("capability_gaps", []),
+    )
+    update: ExecutionState = {
+        **state,
+        "runtime_discovery_result": result,
+        "runtime_graph_patches": result.graph_patches,
+    }
+    if workflow_ready:
+        return {**update, "status": state["status"]}
+    if result.execution_plan is not None:
+        return {
+            **update,
+            "status": "runtime_discovery_ready",
+            "execution_plan": result.execution_plan,
+        }
+    return {**update, "status": "runtime_discovery_unavailable"}
+
+
 def verify_workflow(state: ExecutionState) -> ExecutionState:
+    discovery = state.get("runtime_discovery_result")
+    if discovery is not None and discovery.execution_plan is not None:
+        report = WorkflowAuditReport(
+            report_id=f"war-{uuid4()}",
+            status="pass",
+            provenance=[Provenance(source_type="runtime_capability_discovery")],
+        )
+        return {**state, "status": "workflow_verified", "workflow_report": report}
+
     report = WorkflowVerifier().verify(state["workflow_search_result"])
     return {**state, "status": "workflow_verified", "workflow_report": report}
 
@@ -211,6 +279,9 @@ def compile_execution_plan(state: ExecutionState) -> ExecutionState:
     report = state["workflow_report"]
     if report.status == "blocked":
         return {**state, "status": "execution_blocked", "execution_plan": None}
+
+    if state.get("execution_plan") is not None:
+        return {**state, "status": "execution_plan_compiled"}
 
     plan = AgenticExecutionPlanBuilder().build(
         fingerprint=state["task_fingerprint"],
@@ -260,6 +331,9 @@ def execute_toolcalls(
         return {**state, "observations": [], "status": "execution_blocked"}
 
     registry = toolcall_registry or ToolCallRegistry.from_runtime_context(state["runtime_context"])
+    discovery = state.get("runtime_discovery_result")
+    if discovery is not None and discovery.toolcall_specs:
+        registry = registry.with_specs(discovery.toolcall_specs)
     dispatcher = ToolCallDispatcher(registry=registry, backends=runtime_backends)
     observations = [dispatcher.dispatch(step) for step in plan.steps]
     status = (
@@ -372,20 +446,81 @@ def write_experience_patch(
     state: ExecutionState,
     *,
     full_graph_store: FullGraphStore | None = None,
+    healthy_graph_store: HealthyGraphStore | None = None,
     apply_experience_patch: bool = True,
 ) -> ExecutionState:
-    patch = state.get("experience_patch")
-    if patch is None:
-        return {**state, "experience_patch_audit": None, "graph_write_id": None}
+    experience_patch = state.get("experience_patch")
+    patches = [*state.get("runtime_graph_patches", [])]
+    if experience_patch is not None:
+        patches.append(experience_patch)
 
-    audit = GraphPatchAuditor().audit(patch)
-    if audit.status == "blocked" or full_graph_store is None or not apply_experience_patch:
-        return {**state, "experience_patch_audit": audit, "graph_write_id": None}
+    if not patches:
+        return {
+            **state,
+            "experience_patch_audit": None,
+            "graph_patch_audits": [],
+            "graph_write_id": None,
+            "graph_update_write_ids": [],
+            "healthy_graph_write_id": None,
+        }
 
-    write_id = full_graph_store.apply_patch(
-        patch.model_copy(update={"approval_status": "approved"})
+    audits: list[PatchAuditReport] = []
+    write_ids: list[str] = []
+    written_patches: list[GraphPatch] = []
+    experience_audit: PatchAuditReport | None = None
+    auditor = GraphPatchAuditor()
+    for patch in patches:
+        audit = auditor.audit(patch)
+        audits.append(audit)
+        if experience_patch is not None and patch.patch_id == experience_patch.patch_id:
+            experience_audit = audit
+        if audit.status == "blocked" or full_graph_store is None or not apply_experience_patch:
+            continue
+        approved_patch = patch.model_copy(update={"approval_status": "approved"})
+        write_ids.append(full_graph_store.apply_patch(approved_patch))
+        written_patches.append(approved_patch)
+
+    healthy_graph_write_id = _materialize_healthy_graph(
+        healthy_graph_store=healthy_graph_store,
+        written_patches=written_patches,
     )
-    return {**state, "experience_patch_audit": audit, "graph_write_id": write_id}
+    return {
+        **state,
+        "experience_patch_audit": experience_audit,
+        "graph_patch_audits": audits,
+        "graph_write_id": write_ids[-1] if write_ids else None,
+        "graph_update_write_ids": write_ids,
+        "healthy_graph_write_id": healthy_graph_write_id,
+    }
+
+
+def _materialize_healthy_graph(
+    *,
+    healthy_graph_store: HealthyGraphStore | None,
+    written_patches: list[GraphPatch],
+) -> str | None:
+    if healthy_graph_store is None or not written_patches:
+        return None
+    materialize = getattr(healthy_graph_store, "materialize_from_patches", None)
+    if materialize is None:
+        return None
+
+    report = MemoryHealthCompiler().compile(written_patches)
+    if not report.materialized_l1:
+        return None
+
+    g1_patches = [
+        patch.model_copy(
+            update={
+                "patch_id": f"{patch.patch_id}-g1",
+                "target_graph_tier": "G1",
+                "source_module": "MemoryHealthCompiler",
+                "approval_status": "approved",
+            }
+        )
+        for patch in written_patches
+    ]
+    return str(materialize(g1_patches))
 
 
 def produce_response(state: ExecutionState) -> ExecutionState:
@@ -451,6 +586,16 @@ def append_execution_events(event_log: AgentEventLog, state: ExecutionState) -> 
             state["evolution_request"].model_dump(mode="json"),
             provenance,
             graph_patch_ids=[proposed_patch.patch_id] if proposed_patch is not None else [],
+        )
+    if state.get("runtime_discovery_result") is not None:
+        discovery = state["runtime_discovery_result"]
+        _append(
+            event_log,
+            session_id,
+            "RuntimeCapabilityDiscoveryCompleted",
+            discovery.model_dump(mode="json"),
+            provenance,
+            graph_patch_ids=[patch.patch_id for patch in discovery.graph_patches],
         )
     _append(
         event_log,

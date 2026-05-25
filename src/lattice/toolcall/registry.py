@@ -38,6 +38,10 @@ class ToolCallRegistry:
     def get(self, toolcall_spec_id: str) -> ToolCallSpec | None:
         return self._specs.get(toolcall_spec_id)
 
+    def with_specs(self, specs: Iterable[ToolCallSpec]) -> ToolCallRegistry:
+        merged = [*self._specs.values(), *specs]
+        return ToolCallRegistry(merged)
+
     def require_active(self, toolcall_spec_id: str) -> ToolCallSpec:
         spec = self.get(toolcall_spec_id)
         if spec is None:

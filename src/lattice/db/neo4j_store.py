@@ -3,9 +3,11 @@
 import importlib
 import json
 import re
+from collections.abc import Iterable
 from typing import Any, Literal
 from uuid import uuid4
 
+from lattice.graph.policies import GraphTierPolicy, GraphTierPolicyError
 from lattice.graph.stores import FullGraphStore, HealthyGraphStore
 from lattice.schemas import (
     BioEvoKGEdge,
@@ -216,6 +218,23 @@ class Neo4jHealthyGraphStore(HealthyGraphStore):
             return None
         return dict(record["node"])
 
+    def materialize_from_patches(self, patches: Iterable[GraphPatch]) -> str:
+        patch_list = list(patches)
+        policy = GraphTierPolicy()
+        for patch in patch_list:
+            if patch.target_graph_tier != "G1":
+                msg = "Neo4jHealthyGraphStore materialization requires G1 patches."
+                raise Neo4jStoreError(msg)
+            try:
+                policy.assert_l1_update_source(patch.source_module)
+            except GraphTierPolicyError as error:
+                raise Neo4jStoreError(str(error)) from error
+
+        write_id = f"neo4j-g1-materialize-{uuid4()}"
+        with self.driver.session(database=self.database) as session:
+            session.execute_write(self._materialize_patches_tx, patch_list, write_id)
+        return write_id
+
     def replace_records(self, records: BioEvoKGGraphRecords) -> str:
         if records.graph_tier != "G1":
             msg = "Neo4jHealthyGraphStore can only import G1 records."
@@ -224,6 +243,38 @@ class Neo4jHealthyGraphStore(HealthyGraphStore):
         with self.driver.session(database=self.database) as session:
             session.execute_write(_replace_records_tx, self.graph_profile_id, records, write_id)
         return write_id
+
+    def _materialize_patches_tx(
+        self,
+        tx: Any,
+        patches: list[GraphPatch],
+        write_id: str,
+    ) -> None:
+        for patch in patches:
+            tx.run(
+                """
+                MERGE (p:GraphPatchRecord {patch_id: $patch_id, graph_tier: 'G1'})
+                SET p.source_module = $source_module,
+                    p.target_graph_tier = $target_graph_tier,
+                    p.approval_status = $approval_status,
+                    p.risk_level = $risk_level,
+                    p.write_id = $write_id,
+                    p.payload_json = $payload_json
+                """,
+                patch_id=patch.patch_id,
+                source_module=patch.source_module,
+                target_graph_tier=patch.target_graph_tier,
+                approval_status=patch.approval_status,
+                risk_level=patch.risk_level,
+                write_id=write_id,
+                payload_json=patch.model_dump_json(),
+            )
+            for raw_node in patch.nodes_to_add:
+                node = BioEvoKGNode.model_validate(raw_node)
+                _merge_node(tx, self.graph_profile_id, "G1", node, write_id=write_id)
+            for raw_edge in patch.edges_to_add:
+                edge = BioEvoKGEdge.model_validate(raw_edge)
+                _merge_edge(tx, self.graph_profile_id, "G1", edge, write_id=write_id)
 
 
 def _create_neo4j_driver(*, uri: str, user: str, password: str) -> Any:
