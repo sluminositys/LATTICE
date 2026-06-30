@@ -48,8 +48,8 @@ def test_each_heterogeneous_layer_accepts_documented_node_types() -> None:
         ("evidence", "Paper"),
         ("workflow", "WorkflowPath"),
         ("resource", "Tool"),
-        ("implementation", "ToolImplementationProfile"),
-        ("experience", "FailureCondition"),
+        ("skill", "ToolUsageSkill"),
+        ("experience", "FailureRecord"),
     ]
 
     for layer, node_type in examples:
@@ -145,7 +145,7 @@ def test_g0_records_allow_l2_to_l6_reports_experience_exception() -> None:
         make_node(
             node_id="experience:risk",
             layer="experience",
-            node_type="FailureCondition",
+            node_type="FailureRecord",
             operational_profile=None,
         )
     )
@@ -182,7 +182,7 @@ def test_g0_records_still_reject_l1_to_l6_experience_edges() -> None:
         make_node(
             node_id="experience:risk",
             layer="experience",
-            node_type="FailureCondition",
+            node_type="FailureRecord",
             operational_profile=None,
         )
     )

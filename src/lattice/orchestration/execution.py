@@ -1,6 +1,5 @@
 ﻿from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import Any, cast
 from uuid import uuid4
 
@@ -26,20 +25,31 @@ from lattice.planning import (
     WorkflowSearchResult,
 )
 from lattice.projection import RuntimeViewProjector
-from lattice.runtime import AgentEvent, AgentEventLog, AgentEventType
+from lattice.runtime import (
+    AgentEvent,
+    AgentEventLog,
+    AgentEventType,
+    RunRecordBuilder,
+    ScriptGenerationAgent,
+    ScriptReviewAgent,
+    ScriptRunner,
+)
 from lattice.schemas import (
     AgenticExecutionPlan,
+    ArtifactManifest,
     Blocker,
     CapabilityGap,
     GraphPatch,
     PermissionMode,
     Provenance,
+    RunRecord,
     RuntimeGraphContext,
-    StructuredObservation,
+    ScriptExecutionRawResult,
+    ScriptProposal,
+    ScriptReviewResult,
     TaskFingerprint,
     WorkflowAuditReport,
 )
-from lattice.toolcall import RuntimeBackend, ToolCallDispatcher, ToolCallRegistry
 from lattice.verification import WorkflowVerifier
 
 
@@ -58,8 +68,12 @@ class ExecutionState(TypedDict):
     runtime_graph_patches: NotRequired[list[GraphPatch]]
     workflow_report: NotRequired[WorkflowAuditReport]
     execution_plan: NotRequired[AgenticExecutionPlan | None]
+    script_proposal: NotRequired[ScriptProposal | None]
+    script_review: NotRequired[ScriptReviewResult | None]
     permission_decision: NotRequired[PermissionDecision]
-    observations: NotRequired[list[StructuredObservation]]
+    script_execution_result: NotRequired[ScriptExecutionRawResult | None]
+    run_record: NotRequired[RunRecord | None]
+    artifact_manifest: NotRequired[ArtifactManifest | None]
     experience_patch: NotRequired[GraphPatch | None]
     experience_patch_audit: NotRequired[PatchAuditReport | None]
     graph_patch_audits: NotRequired[list[PatchAuditReport]]
@@ -73,11 +87,12 @@ def build_execution_graph(
     *,
     healthy_graph_store: HealthyGraphStore | None = None,
     full_graph_store: FullGraphStore | None = None,
-    toolcall_registry: ToolCallRegistry | None = None,
-    runtime_backends: Mapping[str, RuntimeBackend] | None = None,
+    toolcall_registry: object | None = None,
+    runtime_backends: object | None = None,
     runtime_discoverer: RuntimeCapabilityDiscoverer | None = None,
     apply_experience_patch: bool = True,
 ) -> Any:
+    _ = (toolcall_registry, runtime_backends)
     graph = StateGraph(ExecutionState)
     graph.add_node("receive_request", receive_request)
     graph.add_node("fingerprint_task", fingerprint_task)
@@ -97,15 +112,11 @@ def build_execution_graph(
     )
     graph.add_node("verify_workflow", verify_workflow)
     graph.add_node("compile_execution_plan", compile_execution_plan)
+    graph.add_node("generate_script", generate_script)
+    graph.add_node("review_script", review_script)
     graph.add_node("permission_check", permission_check)
-    graph.add_node(
-        "execute_toolcalls",
-        lambda state: execute_toolcalls(
-            state,
-            toolcall_registry=toolcall_registry,
-            runtime_backends=runtime_backends,
-        ),
-    )
+    graph.add_node("execute_script", execute_script)
+    graph.add_node("build_run_record", build_run_record)
     graph.add_node("build_experience_patch", build_experience_patch)
     graph.add_node(
         "write_experience_patch",
@@ -127,9 +138,12 @@ def build_execution_graph(
     graph.add_edge("request_evolution", "discover_runtime_capabilities")
     graph.add_edge("discover_runtime_capabilities", "verify_workflow")
     graph.add_edge("verify_workflow", "compile_execution_plan")
-    graph.add_edge("compile_execution_plan", "permission_check")
-    graph.add_edge("permission_check", "execute_toolcalls")
-    graph.add_edge("execute_toolcalls", "build_experience_patch")
+    graph.add_edge("compile_execution_plan", "generate_script")
+    graph.add_edge("generate_script", "review_script")
+    graph.add_edge("review_script", "permission_check")
+    graph.add_edge("permission_check", "execute_script")
+    graph.add_edge("execute_script", "build_run_record")
+    graph.add_edge("build_run_record", "build_experience_patch")
     graph.add_edge("build_experience_patch", "write_experience_patch")
     graph.add_edge("write_experience_patch", "produce_response")
     graph.add_edge("produce_response", END)
@@ -144,8 +158,8 @@ def run_execution(
     permission_mode: PermissionMode = "safe_execute",
     healthy_graph_store: HealthyGraphStore | None = None,
     full_graph_store: FullGraphStore | None = None,
-    toolcall_registry: ToolCallRegistry | None = None,
-    runtime_backends: Mapping[str, RuntimeBackend] | None = None,
+    toolcall_registry: object | None = None,
+    runtime_backends: object | None = None,
     runtime_discoverer: RuntimeCapabilityDiscoverer | None = None,
     apply_experience_patch: bool = True,
 ) -> ExecutionState:
@@ -233,10 +247,7 @@ def discover_runtime_capabilities(
     runtime_discoverer: RuntimeCapabilityDiscoverer | None = None,
 ) -> ExecutionState:
     search_result = state["workflow_search_result"]
-    workflow_ready = (
-        search_result.selected_workflow_path_id is not None
-        and not search_result.unresolved_requirements
-    )
+    workflow_ready = search_result.selected_workflow_path_id is not None
     discoverer = runtime_discoverer or NoopRuntimeCapabilityDiscoverer()
     result = discoverer.discover(
         request=state["request"],
@@ -245,6 +256,7 @@ def discover_runtime_capabilities(
         workflow_search_result=search_result,
         capability_gaps=state.get("capability_gaps", []),
     )
+    result = result.model_copy(update={"graph_patches": _normalize_runtime_graph_patches(result.graph_patches)})
     update: ExecutionState = {
         **state,
         "runtime_discovery_result": result,
@@ -259,6 +271,53 @@ def discover_runtime_capabilities(
             "execution_plan": result.execution_plan,
         }
     return {**update, "status": "runtime_discovery_unavailable"}
+
+
+def _normalize_runtime_graph_patches(patches: list[GraphPatch]) -> list[GraphPatch]:
+    return [patch.model_copy(update=_normalized_patch_payload(patch)) for patch in patches]
+
+
+def _normalized_patch_payload(patch: GraphPatch) -> dict[str, Any]:
+    node_id_remap: dict[str, str] = {}
+    nodes_to_add: list[dict[str, Any]] = []
+    for node in patch.nodes_to_add:
+        updated = dict(node)
+        if (
+            updated.get("layer") == "implementation"
+            and updated.get("node_type") == "ToolImplementationProfile"
+        ):
+            old_id = str(updated.get("node_id", ""))
+            new_id = old_id.replace("implementation-profile", "skill-tool-usage")
+            updated["node_id"] = new_id
+            updated["layer"] = "skill"
+            updated["node_type"] = "ToolUsageSkill"
+            updated["canonical_name"] = str(updated.get("canonical_name", "")).replace(
+                "implementation profile",
+                "usage skill",
+            )
+            attributes = dict(updated.get("attributes", {}))
+            callability = attributes.pop("agent_callability", {})
+            attributes["agent_readable_skill"] = callability if isinstance(callability, dict) else {}
+            updated["attributes"] = attributes
+            node_id_remap[old_id] = new_id
+        nodes_to_add.append(updated)
+
+    edges_to_add: list[dict[str, Any]] = []
+    for edge in patch.edges_to_add:
+        updated = dict(edge)
+        if updated.get("edge_type") == "HAS_IMPLEMENTATION_PROFILE":
+            updated["edge_type"] = "HAS_USAGE_SKILL"
+        if updated.get("source_node_id") in node_id_remap:
+            updated["source_node_id"] = node_id_remap[str(updated["source_node_id"])]
+        if updated.get("target_node_id") in node_id_remap:
+            updated["target_node_id"] = node_id_remap[str(updated["target_node_id"])]
+        if updated.get("source_layer") == "implementation":
+            updated["source_layer"] = "skill"
+        if updated.get("target_layer") == "implementation":
+            updated["target_layer"] = "skill"
+        edges_to_add.append(updated)
+
+    return {"nodes_to_add": nodes_to_add, "edges_to_add": edges_to_add}
 
 
 def verify_workflow(state: ExecutionState) -> ExecutionState:
@@ -319,126 +378,138 @@ def permission_check(state: ExecutionState) -> ExecutionState:
     return {**state, "permission_decision": decision}
 
 
+def generate_script(state: ExecutionState) -> ExecutionState:
+    plan = state.get("execution_plan")
+    if plan is None:
+        return {**state, "script_proposal": None}
+    proposal = ScriptGenerationAgent().generate(
+        request=state["request"],
+        plan=plan,
+        runtime_context=state["runtime_context"],
+    )
+    return {**state, "status": "script_generated", "script_proposal": proposal}
+
+
+def review_script(state: ExecutionState) -> ExecutionState:
+    proposal = state.get("script_proposal")
+    if proposal is None:
+        return {**state, "script_review": None}
+    review = ScriptReviewAgent().review(proposal)
+    status = "script_reviewed" if review.approved else "script_blocked"
+    if not review.approved:
+        blocked_report = WorkflowAuditReport(
+            report_id=f"war-{uuid4()}",
+            status="blocked",
+            blockers=[
+                Blocker(code="SCRIPT_REVIEW_BLOCKED", message=blocker)
+                for blocker in review.blockers
+            ],
+            warnings=[],
+            provenance=[Provenance(source_type="script_review_agent")],
+        )
+        return {
+            **state,
+            "status": status,
+            "script_review": review,
+            "workflow_report": blocked_report,
+        }
+    return {**state, "status": status, "script_review": review}
+
+
+def execute_script(state: ExecutionState) -> ExecutionState:
+    decision = state["permission_decision"]
+    proposal = state.get("script_proposal")
+    review = state.get("script_review")
+    if not decision.allowed or proposal is None or review is None or not review.approved:
+        return {**state, "script_execution_result": None, "status": "execution_blocked"}
+
+    result = ScriptRunner().run(proposal)
+    status = "executed" if result.status == "success" else "execution_failed"
+    return {**state, "script_execution_result": result, "status": status}
+
+
 def execute_toolcalls(
     state: ExecutionState,
     *,
-    toolcall_registry: ToolCallRegistry | None = None,
-    runtime_backends: Mapping[str, RuntimeBackend] | None = None,
+    toolcall_registry: object | None = None,
+    runtime_backends: object | None = None,
 ) -> ExecutionState:
-    decision = state["permission_decision"]
-    plan = state.get("execution_plan")
-    if not decision.allowed or plan is None:
-        return {**state, "observations": [], "status": "execution_blocked"}
+    _ = (toolcall_registry, runtime_backends)
+    return execute_script(state)
 
-    registry = toolcall_registry or ToolCallRegistry.from_runtime_context(state["runtime_context"])
-    discovery = state.get("runtime_discovery_result")
-    if discovery is not None and discovery.toolcall_specs:
-        registry = registry.with_specs(discovery.toolcall_specs)
-    dispatcher = ToolCallDispatcher(registry=registry, backends=runtime_backends)
-    observations = [dispatcher.dispatch(step) for step in plan.steps]
-    status = (
-        "executed"
-        if all(obs.status == "success" for obs in observations)
-        else "execution_failed"
+
+def build_run_record(state: ExecutionState) -> ExecutionState:
+    record, manifest = RunRecordBuilder().build(
+        session_id=state["session_id"],
+        request=state["request"],
+        plan=state.get("execution_plan"),
+        proposal=state.get("script_proposal"),
+        execution=state.get("script_execution_result"),
     )
-    return {**state, "observations": observations, "status": status}
+    execution = state.get("script_execution_result")
+    status = "executed" if execution is not None and execution.status == "success" else state["status"]
+    return {
+        **state,
+        "status": status,
+        "run_record": record,
+        "artifact_manifest": manifest,
+    }
 
 
 def build_experience_patch(state: ExecutionState) -> ExecutionState:
-    observations = state.get("observations", [])
+    run_record = state.get("run_record")
     plan = state.get("execution_plan")
-    if plan is None or not observations:
+    if run_record is None:
         return {**state, "experience_patch": None}
 
     source_event = AgentEvent(
         event_id=f"event-{uuid4()}",
         session_id=state["session_id"],
-        event_type="ObservationParsed",
-        payload={"observation_ids": [obs.observation_id for obs in observations]},
+        event_type="RunRecordCreated",
+        payload={"run_id": run_record.run_id},
         provenance=[Provenance(source_type="execution_orchestrator")],
     )
-    provenance = Provenance(source_type="execution_experience_recorder")
+    provenance = Provenance(
+        source_type="execution_experience_distiller",
+        source_id=run_record.run_id,
+        metadata={"artifact_manifest_id": run_record.artifact_manifest_id},
+    )
     patch = GraphPatch(
         patch_id=f"patch-{uuid4()}",
         source_event_ids=[source_event.event_id],
-        source_module="ExecutionExperienceRecorder",
+        source_module="ExecutionExperienceDistiller",
         provenance=provenance,
         approval_status="proposed",
     )
-    trace_node_id = f"experience-execution-trace-{plan.plan_id}"
+    status = run_record.status
+    node_type = "SuccessPattern" if status == "success" else "FailureRecord"
+    node_id = f"experience-{node_type.lower()}-{run_record.run_id}"
+    canonical_name = (
+        f"Successful execution pattern for {plan.plan_id}"
+        if status == "success" and plan is not None
+        else f"Execution failure record for {run_record.run_id}"
+    )
     patch.nodes_to_add.append(
         {
-            "node_id": trace_node_id,
+            "node_id": node_id,
             "layer": "experience",
-            "node_type": "ExecutionTrace",
-            "canonical_name": f"Execution trace for {plan.plan_id}",
+            "node_type": node_type,
+            "canonical_name": canonical_name,
             "attributes": {
-                "plan_id": plan.plan_id,
+                "run_id": run_record.run_id,
+                "plan_id": run_record.plan_id,
                 "session_id": state["session_id"],
-                "selected_workflow_path_id": plan.selected_workflow_path_id,
-                "status": state["status"],
-                "observation_ids": [obs.observation_id for obs in observations],
+                "status": status,
+                "referenced_skill_ids": run_record.referenced_skill_ids,
+                "suggested_tool_names": run_record.suggested_tool_names,
+                "generalization_scope": "task_and_skill_pattern",
+                "distilled_from_run_record": True,
+                "summary": run_record.summary,
             },
             "lifecycle_state": "candidate",
             "provenance": [provenance.model_dump(mode="json")],
         }
     )
-    for observation in observations:
-        event_node_id = f"experience-toolcall-event-{observation.toolcall_event_id}"
-        patch.nodes_to_add.append(
-            {
-                "node_id": event_node_id,
-                "layer": "experience",
-                "node_type": "ToolCallEvent",
-                "canonical_name": f"ToolCall {observation.toolcall_event_id}",
-                "attributes": observation.model_dump(mode="json"),
-                "lifecycle_state": "candidate",
-                "provenance": [observation.provenance.model_dump(mode="json")],
-            }
-        )
-        patch.edges_to_add.append(
-            {
-                "edge_id": f"edge-{uuid4()}",
-                "edge_type": "CALLED_TOOLCALL",
-                "source_node_id": trace_node_id,
-                "target_node_id": event_node_id,
-                "source_layer": "experience",
-                "target_layer": "experience",
-                "source_type": "execution_experience_recorder",
-                "lifecycle_state": "candidate",
-                "provenance": [provenance.model_dump(mode="json")],
-            }
-        )
-        if observation.status != "success":
-            failure_node_id = f"experience-failure-{observation.observation_id}"
-            patch.nodes_to_add.append(
-                {
-                    "node_id": failure_node_id,
-                    "layer": "experience",
-                    "node_type": "FailureCondition",
-                    "canonical_name": observation.error_class or "ToolCall failure",
-                    "attributes": {
-                        "toolcall_event_id": observation.toolcall_event_id,
-                        "error_class": observation.error_class,
-                        "summary": observation.parsed_summary,
-                    },
-                    "lifecycle_state": "candidate",
-                    "provenance": [observation.provenance.model_dump(mode="json")],
-                }
-            )
-            patch.edges_to_add.append(
-                {
-                    "edge_id": f"edge-{uuid4()}",
-                    "edge_type": "FAILED_WITH",
-                    "source_node_id": event_node_id,
-                    "target_node_id": failure_node_id,
-                    "source_layer": "experience",
-                    "target_layer": "experience",
-                    "source_type": "execution_experience_recorder",
-                    "lifecycle_state": "candidate",
-                    "provenance": [provenance.model_dump(mode="json")],
-                }
-            )
     return {**state, "experience_patch": patch}
 
 
@@ -528,14 +599,19 @@ def produce_response(state: ExecutionState) -> ExecutionState:
         blockers = "; ".join(blocker.code for blocker in state["workflow_report"].blockers)
         return {**state, "response": f"Execution blocked: {blockers}"}
 
-    observations = state.get("observations", [])
-    failed = [obs for obs in observations if obs.status != "success"]
-    if failed:
-        return {
-            **state,
-            "response": f"Execution completed with {len(failed)} failed ToolCall(s).",
-        }
-    return {**state, "response": f"Execution completed with {len(observations)} ToolCall(s)."}
+    review = state.get("script_review")
+    if review is not None and not review.approved:
+        blockers = "; ".join(review.blockers)
+        return {**state, "response": f"Script review blocked execution: {blockers}"}
+
+    execution = state.get("script_execution_result")
+    if execution is None:
+        blockers = "; ".join(state["permission_decision"].blocked_by)
+        return {**state, "response": f"Execution blocked: {blockers}"}
+    return {
+        **state,
+        "response": f"Script execution completed with status: {execution.status}.",
+    }
 
 
 def append_execution_events(event_log: AgentEventLog, state: ExecutionState) -> None:
@@ -611,15 +687,36 @@ def append_execution_events(event_log: AgentEventLog, state: ExecutionState) -> 
         state["permission_decision"].model_dump(mode="json"),
         provenance,
     )
-    for observation in state.get("observations", []):
-        event_type: AgentEventType = (
-            "ToolCallCompleted" if observation.status == "success" else "ToolCallFailed"
-        )
+    if state.get("script_proposal") is not None:
         _append(
             event_log,
             session_id,
-            event_type,
-            observation.model_dump(mode="json"),
+            "ScriptGenerated",
+            state["script_proposal"].model_dump(mode="json"),
+            provenance,
+        )
+    if state.get("script_review") is not None:
+        _append(
+            event_log,
+            session_id,
+            "ScriptReviewed",
+            state["script_review"].model_dump(mode="json"),
+            provenance,
+        )
+    if state.get("script_execution_result") is not None:
+        _append(
+            event_log,
+            session_id,
+            "ScriptExecuted",
+            state["script_execution_result"].model_dump(mode="json"),
+            provenance,
+        )
+    if state.get("run_record") is not None:
+        _append(
+            event_log,
+            session_id,
+            "RunRecordCreated",
+            state["run_record"].model_dump(mode="json"),
             provenance,
         )
     patch = state.get("experience_patch")

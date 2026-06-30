@@ -27,12 +27,6 @@ class ToolCallRegistry:
                 continue
             if node.get("node_type") == "ToolCallSpec":
                 _append_spec(specs, attributes)
-            if node.get("node_type") == "ToolImplementationProfile":
-                callability = attributes.get("agent_callability", {})
-                if isinstance(callability, dict):
-                    for spec_payload in callability.get("tool_call_specs", []):
-                        if isinstance(spec_payload, dict):
-                            _append_spec(specs, spec_payload)
         return cls(specs)
 
     def get(self, toolcall_spec_id: str) -> ToolCallSpec | None:

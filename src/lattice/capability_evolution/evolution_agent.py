@@ -40,9 +40,9 @@ class EvolutionAgent:
         for gap in gaps:
             patch.nodes_to_add.append(
                 {
-                    "node_id": f"experience-quality-signal-{gap.gap_id}",
+                    "node_id": f"experience-workflow-insight-{gap.gap_id}",
                     "layer": "experience",
-                    "node_type": "QualitySignal",
+                    "node_type": "WorkflowLevelInsight",
                     "canonical_name": f"Capability gap: {gap.gap_type}",
                     "attributes": gap.model_dump(mode="json"),
                     "lifecycle_state": "candidate",

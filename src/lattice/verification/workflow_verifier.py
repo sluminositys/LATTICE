@@ -17,13 +17,6 @@ class WorkflowVerifier:
                 )
             )
 
-        if any("ToolCallSpec" in item for item in search_result.unresolved_requirements):
-            blockers.append(
-                Blocker(
-                    code="NO_TOOLCALL_SPEC",
-                    message="No active ToolCallSpec is registered for execution.",
-                )
-            )
         if any("executable steps" in item for item in search_result.unresolved_requirements):
             blockers.append(
                 Blocker(
@@ -34,7 +27,7 @@ class WorkflowVerifier:
         remaining_unresolved = [
             item
             for item in search_result.unresolved_requirements
-            if "ToolCallSpec" not in item and "executable steps" not in item
+            if "executable steps" not in item
         ]
         if remaining_unresolved and search_result.selected_workflow_path_id is not None:
             blockers.append(

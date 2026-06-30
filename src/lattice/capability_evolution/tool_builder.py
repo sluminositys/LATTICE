@@ -42,7 +42,7 @@ class ToolBuilderAgent:
             provenance=discovery.provenance,
         )
         tool_node_id = f"resource-tool-{candidate_tool.candidate_id}"
-        profile_node_id = f"implementation-profile-{spec.toolcall_spec_id}"
+        skill_node_id = f"skill-tool-usage-{spec.toolcall_spec_id}"
         patch.nodes_to_add.extend(
             [
                 {
@@ -59,17 +59,28 @@ class ToolBuilderAgent:
                     "provenance": [candidate_tool.provenance.model_dump(mode="json")],
                 },
                 {
-                    "node_id": profile_node_id,
-                    "layer": "implementation",
-                    "node_type": "ToolImplementationProfile",
-                    "canonical_name": f"{spec.name} implementation profile",
+                    "node_id": skill_node_id,
+                    "layer": "skill",
+                    "node_type": "ToolUsageSkill",
+                    "canonical_name": f"{spec.name} usage skill",
                     "attributes": {
                         "software_id": tool_node_id,
                         "software_name": candidate_tool.name,
-                        "agent_callability": {
-                            "enabled": True,
-                            "tool_call_specs": [spec.model_dump(mode="json")],
+                        "skill_summary": {
+                            "tool_name": spec.tool_name,
+                            "version_policy": spec.tool_version_policy,
+                            "task_tags": spec.task_tags,
+                            "method_tags": spec.method_tags,
+                            "suggested_runtime": spec.runtime_backend,
                         },
+                        "input_schema": spec.input_schema,
+                        "output_schema": spec.output_schema,
+                        "parameter_guidance": spec.parameter_schema,
+                        "preconditions": spec.preconditions,
+                        "postconditions": spec.postconditions,
+                        "failure_modes": spec.failure_conditions,
+                        "recovery_hints": spec.repair_hints,
+                        "permission_policy": spec.permission_policy,
                     },
                     "lifecycle_state": spec.lifecycle_state,
                     "provenance": [spec.provenance.model_dump(mode="json")],
@@ -79,11 +90,11 @@ class ToolBuilderAgent:
         patch.edges_to_add.append(
             {
                 "edge_id": f"edge-{uuid4()}",
-                "edge_type": "HAS_IMPLEMENTATION_PROFILE",
+                "edge_type": "HAS_USAGE_SKILL",
                 "source_node_id": tool_node_id,
-                "target_node_id": profile_node_id,
+                "target_node_id": skill_node_id,
                 "source_layer": "resource",
-                "target_layer": "implementation",
+                "target_layer": "skill",
                 "source_type": "tool_builder_agent",
                 "lifecycle_state": spec.lifecycle_state,
                 "provenance": [spec.provenance.model_dump(mode="json")],

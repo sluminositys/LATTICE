@@ -6,6 +6,12 @@ from lattice.runtime.agent_event_log import (
     AgentEventType,
     FileAgentEventLog,
 )
+from lattice.runtime.script_agents import (
+    RunRecordBuilder,
+    ScriptGenerationAgent,
+    ScriptReviewAgent,
+    ScriptRunner,
+)
 from lattice.runtime.session_state_machine import (
     SessionStateMachine,
     SessionStateTransitionError,
@@ -17,6 +23,10 @@ __all__ = [
     "AgentEventLog",
     "AgentEventType",
     "FileAgentEventLog",
+    "RunRecordBuilder",
+    "ScriptGenerationAgent",
+    "ScriptReviewAgent",
+    "ScriptRunner",
     "SessionStateMachine",
     "SessionStateTransitionError",
     "SessionStatus",

@@ -12,9 +12,10 @@ class GraphContextSufficiencyReport(LatticeBaseModel):
     status: Literal["sufficient", "insufficient", "sufficient_with_warnings"]
     missing_task_info: list[str] = Field(default_factory=list)
     missing_workflow_info: list[str] = Field(default_factory=list)
-    missing_toolcall_info: list[str] = Field(default_factory=list)
+    missing_skill_info: list[str] = Field(default_factory=list)
     missing_evidence_info: list[str] = Field(default_factory=list)
     missing_experience_info: list[str] = Field(default_factory=list)
+    missing_toolcall_info: list[str] = Field(default_factory=list)
     controlled_recall_required: bool = False
     controlled_recall_reason: str | None = None
 
@@ -27,6 +28,10 @@ class RuntimeGraphContext(LatticeBaseModel):
     G_evidence: dict[str, Any] = Field(default_factory=dict)
     G_workflow: dict[str, Any] = Field(default_factory=dict)
     G_resource: dict[str, Any] = Field(default_factory=dict)
+    G_skill: dict[str, Any] = Field(default_factory=dict)
+    G_experience: dict[str, Any] = Field(default_factory=dict)
+    repair_advice_view: dict[str, Any] = Field(default_factory=dict)
+    quality_checkpoint_view: dict[str, Any] = Field(default_factory=dict)
     G_experience_preference: dict[str, Any] = Field(default_factory=dict)
     temporary_candidates: list[dict[str, Any]] = Field(default_factory=list)
     sufficiency_report: GraphContextSufficiencyReport

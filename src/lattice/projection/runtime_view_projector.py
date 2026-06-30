@@ -18,13 +18,18 @@ class RuntimeViewProjector:
             report_id=f"gcsr-{uuid4()}",
             status="insufficient",
             missing_workflow_info=["no healthy graph store is configured"],
-            missing_toolcall_info=["no active ToolCallSpec is registered"],
+            missing_skill_info=["no active L5 skill view has been projected"],
             missing_evidence_info=["no evidence view has been projected"],
+            missing_experience_info=["no reusable L6 experience view has been projected"],
             controlled_recall_required=False,
         )
         return RuntimeGraphContext(
             graph_context_id=f"rgc-{uuid4()}",
             task_fingerprint_id=fingerprint.fingerprint_id,
             source_graph_tier="G1",
+            G_skill={"nodes": [], "edges": [], "role": "agent-readable skill reference"},
+            G_experience={"nodes": [], "edges": [], "role": "generalized experience reference"},
+            repair_advice_view={"items": []},
+            quality_checkpoint_view={"items": []},
             sufficiency_report=report,
         )

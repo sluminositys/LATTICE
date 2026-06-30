@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import Any, Literal
@@ -13,7 +13,7 @@ KnowledgeLayer = Literal[
     "evidence",
     "workflow",
     "resource",
-    "implementation",
+    "skill",
     "experience",
 ]
 
@@ -67,29 +67,26 @@ ResourceNodeType = Literal[
     "AnnotationResource",
 ]
 
-ImplementationNodeType = Literal[
-    "ToolImplementationProfile",
-    "AggregatedToolProfile",
-    "ConfigurationProfile",
-    "ReferenceImplementationProfile",
-    "DatabaseImplementationProfile",
+SkillNodeType = Literal[
+    "ToolUsageSkill",
+    "ParameterGuidance",
+    "EnvironmentSpec",
+    "FailureMode",
+    "UsageConstraint",
+    "RecoveryStrategy",
+    "QualityCheckpoint",
 ]
 
 ExperienceNodeType = Literal[
-    "ExecutionTrace",
-    "ExecutionEvent",
-    "ToolCallEvent",
-    "FailureCondition",
-    "Constraint",
-    "RepairAction",
-    "UserFeedback",
-    "UserPreference",
-    "LabPreference",
-    "HistoricalSuccess",
-    "HistoricalFailure",
-    "QualitySignal",
-    "GraphPatch",
-    "LifecycleTransition",
+    "WorkflowLevelInsight",
+    "TaskLevelConstraint",
+    "MethodComparison",
+    "CrossToolPattern",
+    "DomainHeuristic",
+    "FailureRecord",
+    "SuccessPattern",
+    "GraphPatchRecord",
+    "LifecycleTransitionRecord",
 ]
 
 HeterogeneousNodeType = (
@@ -97,7 +94,7 @@ HeterogeneousNodeType = (
     | EvidenceNodeType
     | WorkflowNodeType
     | ResourceNodeType
-    | ImplementationNodeType
+    | SkillNodeType
     | ExperienceNodeType
 )
 
@@ -146,25 +143,30 @@ ResourceEdgeType = Literal[
     "DEPENDS_ON",
     "COMPATIBLE_WITH",
     "QUERIES_DATABASE",
-    "HAS_IMPLEMENTATION_PROFILE",
+    "HAS_USAGE_SKILL",
 ]
 
-ImplementationEdgeType = Literal[
-    "HAS_FAILURE_CONDITION",
-    "HAS_CONSTRAINT",
-    "HAS_REPAIR_ACTION",
-    "HAS_QUALITY_SIGNAL",
+SkillEdgeType = Literal[
+    "HAS_PARAMETER_GUIDANCE",
+    "HAS_ENVIRONMENT_SPEC",
+    "HAS_FAILURE_MODE",
+    "HAS_USAGE_CONSTRAINT",
+    "HAS_RECOVERY_STRATEGY",
+    "HAS_QUALITY_CHECKPOINT",
+    "RECOVERABLE_BY",
+    "SUPERSEDES_SKILL",
+    "REQUIRES_SKILL",
 ]
 
 ExperienceEdgeType = Literal[
-    "CALLED_TOOLCALL",
-    "FAILED_WITH",
     "GENERALIZED_TO",
-    "TRIGGERED_BY",
-    "PREFERS",
-    "AVOIDS",
+    "CONTRADICTS",
+    "REINFORCES",
+    "SUMMARIZES_PATTERN",
     "GENERATED_PATCH",
     "UPDATED_LIFECYCLE_STATE",
+    "DISTILLED_TO_SKILL",
+    "SUPPORTS_SKILL_UPDATE",
 ]
 
 HeterogeneousEdgeType = (
@@ -172,7 +174,7 @@ HeterogeneousEdgeType = (
     | EvidenceEdgeType
     | WorkflowEdgeType
     | ResourceEdgeType
-    | ImplementationEdgeType
+    | SkillEdgeType
     | ExperienceEdgeType
 )
 
@@ -223,28 +225,25 @@ NODE_TYPES_BY_LAYER: dict[str, set[str]] = {
         "ReferenceDataset",
         "AnnotationResource",
     },
-    "implementation": {
-        "ToolImplementationProfile",
-        "AggregatedToolProfile",
-        "ConfigurationProfile",
-        "ReferenceImplementationProfile",
-        "DatabaseImplementationProfile",
+    "skill": {
+        "ToolUsageSkill",
+        "ParameterGuidance",
+        "EnvironmentSpec",
+        "FailureMode",
+        "UsageConstraint",
+        "RecoveryStrategy",
+        "QualityCheckpoint",
     },
     "experience": {
-        "ExecutionTrace",
-        "ExecutionEvent",
-        "ToolCallEvent",
-        "FailureCondition",
-        "Constraint",
-        "RepairAction",
-        "UserFeedback",
-        "UserPreference",
-        "LabPreference",
-        "HistoricalSuccess",
-        "HistoricalFailure",
-        "QualitySignal",
-        "GraphPatch",
-        "LifecycleTransition",
+        "WorkflowLevelInsight",
+        "TaskLevelConstraint",
+        "MethodComparison",
+        "CrossToolPattern",
+        "DomainHeuristic",
+        "FailureRecord",
+        "SuccessPattern",
+        "GraphPatchRecord",
+        "LifecycleTransitionRecord",
     },
 }
 
@@ -291,25 +290,33 @@ EDGE_TYPES_BY_FAMILY: dict[str, set[str]] = {
         "DEPENDS_ON",
         "COMPATIBLE_WITH",
         "QUERIES_DATABASE",
-        "HAS_IMPLEMENTATION_PROFILE",
+        "HAS_USAGE_SKILL",
     },
-    "implementation": {
-        "HAS_FAILURE_CONDITION",
-        "HAS_CONSTRAINT",
-        "HAS_REPAIR_ACTION",
-        "HAS_QUALITY_SIGNAL",
+    "skill": {
+        "HAS_PARAMETER_GUIDANCE",
+        "HAS_ENVIRONMENT_SPEC",
+        "HAS_FAILURE_MODE",
+        "HAS_USAGE_CONSTRAINT",
+        "HAS_RECOVERY_STRATEGY",
+        "HAS_QUALITY_CHECKPOINT",
+        "RECOVERABLE_BY",
+        "SUPERSEDES_SKILL",
+        "REQUIRES_SKILL",
     },
     "experience": {
-        "CALLED_TOOLCALL",
-        "FAILED_WITH",
         "GENERALIZED_TO",
-        "TRIGGERED_BY",
-        "PREFERS",
-        "AVOIDS",
+        "CONTRADICTS",
+        "REINFORCES",
+        "SUMMARIZES_PATTERN",
         "GENERATED_PATCH",
         "UPDATED_LIFECYCLE_STATE",
+        "DISTILLED_TO_SKILL",
+        "SUPPORTS_SKILL_UPDATE",
     },
 }
+
+ImplementationNodeType = SkillNodeType
+ImplementationEdgeType = SkillEdgeType
 
 HEALTHY_L1_STATES = {"active_hot", "active_warm"}
 
@@ -340,6 +347,34 @@ class BioEvoKGNode(LatticeBaseModel):
     provenance: list[Provenance]
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_legacy_layer_names(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+        normalized = dict(data)
+        if normalized.get("layer") == "implementation":
+            normalized["layer"] = "skill"
+        node_type_map = {
+            "ToolImplementationProfile": "ToolUsageSkill",
+            "AggregatedToolProfile": "ToolUsageSkill",
+            "ConfigurationProfile": "ParameterGuidance",
+            "ReferenceImplementationProfile": "EnvironmentSpec",
+            "DatabaseImplementationProfile": "EnvironmentSpec",
+            "FailureCondition": "FailureRecord",
+            "Constraint": "TaskLevelConstraint",
+            "RepairAction": "WorkflowLevelInsight",
+            "QualitySignal": "SuccessPattern",
+            "HistoricalSuccess": "SuccessPattern",
+            "HistoricalFailure": "FailureRecord",
+            "GraphPatch": "GraphPatchRecord",
+            "LifecycleTransition": "LifecycleTransitionRecord",
+        }
+        node_type = normalized.get("node_type")
+        if node_type in node_type_map:
+            normalized["node_type"] = node_type_map[node_type]
+        return normalized
 
     @field_validator("node_id", "canonical_name")
     @classmethod
@@ -387,6 +422,28 @@ class BioEvoKGEdge(LatticeBaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime | None = None
 
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_legacy_edge_names(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+        normalized = dict(data)
+        if normalized.get("source_layer") == "implementation":
+            normalized["source_layer"] = "skill"
+        if normalized.get("target_layer") == "implementation":
+            normalized["target_layer"] = "skill"
+        edge_type_map = {
+            "HAS_IMPLEMENTATION_PROFILE": "HAS_USAGE_SKILL",
+            "HAS_FAILURE_CONDITION": "HAS_FAILURE_MODE",
+            "HAS_CONSTRAINT": "HAS_USAGE_CONSTRAINT",
+            "HAS_REPAIR_ACTION": "HAS_RECOVERY_STRATEGY",
+            "HAS_QUALITY_SIGNAL": "HAS_QUALITY_CHECKPOINT",
+        }
+        edge_type = normalized.get("edge_type")
+        if edge_type in edge_type_map:
+            normalized["edge_type"] = edge_type_map[edge_type]
+        return normalized
+
     @field_validator("edge_id", "source_node_id", "target_node_id", "source_type")
     @classmethod
     def require_non_empty_text(cls, value: str) -> str:
@@ -419,7 +476,7 @@ LAYER_ORDER = {
     "evidence": 2,
     "workflow": 3,
     "resource": 4,
-    "implementation": 5,
+    "skill": 5,
     "experience": 6,
 }
 

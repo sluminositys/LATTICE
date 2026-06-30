@@ -52,11 +52,17 @@ def _build_execution_step(raw_step: dict[str, Any]) -> AgenticExecutionStep:
 
     step_id = str(attributes.get("step_id") or raw_step.get("node_id") or f"step-{uuid4()}")
     workflow_step_id = str(raw_step.get("node_id") or step_id)
-    toolcall_spec_id = str(attributes["toolcall_spec_id"])
     return AgenticExecutionStep(
         step_id=step_id,
         workflow_step_id=workflow_step_id,
-        toolcall_spec_id=toolcall_spec_id,
+        skill_ids=_string_list(attributes.get("skill_ids")),
+        suggested_tool_names=_string_list(attributes.get("suggested_tool_names")),
+        script_goal=_optional_string(
+            attributes.get("script_goal")
+            or attributes.get("goal")
+            or attributes.get("description")
+            or raw_step.get("canonical_name")
+        ),
         input_bindings=_dict(attributes.get("input_bindings")),
         parameter_bindings=_dict(attributes.get("parameter_bindings")),
         parameter_sources=_dict(attributes.get("parameter_sources")),
@@ -64,6 +70,9 @@ def _build_execution_step(raw_step: dict[str, Any]) -> AgenticExecutionStep:
         postconditions=_string_list(attributes.get("postconditions")),
         permission_requirement=_dict(attributes.get("permission_requirement")),
         failure_policy=_dict(attributes.get("failure_policy")),
+        quality_checks=_string_list(attributes.get("quality_checks")),
+        artifact_expectations=_string_list(attributes.get("artifact_expectations")),
+        toolcall_spec_id=_optional_string(attributes.get("toolcall_spec_id")),
         observation_schema=_dict(attributes.get("observation_schema")),
     )
 
@@ -78,3 +87,9 @@ def _string_list(value: Any) -> list[str]:
     if not isinstance(value, list):
         return []
     return [str(item) for item in value]
+
+
+def _optional_string(value: Any) -> str | None:
+    if value in (None, ""):
+        return None
+    return str(value)

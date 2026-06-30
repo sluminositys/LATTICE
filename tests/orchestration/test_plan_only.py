@@ -2,7 +2,7 @@
 from lattice.runtime import FileAgentEventLog
 
 
-def test_plan_only_flow_blocks_without_graph_or_tool_specs() -> None:
+def test_plan_only_flow_blocks_without_graph() -> None:
     state = run_plan_only("Plan requested workflow", session_id="session-1")
 
     assert state["status"] == "plan_blocked"
@@ -10,8 +10,8 @@ def test_plan_only_flow_blocks_without_graph_or_tool_specs() -> None:
     assert state["runtime_context"].sufficiency_report.status == "insufficient"
     assert state["workflow_report"].status == "blocked"
     assert state["permission_decision"].allowed is False
-    assert state["permission_decision"].blocked_by == ["NO_WORKFLOW_PATH", "NO_TOOLCALL_SPEC"]
-    assert state["response"] == "Plan blocked: NO_WORKFLOW_PATH; NO_TOOLCALL_SPEC"
+    assert state["permission_decision"].blocked_by == ["NO_WORKFLOW_PATH"]
+    assert state["response"] == "Plan blocked: NO_WORKFLOW_PATH"
 
 
 def test_plan_only_flow_appends_event_log(tmp_path) -> None:

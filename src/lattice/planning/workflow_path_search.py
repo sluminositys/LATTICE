@@ -27,12 +27,12 @@ class WorkflowPathSearch:
                 unresolved_requirements=[
                     *report.missing_task_info,
                     *report.missing_workflow_info,
-                    *report.missing_toolcall_info,
+                    *report.missing_skill_info,
                     *report.missing_evidence_info,
                     *report.missing_experience_info,
                 ],
                 path_rationale=[
-                    "RuntimeGraphContext is insufficient; workflow path search cannot run."
+                    "RuntimeGraphContext is insufficient; execution may need runtime discovery."
                 ],
             )
 
@@ -55,12 +55,11 @@ class WorkflowPathSearch:
         unresolved: list[str] = []
         if not steps:
             unresolved.append(f"workflow path has no executable steps: {selected_id}")
+        missing_skill_steps = []
         for step in steps:
             attributes = _attributes(step)
-            if not attributes.get("toolcall_spec_id"):
-                unresolved.append(
-                    f"ToolCallSpec missing for workflow step: {step.get('node_id', 'unknown')}"
-                )
+            if not attributes.get("skill_ids") and not attributes.get("suggested_tool_names"):
+                missing_skill_steps.append(str(step.get("node_id", "unknown")))
 
         return WorkflowSearchResult(
             candidate_path_ids=[str(node["node_id"]) for node in candidate_paths],
@@ -74,6 +73,11 @@ class WorkflowPathSearch:
             path_rationale=[
                 "Selected the highest-priority active workflow path from L2.",
                 f"Task fingerprint: {fingerprint.fingerprint_id}",
+                *[
+                    "Workflow step has no projected L5 skill and will rely on runtime discovery: "
+                    f"{step_id}"
+                    for step_id in missing_skill_steps
+                ],
             ],
         )
 

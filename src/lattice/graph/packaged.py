@@ -79,7 +79,8 @@ class PackagedHealthyGraphStore:
             G_evidence=views["evidence"],
             G_workflow=views["workflow"],
             G_resource=views["resource"],
-            G_experience_preference=views["experience"],
+            G_skill=views["skill"],
+            G_experience=views["experience"],
             sufficiency_report=report,
             provenance=[
                 Provenance(
@@ -195,12 +196,13 @@ def _split_runtime_views(
         "evidence": {"nodes": [], "edges": []},
         "workflow": {"nodes": [], "edges": []},
         "resource": {"nodes": [], "edges": []},
+        "skill": {"nodes": [], "edges": []},
         "experience": {"nodes": [], "edges": []},
     }
     node_view: dict[str, str] = {}
     for node in nodes:
         layer = node.get("layer")
-        view_name = "resource" if layer == "implementation" else str(layer)
+        view_name = str(layer)
         if view_name in views:
             views[view_name]["nodes"].append(node)
             node_view[str(node["node_id"])] = view_name

@@ -19,13 +19,6 @@ from lattice.graph.runtime_loader import GraphRuntimeLoadError, load_graph_runti
 from lattice.orchestration import run_execution, run_plan_only
 from lattice.runtime import FileAgentEventLog
 from lattice.schemas import PermissionMode
-from lattice.toolcall import (
-    CliBackend,
-    ContainerizedCliBackend,
-    DatabaseApiBackend,
-    RestApiBackend,
-    RuntimeBackend,
-)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -105,7 +98,6 @@ def main(argv: list[str] | None = None) -> int:
             permission_mode=cast(PermissionMode, args.permission_mode),
             healthy_graph_store=cast(HealthyGraphStore | None, runtime.l1_store),
             full_graph_store=cast(FullGraphStore | None, runtime.l0_store),
-            runtime_backends=_default_runtime_backends(),
             apply_experience_patch=not args.skip_experience_write,
         )
         print(json.dumps(_to_jsonable(state), ensure_ascii=False, indent=2, sort_keys=True))
@@ -163,15 +155,6 @@ def _to_jsonable(value: Any) -> Any:
     if isinstance(value, list):
         return [_to_jsonable(item) for item in value]
     return value
-
-
-def _default_runtime_backends() -> dict[str, RuntimeBackend]:
-    return {
-        "cli": CliBackend(),
-        "rest_api": RestApiBackend(),
-        "containerized_cli": ContainerizedCliBackend(),
-        "database_api": DatabaseApiBackend({}),
-    }
 
 
 if __name__ == "__main__":

@@ -38,6 +38,8 @@ from lattice.schemas.heterogeneous_graph import (
     OperationalProfile,
     ResourceEdgeType,
     ResourceNodeType,
+    SkillEdgeType,
+    SkillNodeType,
     TaskEdgeType,
     TaskNodeType,
     WorkflowEdgeType,
@@ -45,6 +47,16 @@ from lattice.schemas.heterogeneous_graph import (
 )
 from lattice.schemas.planning import AgenticExecutionPlan, AgenticExecutionStep
 from lattice.schemas.runtime_context import GraphContextSufficiencyReport, RuntimeGraphContext
+from lattice.schemas.script_runtime import (
+    ArtifactManifest,
+    RunRecord,
+    ScriptExecutionRawResult,
+    ScriptExecutionStatus,
+    ScriptLanguage,
+    ScriptProposal,
+    ScriptReviewResult,
+    ScriptReviewStatus,
+)
 from lattice.schemas.task import TaskFingerprint
 from lattice.schemas.toolcall import StructuredObservation, ToolCallSpec
 from lattice.schemas.verification import ClaimAuditReport, WorkflowAuditReport
@@ -71,6 +83,7 @@ __all__ = [
     "RuntimeGraphContext",
     "AgenticExecutionPlan",
     "AgenticExecutionStep",
+    "ArtifactManifest",
     "ClaimAuditReport",
     "CapabilityGap",
     "Constraint",
@@ -81,6 +94,13 @@ __all__ = [
     "GraphProfileMode",
     "HeterogeneousEdgeType",
     "HeterogeneousNodeType",
+    "RunRecord",
+    "ScriptExecutionRawResult",
+    "ScriptExecutionStatus",
+    "ScriptLanguage",
+    "ScriptProposal",
+    "ScriptReviewResult",
+    "ScriptReviewStatus",
     "StructuredObservation",
     "ImplementationEdgeType",
     "ImplementationNodeType",
@@ -89,6 +109,8 @@ __all__ = [
     "L0GraphSource",
     "L1GraphSource",
     "OperationalProfile",
+    "SkillEdgeType",
+    "SkillNodeType",
     "TaskFingerprint",
     "TaskEdgeType",
     "TaskNodeType",

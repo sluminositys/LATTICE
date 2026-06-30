@@ -12,9 +12,11 @@ class ExperienceCandidate(LatticeBaseModel):
     candidate_type: Literal[
         "constraint",
         "repair_action",
-        "preference",
         "workflow_pattern",
         "quality_signal",
+        "method_comparison",
+        "success_pattern",
+        "failure_pattern",
     ]
     source_event_ids: list[str] = Field(default_factory=list)
     trigger_condition: dict[str, Any] = Field(default_factory=dict)
@@ -41,7 +43,7 @@ class CapabilityGap(LatticeBaseModel):
     gap_id: str
     task_fingerprint_id: str
     runtime_graph_context_id: str | None = None
-    gap_type: Literal["workflow", "tool", "toolcall_spec", "runtime_backend", "evidence", "data"]
+    gap_type: Literal["workflow", "tool", "skill", "runtime_capability", "evidence", "data"]
     missing_requirements: list[str] = Field(default_factory=list)
     trigger_condition: dict[str, Any] = Field(default_factory=dict)
     suggested_discovery_queries: list[str] = Field(default_factory=list)

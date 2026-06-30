@@ -6,17 +6,14 @@ def test_workflow_verifier_blocks_without_selected_path() -> None:
     report = WorkflowVerifier().verify(
         WorkflowSearchResult(
             unresolved_requirements=[
-                "no active ToolCallSpec is registered",
+                "no active L5 skill view has been projected",
                 "no healthy graph store is configured",
             ]
         )
     )
 
     assert report.status == "blocked"
-    assert [blocker.code for blocker in report.blockers] == [
-        "NO_WORKFLOW_PATH",
-        "NO_TOOLCALL_SPEC",
-    ]
+    assert [blocker.code for blocker in report.blockers] == ["NO_WORKFLOW_PATH"]
 
 
 def test_workflow_verifier_passes_selected_path() -> None:

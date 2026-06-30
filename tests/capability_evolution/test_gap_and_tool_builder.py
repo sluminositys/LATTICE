@@ -12,7 +12,7 @@ from lattice.runtime import AgentEvent
 from lattice.schemas import GraphContextSufficiencyReport, Provenance, RuntimeGraphContext
 
 
-def test_gap_detector_converts_unresolved_toolcall_need_to_gap() -> None:
+def test_gap_detector_converts_unresolved_skill_need_to_gap() -> None:
     fingerprint = TaskFingerprinter().fingerprint("Need a workflow")
     context = RuntimeGraphContext(
         graph_context_id="rgc-1",
@@ -21,10 +21,10 @@ def test_gap_detector_converts_unresolved_toolcall_need_to_gap() -> None:
         sufficiency_report=GraphContextSufficiencyReport(
             report_id="gcsr-1",
             status="insufficient",
-            missing_toolcall_info=["ToolCallSpec missing"],
+            missing_skill_info=["L5 skill missing"],
         ),
     )
-    search_result = WorkflowSearchResult(unresolved_requirements=["ToolCallSpec missing"])
+    search_result = WorkflowSearchResult(unresolved_requirements=["L5 skill missing"])
 
     gaps = CapabilityGapDetector().detect(
         fingerprint=fingerprint,
@@ -33,7 +33,7 @@ def test_gap_detector_converts_unresolved_toolcall_need_to_gap() -> None:
     )
 
     assert len(gaps) == 1
-    assert gaps[0].gap_type == "toolcall_spec"
+    assert gaps[0].gap_type == "skill"
     assert gaps[0].task_fingerprint_id == fingerprint.fingerprint_id
 
 
@@ -67,10 +67,10 @@ def test_evolution_agent_proposes_g0_gap_patch() -> None:
 
     assert request.proposed_graph_patch_id == patch.patch_id
     assert patch.target_graph_tier == "G0"
-    assert patch.nodes_to_add[0]["node_type"] == "QualitySignal"
+    assert patch.nodes_to_add[0]["node_type"] == "WorkflowLevelInsight"
 
 
-def test_tool_builder_proposes_tool_and_implementation_profile_patch() -> None:
+def test_tool_builder_proposes_tool_and_usage_skill_patch() -> None:
     discovery = ToolDiscoveryRecord(
         discovery_id="discovery-1",
         name="External tool",
@@ -98,8 +98,8 @@ def test_tool_builder_proposes_tool_and_implementation_profile_patch() -> None:
 
     assert [node["node_type"] for node in patch.nodes_to_add] == [
         "Tool",
-        "ToolImplementationProfile",
+        "ToolUsageSkill",
     ]
-    assert patch.edges_to_add[0]["edge_type"] == "HAS_IMPLEMENTATION_PROFILE"
-    tool_specs = patch.nodes_to_add[1]["attributes"]["agent_callability"]["tool_call_specs"]
-    assert tool_specs[0]["runtime_backend"] == "cli"
+    assert patch.edges_to_add[0]["edge_type"] == "HAS_USAGE_SKILL"
+    skill_summary = patch.nodes_to_add[1]["attributes"]["skill_summary"]
+    assert skill_summary["suggested_runtime"] == "cli"

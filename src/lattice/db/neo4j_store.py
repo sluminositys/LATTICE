@@ -152,20 +152,19 @@ class Neo4jHealthyGraphStore(HealthyGraphStore):
             "evidence": [],
             "workflow": [],
             "resource": [],
+            "skill": [],
             "experience": [],
         }
         for node in nodes:
             layer = node.get("layer")
-            if layer == "implementation":
-                by_layer["resource"].append(node)
-            elif layer in by_layer:
+            if layer in by_layer:
                 by_layer[layer].append(node)
 
         missing: list[str] = []
         if not by_layer["workflow"]:
             missing.append("no workflow layer nodes projected from G1")
         if not by_layer["resource"]:
-            missing.append("no resource or implementation layer nodes projected from G1")
+            missing.append("no resource layer nodes projected from G1")
         status: Literal["sufficient", "insufficient"] = (
             "sufficient" if not missing else "insufficient"
         )
@@ -186,7 +185,8 @@ class Neo4jHealthyGraphStore(HealthyGraphStore):
             G_evidence={"nodes": by_layer["evidence"]},
             G_workflow={"nodes": by_layer["workflow"]},
             G_resource={"nodes": by_layer["resource"]},
-            G_experience_preference={"nodes": by_layer["experience"]},
+            G_skill={"nodes": by_layer["skill"]},
+            G_experience={"nodes": by_layer["experience"]},
             sufficiency_report=report,
             provenance=[
                 Provenance(

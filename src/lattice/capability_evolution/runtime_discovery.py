@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Protocol
+from typing import Any, Literal, Protocol
 
 from pydantic import Field
 
@@ -12,7 +12,6 @@ from lattice.schemas import (
     LatticeBaseModel,
     RuntimeGraphContext,
     TaskFingerprint,
-    ToolCallSpec,
 )
 
 RuntimeDiscoveryStatus = Literal[
@@ -27,13 +26,14 @@ class RuntimeDiscoveryResult(LatticeBaseModel):
     status: RuntimeDiscoveryStatus
     reason: str | None = None
     execution_plan: AgenticExecutionPlan | None = None
-    toolcall_specs: list[ToolCallSpec] = Field(default_factory=list)
+    discovered_skills: list[dict[str, object]] = Field(default_factory=list)
+    toolcall_specs: list[Any] = Field(default_factory=list)
     graph_patches: list[GraphPatch] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
 
     @property
     def has_executable_plan(self) -> bool:
-        return self.execution_plan is not None and bool(self.toolcall_specs)
+        return self.execution_plan is not None
 
 
 class RuntimeCapabilityDiscoverer(Protocol):

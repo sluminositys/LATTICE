@@ -31,7 +31,7 @@ class PermissionGate:
             return PermissionDecision(
                 allowed=False,
                 mode=mode,
-                reason=f"{mode} mode does not allow tool execution",
+                reason=f"{mode} mode does not allow script execution",
                 blocked_by=[f"{mode.upper()}_MODE"],
             )
 

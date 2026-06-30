@@ -41,10 +41,12 @@ class CapabilityGapDetector:
 
 def _classify_gap(
     unresolved: list[str],
-) -> Literal["workflow", "tool", "toolcall_spec", "runtime_backend", "evidence", "data"]:
+) -> Literal["workflow", "tool", "skill", "runtime_capability", "evidence", "data"]:
     joined = " ".join(unresolved).lower()
-    if "toolcallspec" in joined or "toolcall" in joined:
-        return "toolcall_spec"
+    if "skill" in joined or "l5" in joined:
+        return "skill"
+    if "runtime" in joined or "capability" in joined:
+        return "runtime_capability"
     if "tool" in joined:
         return "tool"
     if "workflow" in joined or "path" in joined:
